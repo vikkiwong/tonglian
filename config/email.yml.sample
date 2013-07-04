@@ -1,0 +1,10 @@
+notice_sender:
+  name: 通联
+  email: tonglian@163.com
+  address: smtp.163.com
+  port: 25
+  authentication: :login
+  domain: www.163.com
+  user_name: USER_NAME
+  password: PASSWORD
+  enable_starttls_auto: true
