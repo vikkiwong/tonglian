@@ -1,0 +1,27 @@
+<h1>Listing column_sets</h1>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Column name</th>
+    <th>Active</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @column_sets.each do |column_set| %>
+  <tr>
+    <td><%= column_set.id %></td>
+    <td><%= column_set.column_name %></td>
+    <td><%= column_set.active %></td>
+    <td><%= link_to 'Show', column_set %></td>
+    <td><%= link_to 'Edit', edit_column_set_path(column_set) %></td>
+    <td><%= link_to 'Destroy', column_set, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Column set', new_column_set_path %>

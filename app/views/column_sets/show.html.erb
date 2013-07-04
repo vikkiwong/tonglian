@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Id:</b>
+  <%= @column_set.id %>
+</p>
+
+<p>
+  <b>Column name:</b>
+  <%= @column_set.column_name %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%= @column_set.active %>
+</p>
+
+
+<%= link_to 'Edit', edit_column_set_path(@column_set) %> |
+<%= link_to 'Back', column_sets_path %>
