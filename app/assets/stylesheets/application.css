@@ -11,3 +11,11 @@
  *= require_self
  *= require_tree .
  */
+
+ .control-group .controls {
+    margin-left: 200px;
+}
+.btns{
+    margin-left: 305px;
+}
+

@@ -1,5 +1,6 @@
-<h1>Listing sys_users</h1>
-
+<h1>用户列表</h1>
+<%= link_to '新用户', new_sys_user_path %>
+<%= link_to '批量导入用户', multi_users_sys_users_path %>
 <table class="table table-striped">
   <tr>
     <th>Id</th>
@@ -13,8 +14,7 @@
     <th>微博</th>
     <th>博客</th>
     <th>角色</th>
-    <th><%= link_to '新用户', new_sys_user_path %></th>
-    <th><%= link_to '批量导入用户', multi_users_sys_users_path %></th>
+    <th>操作</th>
   </tr>
 
 <% @sys_users.each do |sys_user| %>
@@ -30,12 +30,12 @@
     <td><%= sys_user.weibo %></td>
     <td><%= sys_user.blog %></td>
     <td><%= sys_user.role %></td>
-    <td><%= link_to '编辑', edit_sys_user_path(sys_user) %></td>
-    <td><%= link_to '删除', sys_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td>
+      <%= link_to '编辑', edit_sys_user_path(sys_user) %>
+      <%= link_to '删除', sys_user, method: :delete, data: { confirm: 'Are you sure?' } %>
+    </td>
   </tr>
 <% end %>
 </table>
-
-<br />
 
 
