@@ -1,0 +1,32 @@
+<xml>
+    <ToUserName><![CDATA[<%= params[:xml][:FromUserName] %>]]></ToUserName>
+    <FromUserName><![CDATA[<%= params[:xml][:ToUserName] %>]]></FromUserName>
+    <CreateTime><%= Time.now.to_i %></CreateTime>
+    <MsgType><![CDATA[news]]></MsgType>
+    <ArticleCount><%- if @users.first.id == @user.id %><%= @users.first.item_info[0] + 1 %><%- else %><%= @users.first.item_info[0] %><% end %></ArticleCount>
+    <Articles>
+    <item>
+        <Title><![CDATA[<%= @users.first.name %>]]></Title>
+        <Description><![CDATA[IhaveU]]></Description>
+        <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/address_main_t.jpg]]></PicUrl>
+        <Url><![CDATA[http://<%=SITE_DOMAIN%>/users/<%=@users.first.id%>]]></Url>
+    </item>
+    <% @users.first.item_info[1].each do |item| %>
+        <item>
+            <Title><![CDATA[<%= wx_str(item)%><%="\n"%><%-if item == "phone" %><%= @users.first.send(item)[0, 3] %>-<%= @users.first.send(item)[-8, 4]%> <%= @users.first.send(item)[-4, 4]%><% else %><%= @users.first.send(item)%><% end %><%-if item == "email" %>@ihaveu.net<%end%>]]></Title>
+            <Description><![CDATA[<%=@users.first.name %>]]></Description>
+            <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/<%=wx_img(item)%>]]></PicUrl>
+            <Url><![CDATA[http://<%=SITE_DOMAIN%>/users/<%=@users.first.id%>]]></Url>
+        </item>
+    <% end %>
+    <%- if @users.first.id == @user.id %>
+        <item>
+            <Title><![CDATA[更新联系方式]]></Title>
+            <Description><![CDATA[<%=@users.first.name %>]]></Description>
+            <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/edit-icon.jpg]]></PicUrl>
+            <Url><![CDATA[http://<%=SITE_DOMAIN%>/users/<%=@users.first.id%>/edit]]></Url>
+        </item>
+    <% end %>
+    </Articles>
+    <FuncFlag>0</FuncFlag>
+</xml>
