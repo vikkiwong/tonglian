@@ -1,51 +1,36 @@
+# encoding: utf-8
 class Sys::UsersController < ApplicationController
   #before_filter :login_check
+  before_filter :find_user, :only => [:show, :edit, :update]
+
   # GET /sys/users
   # GET /sys/users.json
   def index
     @sys_users = Sys::User.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @sys_users }
-    end
   end
 
   # GET /sys/users/1
   # GET /sys/users/1.json
   def show
-    @sys_user = Sys::User.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @sys_user }
-    end
   end
 
   # GET /sys/users/new
   # GET /sys/users/new.json
   def new
     @sys_user = Sys::User.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @sys_user }
-    end
   end
 
   def multi_users
-
   end
 
   def import_users
-    data = params[:users_info]
-    Sys::User.import_users(data)
+    # data = params[:users_info]
+    # Sys::User.import_users(data)
     redirect_to sys_users_url
   end
 
   # GET /sys/users/1/edit
   def edit
-    @sys_user = Sys::User.find(params[:id])
   end
 
   # POST /sys/users
@@ -53,14 +38,11 @@ class Sys::UsersController < ApplicationController
   def create
     @sys_user = Sys::User.new(params[:sys_user])
 
-    respond_to do |format|
-      if @sys_user.save
-        format.html { redirect_to @sys_user, notice: 'User was successfully created.' }
-        format.json { render json: @sys_user, status: :created, location: @sys_user }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @sys_user.errors, status: :unprocessable_entity }
-      end
+    if @sys_user.save
+      redirect_to @sys_user
+    else 
+      # @sys_user.errors
+      render action: "new"
     end
   end
 
@@ -69,26 +51,31 @@ class Sys::UsersController < ApplicationController
   def update
     @sys_user = Sys::User.find(params[:id])
 
-    respond_to do |format|
-      if @sys_user.update_attributes(params[:sys_user])
-        format.html { redirect_to @sys_user, notice: 'User was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @sys_user.errors, status: :unprocessable_entity }
-      end
+    if @sys_user.update_attributes(params[:sys_user])
+      redirect_to @sys_user
+    else
+      # @sys_user.errors
+      render action: "edit" 
     end
   end
 
   # DELETE /sys/users/1
   # DELETE /sys/users/1.json
+  # 软删除用户，将active 设为false
   def destroy
     @sys_user = Sys::User.find(params[:id])
-    @sys_user.destroy
+    @sys_user.update_attributes(:active => false)
+    redirect_to sys_users_url
+  end
 
-    respond_to do |format|
-      format.html { redirect_to sys_users_url }
-      format.json { head :no_content }
+  # before_filter，检查用户是否存在
+  # 
+  # ping.wang 2013.07.05
+  def find_user
+    @sys_user = Sys::User.find_by_id(params[:id])
+    unless @sys_user.present? 
+      flash[:notice] = "用户不存在"
+      redirect_to sys_users_url
     end
   end
 end

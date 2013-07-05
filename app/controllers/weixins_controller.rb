@@ -1,3 +1,4 @@
+# encoding: utf-8
 class WeixinsController < ApplicationController
   def index
     render :text => params[:echostr]

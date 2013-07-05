@@ -1,2 +1,0 @@
-module Sys::ColumnSetsHelper
-end
