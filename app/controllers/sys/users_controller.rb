@@ -32,6 +32,16 @@ class Sys::UsersController < ApplicationController
     end
   end
 
+  def multi_users
+
+  end
+
+  def import_users
+    data = params[:users_info]
+    Sys::User.import_users(data)
+    redirect_to sys_users_url
+  end
+
   # GET /sys/users/1/edit
   def edit
     @sys_user = Sys::User.find(params[:id])

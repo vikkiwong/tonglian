@@ -2,13 +2,33 @@
 <html>
 <head>
   <title>Tonglian</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= stylesheet_link_tag    "application", "bootstrap","sys_user" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
-
+   <div class="topbar">
+      <div class="topbar-inner">
+        <div class="container" style="width: 960px">
+          <%- if session[:name].present? -%>
+            <b><%= session[:name] %> &nbsp;|&nbsp;<a href="/logout">退出</a></b>
+          <%- end -%>
+          <span class="brand">通联</span>
+          <input id="page_controller" type="hidden" value="<%= params[:controller]%>">
+          <ul class="nav" id ="main-menus">
+           <li><a href="/sys/users" id ="sys/users">用户管理</a></li>
+          </ul>
+        </div>
+      </div>
+   </div>
+   <div class="container" style="width: 960px;">
+     <%= yield %>
+   </div>
+   <div class="clear"></div>
+   <footer class="footer">
+      <div class="container">
+        <p align="center">Powered by 基因团队 © 2013</p>
+      </div>
+   </footer>
 </body>
 </html>
