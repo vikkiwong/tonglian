@@ -1,3 +1,4 @@
+# encoding: utf-8
 module ApplicationHelper
   #=============== 用户微信消息页面 ==============#
   def wx_str(item)

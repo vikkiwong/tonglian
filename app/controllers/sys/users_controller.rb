@@ -1,4 +1,5 @@
 class Sys::UsersController < ApplicationController
+  #before_filter :login_check
   # GET /sys/users
   # GET /sys/users.json
   def index

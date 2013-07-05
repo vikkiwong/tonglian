@@ -1,32 +1,23 @@
+#encoding: utf-8
 class SessionsController < ApplicationController
   def create
-    verification = Rails.env == "production" ? User.sign_up(params[:email], params[:password]) : true   # 邮箱验证,若是develop环境则不验证
+    #verification = Rails.env == "production" ? User.sign_up(params[:email], params[:password]) : true   # 邮箱验证,若是develop环境则不验证
 
-    if verification    # 通过邮箱验证
+    #if verification   # 通过邮箱验证
       @user = Sys::User.check_user(params[:email],params[:password])   # 检查数据库是否有该用户
-
       if @user.present?    # 如果有
         set_session  # 设置session
-        # 检查新纪录条数
-        last_active_at = @user.last_active_at.present? ? @user.last_active_at : Time.now
-        @user.update_attribute(:last_active_at, Time.now)  and @user.save  #  记录最后一次活跃时间
-        # 跳过检查头像的步骤
-        # 检出是否有头像
-        # if @user.photo.present?
           # 获得登陆前访问的url
-          back_path = session[:back_path]
-          back_path = "/" if back_path.blank? || back_path =~ /login/
-          session[:back_path] = nil
-          redirect_to(back_path)   # 如果有，跳转到登陆前访问的url
-        #else  # 若无头像，跳转到添加头像的页面
-          #redirect_to add_photo_user_path(@user)
-        # end
-      else   # 若无，则创建
+        back_path = session[:back_path]
+        back_path = "/" if back_path.blank? || back_path =~ /login/
+        session[:back_path] = nil
+        redirect_to(back_path)   # 如果有，跳转到登陆前访问的url
+      else
         redirect_to("/login", :notice => "抱歉，该邮箱未注册~")
       end
-    else
-      redirect_to("/login" ,:notice => "用户名或密码错误，请重新登陆")
-    end
+    #else
+   #   redirect_to("/login" ,:notice => "用户名或密码错误，请重新登陆")
+   # end
   end
 
   def verification

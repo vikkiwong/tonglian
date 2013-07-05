@@ -17,5 +17,7 @@ Tonglian::Application.routes.draw do
       post "send_verify_mail"
     end
   end
+  match "/login" => "sessions#new"
+  match "/logout" => "sessions#destroy"
   root :to => 'sys/users#index'
 end
