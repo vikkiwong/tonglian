@@ -14,7 +14,7 @@ Tonglian::Application.routes.draw do
       get "verification"
       post "verify"
       get "success"
-      post "send_verify_mail"
+      get "mail_verify"
     end
   end
   match "/login" => "sessions#new"
