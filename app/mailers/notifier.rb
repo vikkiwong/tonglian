@@ -1,3 +1,4 @@
+#encoding: utf-8
 class Notifier < ActionMailer::Base
   self.smtp_settings = {:address => EMAIL_CONFIG["notice_sender"]["address"],
       :domain => EMAIL_CONFIG["notice_sender"]["domain"],
