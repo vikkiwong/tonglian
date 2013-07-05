@@ -27,6 +27,8 @@ class SessionsController < ApplicationController
   end
 
   def verify
+    p "这是我填写的邮箱--#{params[:email]}"
+    p "这里应该给我发送一封包含激活链接的邮件"
     #verification = Rails.env == "production" ? User.sign_up(params[:email], params[:password]) : true   # 邮箱验证,若是develop环境则不验证
 
     #if verification
