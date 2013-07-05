@@ -1,0 +1,17 @@
+<div style="margin-top: 100px">
+  <h3 class="h2 store_detail">批量导入用户数据</h3>
+   <%= form_tag(import_users_sys_users_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+    <table class="detail">
+      <tr>
+        <td>用户信息</td>
+        <td>
+          <textarea rows="7" name="users_info" style="width: 550px;"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input name="commit" class ="btn info" type="submit" value="提交" />	</td>
+      </tr>
+    </table>
+  <%- end -%>
+</div>
