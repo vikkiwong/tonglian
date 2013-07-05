@@ -1,69 +1,68 @@
-<%= form_for(@sys_user) do |f| %>
-  <% if @sys_user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@sys_user.errors.count, "error") %> prohibited this sys_user from being saved:</h2>
-
-      <ul>
-      <% @sys_user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+<div style="margin-left:200px"
+  <%= form_for(@sys_user) do |f| %>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">邮箱</label>
+      <div class="controls">
+        <%= f.text_field(:mobile)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">姓名</label>
+      <div class="controls">
+        <%= f.text_field(:mobile)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">性别</label>
+      <div class="controls">
+        <%= f.text_field(:sex)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">手机</label>
+      <div class="controls">
+        <%= f.text_field(:mobile, :class => "span4")%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">座机</label>
+      <div class="controls">
+        <%= f.text_field(:phone, :class => "span4")%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">QQ</label>
+      <div class="controls">
+        <%= f.text_field(:qq)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">微信</label>
+      <div class="controls">
+        <%= f.text_field(:weixin)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">微博</label>
+      <div class="controls">
+        <%= f.text_field(:weibo)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">博客</label>
+      <div class="controls">
+        <%= f.text_field(:blog)%>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typeahead">角色</label>
+      <div class="controls">
+        <%= f.text_field(:role)%>
+      </div>
+    </div>
+    <div class="btns">
+      <a class="btn" href="/sys/users">取消</a>
+      <button type="submit" class="btn" >保存</button>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= f.label :id %><br />
-    <%= f.number_field :id %>
-  </div>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.text_field :email %>
-  </div>
-  <div class="field">
-    <%= f.label :role %><br />
-    <%= f.text_field :role %>
-  </div>
-  <div class="field">
-    <%= f.label :allow_access %><br />
-    <%= f.check_box :allow_access %>
-  </div>
-  <div class="field">
-    <%= f.label :active %><br />
-    <%= f.check_box :active %>
-  </div>
-  <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :sex %><br />
-    <%= f.text_field :sex %>
-  </div>
-  <div class="field">
-    <%= f.label :mobile %><br />
-    <%= f.text_field :mobile %>
-  </div>
-  <div class="field">
-    <%= f.label :phone %><br />
-    <%= f.text_field :phone %>
-  </div>
-  <div class="field">
-    <%= f.label :qq %><br />
-    <%= f.text_field :qq %>
-  </div>
-  <div class="field">
-    <%= f.label :weixin %><br />
-    <%= f.text_field :weixin %>
-  </div>
-  <div class="field">
-    <%= f.label :weibo %><br />
-    <%= f.text_field :weibo %>
-  </div>
-  <div class="field">
-    <%= f.label :blog %><br />
-    <%= f.text_field :blog %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+</div>
