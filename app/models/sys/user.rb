@@ -1,5 +1,5 @@
 class Sys::User < ActiveRecord::Base
-  attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin
+  attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id
 
   def self.import_users(data)
     success_count = 0
@@ -58,5 +58,11 @@ class Sys::User < ActiveRecord::Base
     end
 
     return users
+  end
+
+  def self.check_user(email, password)
+    return nil if !email
+    user = where(:email => email).first
+    user ? user : nil
   end
 end

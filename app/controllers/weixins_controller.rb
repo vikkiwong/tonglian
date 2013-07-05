@@ -4,7 +4,7 @@ class WeixinsController < ApplicationController
   end
 
   def create
-    @user= User.find_by_weixin_id(params[:xml][:FromUserName])
+    @user= Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
     #@event = UserEvent.where(["user_id = ? and create_at > ?",@user.id,Time.now - 1.minutes]).order("id desc").limit(1)
     @introduction  = " 您好，我是小优！\n 输入姓名可查询通联\n 如“优众”“youzhong”“yz”\n\n【u】更新联系方式\n【h】获取帮助信息"#;\n[3] 图片推送帮助
     if params[:xml][:MsgType] == "text"
@@ -16,15 +16,15 @@ class WeixinsController < ApplicationController
             @start = "[1001] 总用户数\n[1002] 绑定微信用户数"
             render "start", :formats => :xml
           elsif params[:xml][:Content] == "1001" && @user.role == "manager"
-            users = User.all
+            users = Sys::User.all
             @start = "总用户数 #{users.size}人 "
             render "start", :formats => :xml
           elsif params[:xml][:Content] == "1002" && @user.role == "manager"
-            users = User.where("weixin_id is not null and weixin_id != ''")
+            users = Sys::User.where("weixin_id is not null and weixin_id != ''")
             @start = "绑定微信用户数 #{users.size}人 "
             render "start", :formats => :xml
           elsif params[:xml][:Content] == "1009" && @user.role == "manager"
-            user = User.find_by_weixin_id(params[:xml][:FromUserName])
+            user = Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
              if user.present?
                 user.weixin_id = nil
                 user.save
@@ -39,7 +39,7 @@ class WeixinsController < ApplicationController
           @start = @introduction
           render "start", :formats => :xml
         else
-          @users = User.find_user(params[:xml][:Content])
+          @users = Sys::User.find_user(params[:xml][:Content])
           if @users.present?
             if @users.size == 1
               render "single_address",:formats => :xml
@@ -60,7 +60,7 @@ class WeixinsController < ApplicationController
           render "new_user", :formats => :xml
       end
       if params[:xml][:Event] == "unsubscribe"
-          user = User.find_by_weixin_id(params[:xml][:FromUserName])
+          user = Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
           if user.present?
             user.weixin_id = nil
             user.save
@@ -68,6 +68,7 @@ class WeixinsController < ApplicationController
       end
     end
   end
+
 
   private
   def check_weixin_legality

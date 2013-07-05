@@ -8,6 +8,14 @@ Tonglian::Application.routes.draw do
     end
     resources :column_sets
   end
-
+  resources :weixins
+  resources :sessions do
+    collection do
+      get "verification"
+      post "verify"
+      get "success"
+      post "send_verify_mail"
+    end
+  end
   root :to => 'sys/users#index'
 end
