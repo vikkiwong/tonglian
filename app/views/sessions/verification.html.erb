@@ -1,0 +1,69 @@
+<% content_for :head do %>
+  邮箱验证-通联
+<% end %>
+
+
+<div id="wrapper" >
+	<header style="margin-left: 38px;">
+		<h1 style="font-size:31.5px;line-height:31.5px;">
+			通联
+			<small style="font-size: 12px; vertical-align: top; color:inherit;">Beta</small>
+		</h1>
+		<div class="desc" style="margin-left: 4px;">通联</div>
+	</header>
+	<div id="main">
+    <%- if flash[:notice].present? -%>
+      <div style="margin-left:42px;color:#E62D34;margin-top: 20px;"><%=raw flash[:notice] %></div>
+    <%- end -%>
+		<%= form_tag(verify_sessions_path, :style => "margin-top:-20px;") do %>
+			<br/><br/>
+			<div title="邮箱" style="display: inline-block;">
+				<label  for="inputEmail" style="display:inline;text-align:right;margin-right: 10px;">邮箱</label>
+				<input name="email" id="email" type="text" placeholder="email" style="margin-bottom:9px;width:131px;">
+			</div>
+            <input type="hidden" id="FromUser" name="FromUser" value="<%= @from_user %>">
+			<div style="margin-top:20px;">	
+				<button type="submit" class="btn" style="width:262px;background-color:#5BA10E;background: -webkit-gradient(linear,left top,left bottom,from(#6FB420),to(#51930D));
+        background: -moz-linear-gradient(top,#6FB420 0,#51930D 100%);color: white;
+        border: 1px solid #638467;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        text-align: center;">验证</button>
+			</div>
+		<% end %>
+	</div>
+</div>
+
+
+
+
+<style type="text/css">
+/* Structure */
+#wrapper {
+  width: 96%;
+  max-width: 920px;
+  margin: auto;
+  padding: 2%;
+  margin-top:20px;
+}
+#main {
+  width: 60%;
+  margin-right: 5%;
+  float: left;
+}
+aside {
+  width: 35%;
+  float: right;
+}
+
+/* Media Queries */
+@media screen and (max-width: 480px) {
+  header nav, #main, aside {
+    float: left;
+    clear: left;
+    margin: 0 0 10px;
+    width: 100%;
+  }
+}
+</style>
