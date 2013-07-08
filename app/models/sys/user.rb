@@ -4,7 +4,7 @@ class Sys::User < ActiveRecord::Base
   attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
                   :f_letters, :pinyin, :skip_callbacks
 
-  validate :email_uniqued?   # 关联email,active，验证邮箱惟一
+  validate :email_uniqued? # 关联email,active，验证邮箱惟一
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
   after_save :name_to_pinyin, :unless => :skip_callbacks
@@ -20,8 +20,8 @@ class Sys::User < ActiveRecord::Base
   # 
   # ping.wang 2013.07.08
   def email_uniqued?
-    Sys::User.exists?(:email => self.email, :active => true)
-    errors.add(:email, "此邮箱已存在！")
+    user =  Sys::User.find_by_email_and_active(self.email, true)
+    errors.add(:email, "此邮箱已存在！") unless user.id == self.id
   end
 
   # 显示用户角色中文名

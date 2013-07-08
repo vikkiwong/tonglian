@@ -2,7 +2,7 @@ class Ability
 	include CanCan::Ability
 
 	def initialize(user)
-		@current_ser = user
+		@current_user = user
     if @current_user.role.present?
       send(@current_user.role)
     else
