@@ -59,9 +59,8 @@ module Tonglian
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
   end
-
+end
   WX_TAKEN = "tonglian_wx"
   EMAIL_CONFIG = YAML.load_file(Rails.root.join("config", "email.yml"))
   SITE_SETTINGS = YAML.load_file(Rails.root.join("config", "system_settings.yml"))
   SITE_DOMAIN = SITE_SETTINGS["site_domain"]
-end
