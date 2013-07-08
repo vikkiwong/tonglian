@@ -5,7 +5,7 @@ class Sys::User < ActiveRecord::Base
                   :f_letters, :pinyin, :skip_callbacks
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-  before_save :name_to_pinyin, :unless => :skip_callbacks
+  after_save :name_to_pinyin, :unless => :skip_callbacks
 
   scope :actived, :conditions => ["sys_users.active = ? or sys_users.active is NULL", true]
 
@@ -29,7 +29,10 @@ class Sys::User < ActiveRecord::Base
     pinyin = PinYin.of_string(self.name).join("")
     family_name = PinYin.of_string(self.name.first).join("")
     f_letters = PinYin.abbr(self.name)
-    self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name, :skip_callbacks => true)  # to skip callbacks 
+    # self.update_column(:pinyin, pinyin)
+    Sys::User.skip_callbacks = true
+    self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name)  # to skip callbacks 
+    Sys::User.skip_callbacks = false
   end
 
   # 批量导入用户
