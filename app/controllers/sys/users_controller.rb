@@ -73,7 +73,6 @@ class Sys::UsersController < ApplicationController
   # 
   # ping.wang 2013.07.05 
   def destroy
-    p "-----"
     @sys_user = Sys::User.find(params[:id])
     @sys_user.update_attributes(:active => false)
     redirect_to sys_users_url

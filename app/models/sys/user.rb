@@ -1,9 +1,11 @@
 # encoding: utf-8
 class Sys::User < ActiveRecord::Base
-  attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password
+  cattr_accessor :skip_callbacks
+  attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
+                  :f_letters, :pinyin, :skip_callbacks
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-  before_save :name_to_pinyin
+  before_save :name_to_pinyin, :unless => :skip_callbacks
 
   scope :actived, :conditions => ["sys_users.active = ? or sys_users.active is NULL", true]
 
@@ -20,12 +22,14 @@ class Sys::User < ActiveRecord::Base
   end
 
   # after_save回调方法，将中文名字转为拼音,
-  # 注意保存时不能用.save方法，否则会反复回调
+  # 注意保存需要skip回调
   # 
   # ping.wang 2013.07.08
   def name_to_pinyin
-    pinyin = PinYin.permlink(self.name)
-    self.update_column(:pinyin, pinyin)   # to skip callbacks
+    pinyin = PinYin.of_string(self.name).join("")
+    family_name = PinYin.of_string(self.name.first).join("")
+    f_letters = PinYin.abbr(self.name)
+    self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name, :skip_callbacks => true)  # to skip callbacks 
   end
 
   # 批量导入用户
@@ -57,41 +61,33 @@ class Sys::User < ActiveRecord::Base
     # end
   end
 
-  # 传入姓名或拼音，返回用户
-  #
+  # 按中文姓名或拼音或邮箱查找用户
   # ================
   # 参数： string
+  # 
+  # ping.wang 2013.07.05
   def self.find_user(str)
     return [] unless str.present?
 
-    # if /[\d._]/.match(str).present?   # 若包含数字或._, 优先按照email查找
-    #   regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
-    #   users = Sys::User.find(:all, :conditions => ["users.email LIKE ? ", "%#{str}%"],:limit => 10) # 邮箱 连续
-    #   users = Sys::User.find(:all, :conditions => ["users.email REGEXP ? ", regrep_str],:limit => 10) unless users.present? # 邮箱 连续
-    # else
-    #   if str.length == 1    #若只输入了一个字符
-    #     # 短字符中文优先级高
-    #     users = Sys::User.find(:all, :conditions => ["users.name LIKE ? ", "#{str}%"], :limit => 10)  # 当作"姓"的中文字符查
-    #     users = Sys::User.find(:all, :conditions => ["users.name LIKE ? ", "%#{str}%"], :limit => 10) unless users.present? # 当作"姓名"的中文字符查
-    #     # 若无结果, 则按拼音的第一个字母查
-    #     users = Sys::User.find(:all, :conditions => ["LEFT(users.f_letters ,1) = ?", "#{str}"], :limit => 10) unless users.present?  # 拼音的第一个字母
-    #     users = Sys::User.find(:all, :conditions => ["users.f_letters LIKE ? ", "%#{str}%"], :limit => 10) unless users.present?   # 若无, 按首字母某个字母查
-    #   else
-    #     regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
-    #     users = Sys::User.find(:all, :conditions => ["users.name LIKE ? ", "%#{str}%"], :limit => 10)  # 中文
-    #     # 严格查找
-    #     users = Sys::User.find(:all, :conditions => ["users.f_letters = ?", "#{str}"], :limit => 10) unless users.present? # 首字母
-    #     users = Sys::User.find(:all, :conditions => ["users.family_name = ?", "#{str}"], :limit => 10) unless users.present? # 按姓的拼音查
-    #     # 开始匹配
-    #     users = Sys::User.find(:all, :conditions => ["users.family_name LIKE ?", "%#{str}%"], :limit => 10) unless users.present? # 按姓的拼音查
-    #     users = Sys::User.find(:all, :conditions => ["users.f_letters LIKE ?", "%#{str}%"], :limit => 10) unless users.present? # 首字母连续
-    #     users = Sys::User.find(:all, :conditions => ["users.full_name LIKE ?", "%#{str}%"], :limit => 10) unless users.present? # 全拼连续
-    #     # REGEXP
-    #     users = Sys::User.find(:all, :conditions => ["users.full_name REGEXP ? ", regrep_str],:limit => 10) unless users.present? # 全拼断续
-    #     users = Sys::User.find(:all, :conditions => ["users.email REGEXP ? ", regrep_str],:limit => 10) unless users.present?  # 邮箱 断续
-    #   end
-    # end
-    users = Sys::User.all.limit(5)
+    if /[\d._@]/.match(str).present?   # 若包含数字或._, 按照email查找
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.email LIKE ? ", true, "%#{str}%"], :limit => 10) 
+    elsif /^[A-Za-z]+$/.match(str).present?  # 按拼音和email查找
+      # 先按拼音查找
+      # 按首字母
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.f_letters = ? ", true, "#{str}"], :limit => 10)
+      # 按姓
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.family_name = ? ", true, "#{str}"], :limit => 10) unless users.present?
+      # 匹配全拼,连续
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.pinyin LIKE ? ", true, "%#{str}%"], :limit => 10) unless users.present?
+      # 匹配全拼,断续
+      regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.pinyin REGEXP ? ", true, regrep_str], :limit => 10) unless users.present?
+      # 按邮箱查找
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.email LIKE ? ", true, "%#{str}%"], :limit => 10) unless users.present?
+    else  # 按name查找
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.name LIKE ? ", true, "#{str}%"], :limit => 10)   # 按姓查找
+      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.name LIKE ? ", true, "%#{str}%"], :limit => 10) unless users.present?   # 若无该姓，按名查找 
+    end
     return users
   end
 
