@@ -1,0 +1,5 @@
+<h2>添加用户</h2>
+<%= form_tag(bunch_create_sys_users_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+  <textarea rows="7" name="bunch_users" style="width: 550px;"></textarea>
+  <input name="commit" class ="btn" type="submit" value="提交" />
+<%- end -%>
