@@ -1,6 +1,5 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
-  #before_filter :login_check
   before_filter :find_user, :only => [:show, :edit, :update]
 
   # GET /sys/users
@@ -20,12 +19,21 @@ class Sys::UsersController < ApplicationController
     @sys_user = Sys::User.new
   end
 
-  def multi_users
+  def bunch_new
   end
 
-  def import_users
-    # data = params[:users_info]
-    # Sys::User.import_users(data)
+  # 批量导入用户
+  # ==== 参数格式 ====
+  # 邮箱1，姓名1
+  # 邮箱2，姓名2
+  # ==== Return ====
+  # true or false
+  # 
+  # ping.wang 2013.07.08 修改
+  def bunch_create
+    bunch_users = params[:bunch_users]
+    wrong_line = Sys::User.import_bunch_users(bunch_users)
+    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的记录创建出错了, 请检查！" if wrong_line.present?
     redirect_to sys_users_url
   end
 
@@ -41,7 +49,7 @@ class Sys::UsersController < ApplicationController
     if @sys_user.save
       redirect_to @sys_user
     else 
-      # @sys_user.errors
+      # @sys_user.errors  这里应该显示错误提示
       render action: "new"
     end
   end
@@ -54,7 +62,7 @@ class Sys::UsersController < ApplicationController
     if @sys_user.update_attributes(params[:sys_user])
       redirect_to @sys_user
     else
-      # @sys_user.errors
+      # @sys_user.errors 这里应该显示错误提示
       render action: "edit" 
     end
   end
@@ -62,13 +70,17 @@ class Sys::UsersController < ApplicationController
   # DELETE /sys/users/1
   # DELETE /sys/users/1.json
   # 软删除用户，将active 设为false
+  # 
+  # ping.wang 2013.07.05 
   def destroy
     @sys_user = Sys::User.find(params[:id])
     @sys_user.update_attributes(:active => false)
     redirect_to sys_users_url
   end
 
-  # before_filter，检查用户是否存在
+  # before_filter方法，检查用户是否存在
+  # ==== params ====
+  # 用户ID(:id)
   # 
   # ping.wang 2013.07.05
   def find_user

@@ -1,6 +1,8 @@
 # encoding: utf-8
 class Sys::User < ActiveRecord::Base
   attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password
+  validates_uniqueness_of :email, :message => "此邮箱已存在！"
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
   ROLES = [
     ["普通用户", "member"],
@@ -14,23 +16,36 @@ class Sys::User < ActiveRecord::Base
     str.present? ? str.first : ""
   end
 
-  def self.import_users(data)
-    success_count = 0
-    fail_count = 0
-    data.strip.gsub(" ", "").gsub("\r","").split("\n").each do |line|
-      value = line.split(",")
-      sql_str="insert into sys_users (name,email) values ('#{value[0]}','#{value[1]}')"
-      begin
-        Sys::User.connection.execute(sql_str)
-        success_count += 1
-      rescue Exception => e
-        puts e.message
-        fail_count += 1
-      end
+  # 批量导入用户
+  # 
+  # guanzuo.li 2013.07.05  
+  # ping.wang 2013.7.08 修改 
+  def self.import_bunch_users(bunch_users)
+    wrong_line = []
+    return false unless bunch_users.present?
+    bunch_users.split("\n").each do |line|
+      email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
+      name = name.present? ? name.strip.gsub(/\s+/, "") : ""
+      email = email.present? ? email.strip.gsub(/\s+/, "") : ""
+      user = Sys::User.new(:email => email, :name => name, :role => "member")
+      wrong_line << email unless user.save   # 将创建出错的邮箱记录下来
     end
+    wrong_line
+    #success_count, fail_count = 0, 0
+    # bunch_users.strip.gsub(" ", "").gsub("\r","").split("\n").each do |line|
+    #   value = line.split(",")
+    #   sql_str="insert into sys_users (name,email) values ('#{value[0]}','#{value[1]}')"
+    #   begin
+    #     Sys::User.connection.execute(sql_str)
+    #     success_count += 1
+    #   rescue Exception => e
+    #     puts e.message
+    #     fail_count += 1
+    #   end
+    # end
   end
 
-   # 传入姓名或拼音，返回用户
+  # 传入姓名或拼音，返回用户
   #
   # ================
   # 参数： string

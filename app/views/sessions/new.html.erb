@@ -1,20 +1,7 @@
 <form action="/sessions" method="post">
-  <fieldset>
-    <legend>
-      Sign in to begin
-    </legend>
-    <div style="margin:0;padding:0;display:inline">
-      <input type="hidden" value="✓" name="utf8">
-      <input type="hidden" value="eTOgm//AHa0RNCSp9TZXes7SxYFaCoKGjJxx8l0ddnQ=" name="authenticity_token">
-    </div>
-    <label for="UserName">User Name</label>
-    <input type="email" id="UserName" name="email" placeholder="user@126.com" tabindex="1" required="true"/>
-    <label for="Password">Password</label>
-    <input type="text" id="Password" name="password" placeholder="password" tabindex="2" required="true"/>
-    <label for="staySigned">
-      <input type="checkbox" id="staySigned" name="staySigned" tabindex="3"/>
-      Stay signed in
-    </label>
-  </fieldset>
-  <input type="submit" value="Login" tabindex="4"/>
+  <label>用户名</label>
+  <input type="email" name="email">
+  <label>密码</label>
+  <input type="password" name="password">
+  <button type="submit" class="btn">登陆</button>
 </form>
