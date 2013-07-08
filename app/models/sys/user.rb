@@ -39,9 +39,9 @@ class Sys::User < ActiveRecord::Base
     pinyin = PinYin.of_string(self.name).join("")
     family_name = PinYin.of_string(self.name.first).join("")
     f_letters = PinYin.abbr(self.name)
-    # self.update_column(:pinyin, pinyin)
+    # self.update_column(:pinyin, pinyin) # to skip callbacks  
     Sys::User.skip_callbacks = true
-    #self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name)  # to skip callbacks 
+    self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name)  # to skip callbacks 
     Sys::User.skip_callbacks = false
   end
 
