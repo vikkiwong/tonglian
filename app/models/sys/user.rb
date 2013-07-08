@@ -3,8 +3,10 @@ class Sys::User < ActiveRecord::Base
   cattr_accessor :skip_callbacks
   attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
                   :f_letters, :pinyin, :skip_callbacks
-  validates_uniqueness_of :email, :message => "此邮箱已存在！"
+
+  validate :email_uniqued?   # 关联email,active，验证邮箱惟一
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+
   after_save :name_to_pinyin, :unless => :skip_callbacks
 
   scope :actived, :conditions => ["sys_users.active = ? or sys_users.active is NULL", true]
@@ -13,6 +15,14 @@ class Sys::User < ActiveRecord::Base
     ["普通用户", "member"],
     ["管理员", "manager"]
   ]
+
+  # validate方法，关联email,active，验证邮箱惟一
+  # 
+  # ping.wang 2013.07.08
+  def email_uniqued?
+    Sys::User.exists?(:email => self.email, :active => true)
+    errors.add(:email, "此邮箱已存在！")
+  end
 
   # 显示用户角色中文名
   # ping.wang 2013.07.05
@@ -31,7 +41,7 @@ class Sys::User < ActiveRecord::Base
     f_letters = PinYin.abbr(self.name)
     # self.update_column(:pinyin, pinyin)
     Sys::User.skip_callbacks = true
-    self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name)  # to skip callbacks 
+    #self.update_attributes(:pinyin => pinyin, :f_letters => f_letters, :family_name => family_name)  # to skip callbacks 
     Sys::User.skip_callbacks = false
   end
 
@@ -40,8 +50,9 @@ class Sys::User < ActiveRecord::Base
   # guanzuo.li 2013.07.05  
   # ping.wang 2013.7.08 修改 
   def self.import_bunch_users(bunch_users)
-    wrong_line = []
     return false unless bunch_users.present?
+
+    wrong_line = []
     bunch_users.split("\n").each do |line|
       email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
       name = name.present? ? name.strip.gsub(/\s+/, "") : ""
@@ -50,18 +61,6 @@ class Sys::User < ActiveRecord::Base
       wrong_line << email unless user.save   # 将创建出错的邮箱记录下来
     end
     wrong_line
-    #success_count, fail_count = 0, 0
-    # bunch_users.strip.gsub(" ", "").gsub("\r","").split("\n").each do |line|
-    #   value = line.split(",")
-    #   sql_str="insert into sys_users (name,email) values ('#{value[0]}','#{value[1]}')"
-    #   begin
-    #     Sys::User.connection.execute(sql_str)
-    #     success_count += 1
-    #   rescue Exception => e
-    #     puts e.message
-    #     fail_count += 1
-    #   end
-    # end
   end
 
   # 按中文姓名或拼音或邮箱查找用户
