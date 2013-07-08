@@ -13,7 +13,7 @@
     </item>
     <% @user.item_info[1].each do |item| %>
         <item>
-            <Title><![CDATA[<%= wx_str(item)%><%="\n"%><%-if item == "phone" %><%= @user.send(item)[0, 3] %>-<%= @user.send(item)[-8, 4]%> <%= @user.send(item)[-4, 4]%><% else %><%= @user.send(item)%><% end %><%-if item == "email" %>@ihaveu.net<%end%>]]></Title>
+            <Title><![CDATA[<%= wx_str(item)%><%="\n"%><%-if item == "phone" %><%= @user.send(item)[0, 3] %>-<%= @user.send(item)[-8, 4]%> <%= @user.send(item)[-4, 4]%><% else %><%= @user.send(item)%><% end %><%-if item == "email" %><%end%>]]></Title>
             <Description><![CDATA[<%=@user.name %>]]></Description>
             <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/<%=wx_img(item)%>]]></PicUrl>
             <Url><![CDATA[http://<%=SITE_DOMAIN%>/users/<%=@user.id%>]]></Url>
