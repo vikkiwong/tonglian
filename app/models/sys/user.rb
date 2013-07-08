@@ -95,6 +95,23 @@ class Sys::User < ActiveRecord::Base
     return users
   end
 
+  #确定单个用户微信图文消息参数
+  #======Return ======
+  #item  Array  [用户参数个数,[用户参数]]
+  #liguanzuo
+  #2013-07-08
+  def item_info
+    num = 1
+    items = []
+    ["email","mobile","phone"].each do |item|
+      if self.send(item).present?
+        num += 1
+        items << item
+      end
+    end
+    [num,items]
+  end
+
   # 登录前检查用户是否存在，及是否允许访问
   # 
   # ping.wang 2013.07.05

@@ -17,19 +17,16 @@ class SessionsController < ApplicationController
   end
 
   def verification
-        p "session_id: #{session[:id]}"
-        user = Sys::User.find_by_weixin_id(params[:from_user])
-        if user.present?
-          redirect_to("/sessions/success")
-        else
-          @from_user = params[:from_user]
-       end
+      p "session_id: #{session[:id]}"
+      user = Sys::User.find_by_weixin_id(params[:from_user])
+      if user.present?
+        redirect_to("/sessions/success")
+      else
+        @from_user = params[:from_user]
+      end
     end
 
     def verify
-      #verification = Rails.env == "production" ? User.sign_up(params[:email], params[:password]) : true   # 邮箱验证,若是develop环境则不验证
-
-      #if verification
         user = Sys::User.check_user(params[:email],params[:password])
         if user.present?
           registered_user = Sys::User.find_by_weixin_id(params[:FromUser])
@@ -42,9 +39,6 @@ class SessionsController < ApplicationController
         else
           redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，该邮箱没有绑定权限!")
         end
-      #else
-      #  redirect_to("/verification?from_user=#{params[:FromUser]}", :notice => "邮箱验证失败")
-      #end
     end
 
     def success
