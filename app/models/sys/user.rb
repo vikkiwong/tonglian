@@ -3,6 +3,9 @@ class Sys::User < ActiveRecord::Base
   attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+  before_save :name_to_pinyin
+
+  scope :actived, :conditions => ["sys_users.active = ? or sys_users.active is NULL", true]
 
   ROLES = [
     ["普通用户", "member"],
@@ -14,6 +17,15 @@ class Sys::User < ActiveRecord::Base
   def role_str
     str = ROLES.find{ |i| i.last == self.role }
     str.present? ? str.first : ""
+  end
+
+  # after_save回调方法，将中文名字转为拼音,
+  # 注意保存时不能用.save方法，否则会反复回调
+  # 
+  # ping.wang 2013.07.08
+  def name_to_pinyin
+    pinyin = PinYin.permlink(self.name)
+    self.update_column(:pinyin, pinyin)   # to skip callbacks
   end
 
   # 批量导入用户

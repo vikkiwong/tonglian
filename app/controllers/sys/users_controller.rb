@@ -5,7 +5,7 @@ class Sys::UsersController < ApplicationController
   # GET /sys/users
   # GET /sys/users.json
   def index
-    @sys_users = Sys::User.all
+    @sys_users = Sys::User.actived.paginate :page => params[:page]
   end
 
   # GET /sys/users/1
@@ -73,6 +73,7 @@ class Sys::UsersController < ApplicationController
   # 
   # ping.wang 2013.07.05 
   def destroy
+    p "-----"
     @sys_user = Sys::User.find(params[:id])
     @sys_user.update_attributes(:active => false)
     redirect_to sys_users_url
