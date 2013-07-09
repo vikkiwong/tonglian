@@ -10,10 +10,6 @@
       <label>姓名</label>
 			<%= f.text_field(:name)%>
     </div>
-    <div>
-      <label>角色</label>
-			<%= f.select(:role, Sys::User::ROLES, {})%>
-    </div>
     <div >
       <a class="btn" href="/sys/users">取消</a>
       <button type="submit" class="btn" >保存</button>
