@@ -3,25 +3,22 @@
 <%= link_to '批量添加用户', bunch_new_sys_users_path %>
 <table class="table table-striped">
   <tr>
-    <th>ID</th>
-    <th>邮箱</th>
     <th>姓名</th>
+    <th>邮箱</th>
     <th>手机</th>
     <th>座机</th>
     <th>QQ</th>
-    <th>角色</th>
     <th>操作</th>
   </tr>
 
 <% @sys_users.each do |sys_user| %>
+  <% next if sys_user.email == "admin@email.com" %>
   <tr>
-    <td><%= sys_user.id %></td>
-    <td><%= sys_user.email %></td>
     <td><%= sys_user.name %></td>
+    <td><%= sys_user.email %></td>
     <td><%= sys_user.mobile %></td>
     <td><%= sys_user.phone %></td>
     <td><%= sys_user.qq %></td>
-    <td><%= sys_user.role_str %></td>
     <td>
       <%= link_to '修改', edit_sys_user_path(sys_user) %>
       <%= link_to '删除', sys_user, method: :delete, data: { confirm: '确定删除?' } %>

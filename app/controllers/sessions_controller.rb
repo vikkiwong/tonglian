@@ -1,19 +1,32 @@
 #encoding: utf-8
 class SessionsController < ApplicationController
+  skip_before_filter :login_check
+  
   # 登陆方法
+  #
   # ping.wang 2013.07.05
   def create
-    @user = Sys::User.check_user(params[:email],params[:password])   # 检查数据库是否有该用户
-    if @user.present? 
+    @user = Sys::User.check_user(params[:email])   # 检查数据库是否有该用户，且该用户是否有登陆权限
+    redirect_to("/login", :notice => "抱歉，该邮箱没有权限！") and return unless @user.present?
+
+    if @user.password.present? && @user.password == params[:password]
       set_session  # 设置session
       # 跳转到登陆前访问的页面
       back_path = session[:back_path]
       back_path = "/" if back_path.blank? || back_path =~ /login/
       session[:back_path] = nil
-      redirect_to(back_path)   # 如果有，跳转到登陆前访问的url
+      redirect_to(back_path)      
     else
-      redirect_to("/login", :notice => "抱歉，该邮箱未注册~")
+      redirect_to("/login", :notice => "抱歉，密码不正确！")
     end
+  end
+
+  # 退出方法,清空session
+  # 
+  # ping.wang 2013.07.09
+  def destroy
+    reset_session
+    redirect_to("/login")
   end
 
   def verification

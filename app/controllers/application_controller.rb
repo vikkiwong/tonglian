@@ -1,7 +1,7 @@
 # encoding: utf-8
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  #before_filter :login_check
+  before_filter :login_check
 
   def login_check
     if session[:id].blank?
@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   # 2012-07-11
   def current_ability
     begin
-      @current_user = @current_user || User.find(session[:id])
+      @current_user = @current_user || Sys::User.find(session[:id])
       @current_ability ||= Ability.new(@current_user)
     rescue
       redirect_to("/login") and return

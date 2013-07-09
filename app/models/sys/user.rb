@@ -108,12 +108,12 @@ class Sys::User < ActiveRecord::Base
     [num,items]
   end
 
-  # 登录前检查用户是否存在，及是否允许访问
+  # 登录前检查用户是否存在，及是否允许登陆
   # 
   # ping.wang 2013.07.05
-  def self.check_user(email, password)
+  def self.check_user(email)
     return nil if !email
     user = where(:email => email).first
-    (user.present? && user.allow_access) ? user : nil
+    (user.present? && user.allow_access && user.role == "manager") ? user : nil
   end
 end
