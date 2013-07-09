@@ -63,7 +63,7 @@ class Sys::User < ActiveRecord::Base
 
   # 按中文姓名或拼音或邮箱查找用户
   # ================
-  # 参数： string
+  # 参数:(查询词)string
   # 
   # ping.wang 2013.07.05
   def self.find_user(str)

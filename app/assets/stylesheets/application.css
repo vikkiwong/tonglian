@@ -12,10 +12,13 @@
  *= require_tree .
  */
 
- .control-group .controls {
+/*.control-group .controls {
     margin-left: 200px;
 }
 .btns{
     margin-left: 305px;
 }
+*/
+
+body { background-image: url('../assets/theme_bgs/twttr-13.gif'); }
 
