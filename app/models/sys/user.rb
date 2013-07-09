@@ -1,28 +1,26 @@
 # encoding: utf-8
 class Sys::User < ActiveRecord::Base
   cattr_accessor :skip_callbacks
-  attr_accessible :active, :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
+  attr_accessible :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
                   :f_letters, :pinyin, :skip_callbacks
 
-  validate :email_uniqued? # 关联email,active，验证邮箱惟一
+  validates_uniqueness_of :email, :message => "此邮箱已存在！"
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
   after_save :name_to_pinyin, :unless => :skip_callbacks
-
-  scope :actived, :conditions => ["sys_users.active = ? or sys_users.active is NULL", true]
 
   ROLES = [
     ["普通用户", "member"],
     ["管理员", "manager"]
   ]
 
-  # validate方法，关联email,active，验证邮箱惟一
-  # 
-  # ping.wang 2013.07.08
-  def email_uniqued?
-    user =  Sys::User.find_by_email_and_active(self.email, true)
-    errors.add(:email, "此邮箱已存在！") unless user.id == self.id
-  end
+  # # validate方法，关联email,active，验证邮箱惟一
+  # # 
+  # # ping.wang 2013.07.08
+  # def email_uniqued?
+  #   user =  Sys::User.find_by_email_and_active(self.email, true)
+  #   errors.add(:email, "此邮箱已存在！") unless user.present? && user.id == self.id 
+  # end
 
   # 显示用户角色中文名
   # ping.wang 2013.07.05
