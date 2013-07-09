@@ -71,23 +71,23 @@ class Sys::User < ActiveRecord::Base
     return [] unless str.present?
 
     if /[\d._@]/.match(str).present?   # 若包含数字或._, 按照email查找
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.email LIKE ? ", true, "%#{str}%"], :limit => 10) 
-    elsif /^[A-Za-z]+$/.match(str).present?  # 按拼音和email查找
+      users = Sys::User.find(:all, :conditions => ["sys_users.email LIKE ? ", "%#{str}%"], :limit => 10) 
+    elsif /^[A-Za-z]+$/.match(str).present?  # 分优先级，按拼音和email查找
       # 先按拼音查找
       # 按首字母
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.f_letters = ? ", true, "#{str}"], :limit => 10)
+      users = Sys::User.find(:all, :conditions => ["sys_users.f_letters = ? ", "#{str}"], :limit => 10)
       # 按姓
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.family_name = ? ", true, "#{str}"], :limit => 10) unless users.present?
+      users = Sys::User.find(:all, :conditions => ["sys_users.family_name = ? ", "#{str}"], :limit => 10) unless users.present?
       # 匹配全拼,连续
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.pinyin LIKE ? ", true, "%#{str}%"], :limit => 10) unless users.present?
+      users = Sys::User.find(:all, :conditions => ["sys_users.pinyin LIKE ? ", "%#{str}%"], :limit => 10) unless users.present?
       # 匹配全拼,断续
       regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.pinyin REGEXP ? ", true, regrep_str], :limit => 10) unless users.present?
+      users = Sys::User.find(:all, :conditions => ["sys_users.pinyin REGEXP ? ", regrep_str], :limit => 10) unless users.present?
       # 按邮箱查找
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.email LIKE ? ", true, "%#{str}%"], :limit => 10) unless users.present?
+      users = Sys::User.find(:all, :conditions => ["and sys_users.email LIKE ? ", "%#{str}%"], :limit => 10) unless users.present?
     else  # 按name查找
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.name LIKE ? ", true, "#{str}%"], :limit => 10)   # 按姓查找
-      users = Sys::User.find(:all, :conditions => ["sys_users.active = ? and sys_users.name LIKE ? ", true, "%#{str}%"], :limit => 10) unless users.present?   # 若无该姓，按名查找 
+      users = Sys::User.find(:all, :conditions => ["sys_users.name LIKE ? ", "#{str}%"], :limit => 10)   # 按姓查找
+      users = Sys::User.find(:all, :conditions => ["sys_users.name LIKE ? ", "%#{str}%"], :limit => 10) unless users.present?   # 若无该姓，按名查找 
     end
     return users
   end

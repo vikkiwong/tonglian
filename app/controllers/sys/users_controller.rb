@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]
-  #before_filter :if_manager, :only => [:index, :new, :bunch_new, :bunch_create, :create, :destroy]
+  before_filter :if_manager, :only => [:index, :new, :bunch_new, :bunch_create, :create, :destroy]
   before_filter :if_can_manage, :only => [:edit, :update]
 
   # GET /sys/users
