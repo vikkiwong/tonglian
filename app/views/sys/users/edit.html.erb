@@ -4,7 +4,11 @@
   <%= form_for(@sys_user) do |f| %>
     <div>
       <label>邮箱</label>
-      <%= f.text_field(:email)%>
+      <% if is_manager? %>
+        <%= f.text_field(:email)%>
+      <% else %>
+        <%= @sys_user.email %>
+      <% end %>
     </div>
     <div>
       <label>姓名</label>

@@ -22,4 +22,8 @@ module ApplicationHelper
         "tel-icon.jpg"
     end
   end
+
+  def is_manager?
+    session[:role] == "manager" ? true : false
+  end
 end

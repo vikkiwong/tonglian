@@ -4,23 +4,18 @@ class ApplicationController < ActionController::Base
   before_filter :login_check
 
   def login_check
-    if session[:id].blank?
+    if session[:id].blank? || session[:role].blank?
       session[:back_path] = request.fullpath
       redirect_to("/login", :notice => '您没有登录，请登录!') and return
     end
   end
 
-  private
-  #cancan插件初始化用户权限方法
+  # before_filter方法，检查用户是否是管理员
   #
-  # zhanghong
-  # 2012-07-11
-  def current_ability
-    begin
-      @current_user = @current_user || Sys::User.find(session[:id])
-      @current_ability ||= Ability.new(@current_user)
-    rescue
-      redirect_to("/login") and return
+  # ping.wang 2013.07.09
+  def if_manager
+    unless session[:role] == "manager"
+      redirect_to("/login", :notice => '您没有权限进行此操作！') and return
     end
   end
 end
