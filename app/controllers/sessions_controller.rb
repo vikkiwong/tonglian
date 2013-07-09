@@ -33,49 +33,62 @@ class SessionsController < ApplicationController
       p "session_id: #{session[:id]}"
       user = Sys::User.find_by_weixin_id(params[:from_user])
       if user.present?
-        redirect_to("/sessions/success")
+        redirect_to("/sessions/success?message=verified")
       else
         @from_user = params[:from_user]
       end
     end
 
-    def verify
-        user = Sys::User.check_user(params[:email],params[:password])
-        if user.present?
-          registered_user = Sys::User.find_by_weixin_id(params[:FromUser])
-          if registered_user.present?
-            redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，此微信号已被绑定!")
+  def verify
+    if /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i.match(params[:email]).present?
+      user = Sys::User.check_user(params[:email])
+      if user.present?
+        registered_user = Sys::User.find_by_weixin_id(params[:FromUser])
+        if registered_user.present?
+          redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，此微信号已被绑定!")
+        else
+          if user.weixin_id.present?
+            redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，此邮箱已被绑定!")
           else
-           Notifier.send_verify_mail(params[:email],params[:FromUser]) if params[:FromUser].present?
-           redirect_to success_sessions_path
+            Notifier.send_verify_mail(params[:email],params[:FromUser]) if params[:FromUser].present?
+            redirect_to success_sessions_path(:message => "send_mail")
           end
-        else
-          redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，该邮箱没有绑定权限!")
         end
+      else
+        redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，该邮箱没有绑定权限!")
+      end
+    else
+      redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "邮箱格式不正确!")
     end
+  end
 
-    def success
-        render :text => "success"
+  def success
+    case params[:message]
+      when "send_mail"
+        @success_message = "已发送验证邮件"
+      when "verified"
+        @success_message = "成功绑定微信号，进入微信体验通联吧！"
     end
+    render :text => @success_message
+  end
 
-    #接收验证邮件里的链接
-    def mail_verify
-        source = Base64.decode64(params[:code])
-        if source.present?
-          source_arr = source.split("&")
-          email = source_arr[0]
-          weixin_id = source_arr[1]
-          user = Sys::User.check_user(email,params[:password])
-          user.weixin_id = weixin_id
-          user.save
-          %w(id email name role).each {|i| session[i.to_sym] = user[i] if user[i].present? }
-          session[:expires_at] = 30.days.from_now
-          redirect_to("/sessions/success")
-        else
-          render :text => "fail"
-        end
-    end
-
+  #接收验证邮件里的链接
+  def mail_verify
+    source = Base64.decode64(params[:code])
+      if source.present?
+        source_arr = source.split("&")
+        email = source_arr[0]
+        weixin_id = source_arr[1]
+        user = Sys::User.check_user(email)
+        user.weixin_id = weixin_id
+        user.save
+        %w(id email name role).each {|i| session[i.to_sym] = user[i] if user[i].present? }
+        session[:expires_at] = 30.days.from_now
+        redirect_to("/sessions/success?message=verified")
+      else
+        render :text => "fail"
+      end
+  end
     protected
     def set_session
       %w(id email name role).each {|i| session[i.to_sym] = @user[i] if @user[i].present? }

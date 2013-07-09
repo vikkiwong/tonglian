@@ -17,6 +17,7 @@ class Sys::UsersController < ApplicationController
   # GET /sys/users/1
   # GET /sys/users/1.json
   def show
+    flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
   end
 
   # GET /sys/users/new
@@ -58,7 +59,7 @@ class Sys::UsersController < ApplicationController
     if @sys_user.save
       redirect_to @sys_user
     else 
-      flash[:notice] = @sys_user.errors.collect{|m| @sys_user.errors[m].last}.join(" ") if @sys_user.errors.any?
+      flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
       render action: "new"
     end
   end
@@ -69,7 +70,7 @@ class Sys::UsersController < ApplicationController
     if @sys_user.update_attributes(params[:sys_user])
       redirect_to @sys_user
     else
-      flash[:notice] = @sys_user.errors.collect{|m| @sys_user.errors[m].last}.join(" ") if @sys_user.errors.any?
+      flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
       render action: "edit" 
     end
   end
