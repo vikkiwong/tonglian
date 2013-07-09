@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
-  before_filter :find_user, :only => [:show, :edit, :update]
+  before_filter :find_user, :only => [:show, :edit, :update, :destroy]
 
   # GET /sys/users
   # GET /sys/users.json
@@ -26,8 +26,6 @@ class Sys::UsersController < ApplicationController
   # ==== 参数格式 ====
   # 邮箱1，姓名1
   # 邮箱2，姓名2
-  # ==== Return ====
-  # true or false
   # 
   # ping.wang 2013.07.08 修改
   def bunch_create
@@ -57,8 +55,6 @@ class Sys::UsersController < ApplicationController
   # PUT /sys/users/1
   # PUT /sys/users/1.json
   def update
-    @sys_user = Sys::User.find(params[:id])
-
     if @sys_user.update_attributes(params[:sys_user])
       redirect_to @sys_user
     else
@@ -73,7 +69,6 @@ class Sys::UsersController < ApplicationController
   # 
   # ping.wang 2013.07.05 
   def destroy
-    @sys_user = Sys::User.find(params[:id])
     @sys_user.destroy
     redirect_to sys_users_url
   end
