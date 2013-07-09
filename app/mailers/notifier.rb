@@ -14,9 +14,11 @@ class Notifier < ActionMailer::Base
     :from => "#{EMAIL_CONFIG["notice_sender"]["name"]} <#{EMAIL_CONFIG["notice_sender"]["email"]}>"
   )
   def send_verify_mail(email,weixin_id)
-     @email = email
-     @weixin_id = weixin_id
-     mail(:to => email, :subject => "绑定验证").deliver!
+    user = Sys::User.where(:email => email).first
+    @name = user.name
+    code_str = email + "&" + weixin_id #email,weixin_id必存在
+    @code = Base64.encode64('code_str')
+    mail(:to => email, :subject => "绑定验证").deliver!
   end
   def send_mail(params = {})
     @mail_body = params[:mail_body]

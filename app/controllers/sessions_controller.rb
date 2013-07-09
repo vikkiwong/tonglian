@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
           if registered_user.present?
             redirect_to("/sessions/verification?from_user=#{params[:FromUser]}", :notice => "抱歉，此微信号已被绑定!")
           else
-           Notifier.send_verify_mail(params[:email],params[:FromUser])
+           Notifier.send_verify_mail(params[:email],params[:FromUser]) if params[:FromUser].present?
            redirect_to success_sessions_path
           end
         else
@@ -47,12 +47,20 @@ class SessionsController < ApplicationController
 
     #接收验证邮件里的链接
     def mail_verify
-        user = Sys::User.check_user(params[:email],params[:password])
-        user.weixin_id = params[:weixin_id]
-        user.save
-        %w(id email name role).each {|i| session[i.to_sym] = user[i] if user[i].present? }
-        session[:expires_at] = 30.days.from_now
-        redirect_to("/sessions/success")
+        source = Base64.decode64(params[:code])
+        if source.present?
+          source_arr = source.split("&")
+          email = source_arr[0]
+          weixin_id = source_arr[1]
+          user = Sys::User.check_user(email,params[:password])
+          user.weixin_id = weixin_id
+          user.save
+          %w(id email name role).each {|i| session[i.to_sym] = user[i] if user[i].present? }
+          session[:expires_at] = 30.days.from_now
+          redirect_to("/sessions/success")
+        else
+          render :text => "fail"
+        end
     end
 
     protected
