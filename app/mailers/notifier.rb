@@ -17,7 +17,7 @@ class Notifier < ActionMailer::Base
     user = Sys::User.where(:email => email).first
     @name = user.name
     code_str = email + "&" + weixin_id #email,weixin_id必存在
-    @code = Base64.encode64('code_str')
+    @code = Base64.encode64(code_str)
     mail(:to => email, :subject => "绑定验证").deliver!
   end
   def send_mail(params = {})
