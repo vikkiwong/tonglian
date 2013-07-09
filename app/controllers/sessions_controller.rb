@@ -50,10 +50,10 @@ class SessionsController < ApplicationController
         source = Base64.decode64(params[:code])
         if source.present?
           source_arr = source.split("&")
-          email = source_arr[0]
-          weixin_id = source_arr[1]
-          user = Sys::User.check_user(email,params[:password])
-          user.weixin_id = weixin_id
+          source_email = source_arr[0]
+          source_weixin_id = source_arr[1]
+          user = Sys::User.check_user(source_email,params[:password])
+          user.weixin_id = source_weixin_id
           user.save
           %w(id email name role).each {|i| session[i.to_sym] = user[i] if user[i].present? }
           session[:expires_at] = 30.days.from_now

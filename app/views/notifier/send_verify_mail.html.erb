@@ -1,4 +1,4 @@
 <p><%= @name + "，" if @name.present? %>您好：</p>
 <p>点击以下链接完成邮箱验证，就可以在微信上使用通联啦：</p>
-<p><%= link_to({:host => SITE_DOMAIN,:controller => "sessions",:action => "mail_verify",:code => @code},{:host => SITE_DOMAIN,:controller => "sessions",:action => "mail_verify",:code => @code})%></p>
+<p><%= link_to(mail_verify_sessions_url({:host => SITE_DOMAIN,:code => @code}),{:host => SITE_DOMAIN,:controller => "sessions",:action => "mail_verify",:code => @code})%></p>
 <p>如无法点击，请将链接拷贝到浏览器地址栏中直接访问。</p>
