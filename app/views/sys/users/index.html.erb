@@ -6,6 +6,9 @@
     <th>ID</th>
     <th>邮箱</th>
     <th>姓名</th>
+    <th>手机</th>
+    <th>座机</th>
+    <th>QQ</th>
     <th>角色</th>
     <th>操作</th>
   </tr>
@@ -15,6 +18,9 @@
     <td><%= sys_user.id %></td>
     <td><%= sys_user.email %></td>
     <td><%= sys_user.name %></td>
+    <td><%= sys_user.mobile %></td>
+    <td><%= sys_user.phone %></td>
+    <td><%= sys_user.qq %></td>
     <td><%= sys_user.role_str %></td>
     <td>
       <%= link_to '修改', edit_sys_user_path(sys_user) %>

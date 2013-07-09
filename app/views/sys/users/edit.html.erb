@@ -11,6 +11,18 @@
 			<%= f.text_field(:name)%>
     </div>
     <div>
+      <label>手机</label>
+      <%= f.text_field(:mobile)%>
+    </div>
+    <div>
+      <label>座机</label>
+      <%= f.text_field(:phone)%>
+    </div>
+    <div>
+      <label>QQ</label>
+      <%= f.text_field(:qq)%>
+    </div>
+    <div>
       <label>角色</label>
 			<%= f.select(:role, Sys::User::ROLES, {})%>
     </div>
