@@ -37,7 +37,7 @@
     </div>
 
     <div >
-      <a class="btn" href="/sys/users">取消</a>
+      <%= link_to "取消", sys_user_path(@sys_user), :class => "btn"%>
       <button type="submit" class="btn" >保存</button>
     </div>
   <% end %>
