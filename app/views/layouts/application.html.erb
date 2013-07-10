@@ -9,14 +9,9 @@
 </head>
 <body>
 	<!-- 导航栏 -->
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar navbar-inverse navbar-fixed-top  hidden-phone">
     <div class="navbar-inner">
-      <div class="container">
-        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
+      <div class="container hidden-phone">
         <a class="brand" href="/">微信通联</a>
         <div class="nav-collapse collapse">
           <ul class="nav">
@@ -28,6 +23,14 @@
             </li>
           </ul>
         </div>
+      </div>
+    </div>
+  </div>
+
+	<div class="navbar navbar-inverse navbar-fixed-top  visible-phone">
+    <div class="navbar-inner">
+      <div class="container">
+      	<p class="brand" style="margin-left:20px;">微信通联</p>
       </div>
     </div>
   </div>
