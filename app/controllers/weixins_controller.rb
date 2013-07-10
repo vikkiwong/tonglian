@@ -1,5 +1,7 @@
 # encoding: utf-8
 class WeixinsController < ApplicationController
+  skip_before_filter :login_check
+
   def index
     render :text => params[:echostr]
   end
@@ -27,7 +29,6 @@ class WeixinsController < ApplicationController
 
 
   private
-
   def check_weixin_legality
     array = [WX_TAKEN, params[:timestamp], params[:nonce]].sort
     render :text => "Forbidden", :status => 403 if params[:signature] != Digest::SHA1.hexdigest(array.join)
@@ -124,6 +125,4 @@ class WeixinsController < ApplicationController
       end
     end
   end
-
-
 end
