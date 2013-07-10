@@ -6,7 +6,8 @@ class Sys::User < ActiveRecord::Base
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :message => "邮箱格式不正确！"
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
-
+  validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！"
+  validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！"
 
   after_save :name_to_pinyin, :unless => :skip_callbacks
 
@@ -30,12 +31,12 @@ class Sys::User < ActiveRecord::Base
     str.present? ? str.first : ""
   end
 
-  # 用于显示座机号 如022-58590502
-  # 
-  # ping.wang 2013.07.10
-  def phone_str
-    self.phone.present? && self.phone.length > 8 ? self.phone.insert(-9, '-') : self.phone
-  end
+  # # 用于显示座机号 如022-58590502
+  # # 
+  # # ping.wang 2013.07.10
+  # def phone_str
+  #   self.phone.present? && self.phone.length > 8 ? self.phone.insert(-9, '-') : self.phone
+  # end
 
   # after_save回调方法，将中文名字转为拼音,
   # 注意保存需要skip回调
