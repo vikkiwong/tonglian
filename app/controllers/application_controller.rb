@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   before_filter :login_check
 
   def login_check
+    p params
+    p "*"*30
     if session[:id].blank? || session[:role].blank?
       session[:back_path] = request.fullpath
       redirect_to("/login", :notice => '您没有登录，请登录!') and return
