@@ -13,3 +13,23 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+// 设置当前页面对应的导航栏高亮
+function settingMenuClass(){
+		var act_name = $("label#current_action_name").html();
+	  var ctrl_name = $("label#current_controller_name").html();
+	  var li_id = "";
+	  if(ctrl_name == "sys/users" && act_name == "bunch_new"){
+	    li_id = "bunch_new";
+	  }else if(ctrl_name == "sys/users" && act_name == "index"){
+	    li_id = "users";
+	  }else{
+	    li_id = "none";
+	  };
+	  $("li#"+li_id).addClass("active");
+	  $("li#"+li_id).siblings().removeClass("active");
+};
+
+$(document).ready(function() {
+	settingMenuClass();
+});

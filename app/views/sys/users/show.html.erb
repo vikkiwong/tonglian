@@ -1,9 +1,9 @@
-<p id="notice"><%= notice %></p>
+<% content_for :head do %>
+  用户信息-微信通联
+<% end %>
 
-<p>
-  <b>ID:</b>
-  <%= @sys_user.id %>
-</p>
+<h2 style="margin-bottom:30px;">用户信息</h2>
+
 
 <p>
   <b>邮箱:</b>
@@ -13,6 +13,21 @@
 <p>
   <b>姓名:</b>
   <%= @sys_user.name %>
+</p>
+
+<p>
+  <b>手机:</b>
+  <%= @sys_user.mobile %>
+</p>
+
+<p>
+  <b>座机:</b>
+  <%= @sys_user.phone %>
+</p>
+
+<p>
+  <b>QQ:</b>
+  <%= @sys_user.qq %>
 </p>
 
 

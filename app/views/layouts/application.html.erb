@@ -1,14 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tonglian</title>
+  <title><%= yield(:head)||"微信通联" %></title>
   <meta name="viewport" id="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1"/>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-	<%= flash[:notice] if flash[:notice].present? %>
-  <%= yield %>
+	<!-- 导航栏 -->
+	<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="/">微信通联</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li id="users">
+              <a href="/sys/users">用户列表</a>
+            </li>
+            <li id="bunch_new">
+              <a href="/sys/users/bunch_new">导入用户</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-body" style="padding: 70px 0 80px; margin-bottom: 0; position: relative; ">
+  	<div class="container">
+  		<!-- 错误提示信息 -->
+  		<div class="text-warning"><%= flash[:notice] if flash[:notice].present? %></div>
+  		<!-- 页面主体 -->
+  		<%= yield %>
+  	</div>
+  </div>
+  
+  <label style="display: none;" id="current_controller_name"><%= params[:controller] %></label>
+  <label style="display: none;" id="current_action_name"><%= params[:action] %></label>
 </body>
 </html>

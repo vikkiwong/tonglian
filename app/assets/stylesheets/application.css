@@ -20,5 +20,6 @@
 }
 */
 
-body { background-image: url('../assets/theme_bgs/twttr-13.gif'); }
-
+body { /*background-image: url('../assets/theme_bgs/twttr-13.gif');*/ /*background-color: #F9F9F9;*/}
+.navbar-fixed-top .navbar-inner .container {/* width: 1170px;*/ }
+.main-body .container { /*width: 1170px;*/ /*background-color: white;*/}

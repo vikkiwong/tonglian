@@ -1,14 +1,13 @@
-<h2>添加用户</h2>
+<% content_for :head do %>
+  导入用户-微信通联
+<% end %>
+
+<h2 style="margin-bottom:30px;">导入用户</h2>
 <%= form_tag(bunch_create_sys_users_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
-  <textarea rows="7" name="bunch_users" style="width: 550px;"></textarea>
+  <textarea name="bunch_users" style="width: 800px;height:300px;" placeholder="example1@email.com,姓名1                   
+                                                                                                      example2@email.com,姓名2
+                                                                                                                                                     ……"></textarea>
   <div>
   	<button type="submit" class="btn" >提交</button>
   </div>
 <%- end -%>
-
-<div class="muted">
-	<p>上传格式：</p>
-	<p>example1@email.com,姓名1</p>
-  <p>example2@email.com,姓名2</p>
-  <p>……</p>
-</div>

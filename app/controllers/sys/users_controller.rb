@@ -42,7 +42,7 @@ class Sys::UsersController < ApplicationController
   def bunch_create
     bunch_users = params[:bunch_users]
     wrong_line = Sys::User.import_bunch_users(bunch_users)
-    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的记录创建出错了, 请检查！" if wrong_line.present?
+    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
     redirect_to sys_users_url
   end
 

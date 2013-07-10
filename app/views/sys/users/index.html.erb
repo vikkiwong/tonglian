@@ -1,10 +1,13 @@
-<h1>用户列表</h1>
-<%= link_to '添加用户', new_sys_user_path %>
-<%= link_to '批量添加用户', bunch_new_sys_users_path %>
-<table class="table table-striped">
+<% content_for :head do %>
+  用户列表-微信通联
+<% end %>
+
+<h2 style="margin-bottom:30px;">用户列表</h2>
+<%#= link_to '添加用户', new_sys_user_path %>
+<table class="table table-borded table-hover">
   <tr>
-    <th>姓名</th>
     <th>邮箱</th>
+    <th>姓名</th>
     <th>手机</th>
     <th>座机</th>
     <th>QQ</th>
@@ -14,8 +17,8 @@
 <% @sys_users.each do |sys_user| %>
   <% next if sys_user.email == "admin@email.com" %>
   <tr>
-    <td><%= sys_user.name %></td>
     <td><%= sys_user.email %></td>
+    <td><%= sys_user.name %></td>
     <td><%= sys_user.mobile %></td>
     <td><%= sys_user.phone %></td>
     <td><%= sys_user.qq %></td>

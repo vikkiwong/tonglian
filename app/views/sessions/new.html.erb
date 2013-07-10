@@ -1,7 +1,17 @@
+<% content_for :head do %>
+  修改信息-微信通联
+<% end %>
+
 <form action="/sessions" method="post">
-  <label>用户名</label>
-  <input type="email" name="email">
-  <label>密码</label>
-  <input type="password" name="password">
-  <button type="submit" class="btn">登陆</button>
+	<div>
+	  <label>用户名</label>
+	  <input type="email" name="email">
+	</div>
+	<div>
+	  <label>密码</label>
+	  <input type="password" name="password">
+	</div>
+  <div>
+  	<button type="submit" class="btn">登陆</button>
+  </div>
 </form>
