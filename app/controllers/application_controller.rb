@@ -5,9 +5,10 @@ class ApplicationController < ActionController::Base
 
   def login_check
     if session[:id].blank? || session[:role].blank? 
-      if params[:FromUser].present?   # 若是带有微信id的请求链接
-        @user = Sys::User.find_by_weixin_id(params[:FromUser])
-        set_session        
+      if params[:FromUserName].present?   # 若是带有微信id的请求链接
+        @user = Sys::User.find_by_weixin_id(params[:FromUserName])
+        redirect_to("/login", :notice => '您没有登录，请登录!') and return unless @user.present?
+        set_session       
       else
         session[:back_path] = request.fullpath
         redirect_to("/login", :notice => '您没有登录，请登录!') and return
