@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   def login_check
     Rails.logger.debug "*"*30
     Rails.logger.debug params
+    Rails.logger.fatal params
+    Rails.logger.info params
     if session[:id].blank? || session[:role].blank?
       session[:back_path] = request.fullpath
       redirect_to("/login", :notice => '您没有登录，请登录!') and return
