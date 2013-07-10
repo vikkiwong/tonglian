@@ -6,8 +6,8 @@ class Sys::User < ActiveRecord::Base
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :message => "邮箱格式不正确！"
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
-  validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！"
-  validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！"
+  validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！", :allow_blank => true
+  validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！", :allow_blank => true
 
   after_save :name_to_pinyin, :unless => :skip_callbacks
 
