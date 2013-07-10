@@ -8,31 +8,40 @@
 
 <h2 class="hidden-phone">用户信息</h2>
 
-<p>
-  <b>邮箱:</b>
-  <%= @sys_user.email %>
-</p>
+<dl class="dl-horizontal dl-tlian">
+  <p>
+    <dt>邮箱:</dt>
+    <dd ><a href="mailto: <%= @sys_user.email %>"><%= @sys_user.email %></a></dd>
+  </p>
 
-<p>
-  <b>姓名:</b>
-  <%= @sys_user.name %>
-</p>
+  <% if @sys_user.name.present? %>
+    <p>
+      <dt>姓名:</dt>
+      <dd><%= @sys_user.name %></dd>
+    </p>
+  <% end %>
 
-<p>
-  <b>手机:</b>
-  <%= @sys_user.mobile %>
-</p>
+  <% if @sys_user.mobile.present? %>
+    <p>
+      <dt>手机:</dt>
+      <dd><a href="tel: <%= @sys_user.mobile %>"><%= @sys_user.mobile %></a></dd>
+    </p>
+  <% end %>
 
-<p>
-  <b>座机:</b>
-  <%= @sys_user.phone %>
-</p>
+  <% if @sys_user.phone.present? %>
+    <p>
+      <dt>座机:</dt>
+      <dd><a href="tel: <%= @sys_user.phone %>"><%= @sys_user.phone %></a></dd>
+    </p>
+  <% end %>
 
-<p>
-  <b>QQ:</b>
-  <%= @sys_user.qq %>
-</p>
-
+  <% if @sys_user.qq.present? %>
+    <p>
+      <dt>Q Q:</dt>
+      <dd><%= @sys_user.qq %></dd>
+    </p>
+  <% end %>
+</dl>
 
 <div class="hidden-phone">
   <%= link_to '编辑', edit_sys_user_path(@sys_user) %> |

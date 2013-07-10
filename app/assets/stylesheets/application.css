@@ -18,3 +18,6 @@ body { /*background-image: url('../assets/theme_bgs/twttr-13.gif');*/}
 .main-body { padding: 70px 0 80px; margin-bottom: 0; position: relative;  }
 .main-body .container h2 { margin-bottom: 30px; }
 .bunch_new_textarea { width: 800px;height:300px; }
+
+.dl-horizontal.dl-tlian dt{ width:40px; text-align:left; }
+.dl-horizontal.dl-tlian dd { margin-left: 50px; }
