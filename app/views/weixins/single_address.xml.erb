@@ -9,14 +9,14 @@
         <Title><![CDATA[<%= @users.first.name %>]]></Title>
         <Description><![CDATA[IhaveU]]></Description>
         <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/address_main_t.jpg]]></PicUrl>
-        <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@users.first.id%>]]></Url>
+        <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@users.first.id%>?from_user=<%= params[:xml][:FromUserName]]]></Url>
     </item>
     <% @users.first.item_info[1].each do |item| %>
         <item>
             <Title><![CDATA[<%= wx_str(item)%><%="\n"%><%-if item == "phone" %><%= @users.first.send(item)[0, 3] %>-<%= @users.first.send(item)[-8, 4]%> <%= @users.first.send(item)[-4, 4]%><% else %><%= @users.first.send(item)%><% end %><%-if item == "email" %><%end%>]]></Title>
             <Description><![CDATA[<%=@users.first.name %>]]></Description>
             <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/<%=wx_img(item)%>]]></PicUrl>
-            <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@users.first.id%>]]></Url>
+            <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@users.first.id%>?from_user=<%= params[:xml][:FromUserName]]]></Url>
         </item>
     <% end %>
     <%- if @users.first.id == @user.id %>
@@ -24,7 +24,7 @@
             <Title><![CDATA[更新联系方式]]></Title>
             <Description><![CDATA[<%=@users.first.name %>]]></Description>
             <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/assets/edit-icon.jpg]]></PicUrl>
-            <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@users.first.id%>/edit?from_user=<%= params[:xml][:FromUserName] %>]]]></Url>
+            <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@users.first.id%>/edit?from_user=<%= params[:xml][:FromUserName] %> ]]></Url>
         </item>
     <% end %>
     </Articles>

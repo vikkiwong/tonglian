@@ -4,13 +4,14 @@ class ApplicationController < ActionController::Base
   before_filter :login_check
 
   def login_check
-    Rails.logger.debug "*"*30
-    Rails.logger.debug params
-    Rails.logger.fatal params
-    Rails.logger.info params
-    if session[:id].blank? || session[:role].blank?
-      session[:back_path] = request.fullpath
-      redirect_to("/login", :notice => '您没有登录，请登录!') and return
+    if session[:id].blank? || session[:role].blank? 
+      if params[:FromUser].present?   # 若是带有微信id的请求链接
+        @user = Sys::User.find_by_weixin_id(params[:FromUser])
+        set_session        
+      else
+        session[:back_path] = request.fullpath
+        redirect_to("/login", :notice => '您没有登录，请登录!') and return
+      end
     end
   end
 
@@ -21,5 +22,11 @@ class ApplicationController < ActionController::Base
     unless session[:role] == "manager"
       redirect_to("/login", :notice => '您没有权限进行此操作！') and return
     end
+  end
+
+  protected
+  def set_session
+      %w(id email name role).each {|i| session[i.to_sym] = @user[i] if @user[i].present? }
+      session[:expires_at] = 1.month.from_now
   end
 end

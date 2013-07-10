@@ -4,6 +4,6 @@
     <FromUserName><![CDATA[<%= params[:xml][:ToUserName] %>]]></FromUserName>
     <CreateTime><%= Time.now.to_i %></CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[查找到多位用户，请点击姓名查看详细通联信息：<%="\n"%><% @users.each_with_index do |user,index| %><%= index + 1 %>: <a href="http://<%=SITE_DOMAIN%>/users/<%=user.id %>"><%=user.name %></a><%="\n"%><% end %>]]></Content>
+    <Content><![CDATA[查找到多位用户，请点击姓名查看详细通联信息：<%="\n"%><% @users.each_with_index do |user,index| %><%= index + 1 %>: <a href="http://<%=SITE_DOMAIN%>/users/<%=user.id %>?from_user=<%= params[:xml][:FromUserName] %>"><%=user.name %></a><%="\n"%><% end %>]]></Content>
     <FuncFlag>0</FuncFlag>
 </xml>

@@ -37,7 +37,7 @@ class SessionsController < ApplicationController
       else
         @from_user = params[:from_user]
       end
-    end
+  end
 
   def verify
     if /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i.match(params[:email]).present?
@@ -89,9 +89,10 @@ class SessionsController < ApplicationController
         render :text => "fail"
       end
   end
-    protected
-    def set_session
+  
+  protected
+  def set_session
       %w(id email name role).each {|i| session[i.to_sym] = @user[i] if @user[i].present? }
       session[:expires_at] = 1.month.from_now
-    end
   end
+end
