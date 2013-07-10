@@ -2,7 +2,7 @@
   用户列表-微信通联
 <% end %>
 
-<h2 style="margin-bottom:30px;">用户列表</h2>
+<h2>用户列表</h2>
 <%#= link_to '添加用户', new_sys_user_path %>
 <table class="table table-borded table-hover">
   <tr>
@@ -17,10 +17,12 @@
 <% @sys_users.each do |sys_user| %>
   <% next if sys_user.email == "admin@email.com" %>
   <tr>
-    <td><%= sys_user.email %></td>
+    <td>
+      <%= link_to sys_user.email, sys_user_path(sys_user) %>
+    </td>
     <td><%= sys_user.name %></td>
     <td><%= sys_user.mobile %></td>
-    <td><%= sys_user.phone %></td>
+    <td><%= sys_user.phone_str %></td>
     <td><%= sys_user.qq %></td>
     <td>
       <%= link_to '修改', edit_sys_user_path(sys_user) %>

@@ -30,6 +30,13 @@ class Sys::User < ActiveRecord::Base
     str.present? ? str.first : ""
   end
 
+  # 用于显示座机号 如022-58590502
+  # 
+  # ping.wang 2013.07.10
+  def phone_str
+    self.phone.present? && self.phone.length > 8 ? self.phone.insert(-9, '-') : self.phone
+  end
+
   # after_save回调方法，将中文名字转为拼音,
   # 注意保存需要skip回调
   # 

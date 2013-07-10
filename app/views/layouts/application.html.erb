@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <div class="main-body" style="padding: 70px 0 80px; margin-bottom: 0; position: relative; ">
+  <div class="main-body" style="">
   	<div class="container">
   		<!-- 错误提示信息 -->
   		<div class="text-warning"><%= flash[:notice] if flash[:notice].present? %></div>
@@ -41,7 +41,7 @@
   	</div>
   </div>
   
-  <label style="display: none;" id="current_controller_name"><%= params[:controller] %></label>
-  <label style="display: none;" id="current_action_name"><%= params[:action] %></label>
+  <label class="hide" id="current_controller_name"><%= params[:controller] %></label>
+  <label class="hide" id="current_action_name"><%= params[:action] %></label>
 </body>
 </html>
