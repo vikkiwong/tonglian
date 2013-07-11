@@ -25,7 +25,7 @@ GEM包
 --------
 1. checkout 项目代码
 
-       git clone https://github.com/vikkiwong/tonglian.git
+        git clone https://github.com/vikkiwong/tonglian.git
 
 2. 安装gem包
  
@@ -48,6 +48,9 @@ GEM包
     密码   __admin__
 
 6. 导入用户
+   
+   格式: email（必填）, 姓名（选填）   
+   多个用户分行
 
 7. 申请微信账号并关联应用
 
