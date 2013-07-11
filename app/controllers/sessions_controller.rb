@@ -29,6 +29,11 @@ class SessionsController < ApplicationController
     redirect_to("/login")
   end
 
+  # 用户邮箱验证页面进入方法
+  #
+  # params :from_user => 微信标识
+  # guanzuo.li
+  # 2013.07.10
   def verification
       p "session_id: #{session[:id]}"
       user = Sys::User.find_by_weixin_id(params[:from_user])
@@ -39,6 +44,13 @@ class SessionsController < ApplicationController
       end
   end
 
+  # 邮箱验证方法
+  # 验证顺序：邮箱格式是否正确 => 邮箱是否在白名单（管理员上传用户名单）内 => 用户微信标识是否已存在 => 邮箱是否已存在
+  # 验证通过：发送验证邮件
+  # params :email => 邮件 :FromUser => 微信标识
+  #
+  # guanzuo.li
+  # 2013.07.10
   def verify
     if /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i.match(params[:email]).present?
       user = Sys::User.check_user(params[:email])
@@ -62,31 +74,45 @@ class SessionsController < ApplicationController
     end
   end
 
+  # 邮箱验证和邮箱绑定成功反馈页面
+  #
+  # params :message => 反馈类型
+  # guanzuo.li
+  # 2013.07.10
   def success
     case params[:message]
       when "send_mail"
+        @head = "验证邮件发送-微信通联"
         @success_message = "已发送验证邮件"
       when "verified"
+        @head = "验证成功-微信通联"
         @success_message = "成功绑定微信号，进入微信体验通联吧！"
     end
-    render :text => @success_message
   end
 
-  #接收验证邮件里的链接
+  # 接收验证邮件里的链接，绑定验证邮箱与用户微信标识
+  #
+  # params :code => 邮箱,微信标识,时间加密字符串
+  # guanzuo.li
+  # 2013.07.10
   def mail_verify
     source = Base64.decode64(params[:code])
       if source.present?
         source_arr = source.split("&")
         email = source_arr[0]
         weixin_id = source_arr[1]
-        user = Sys::User.check_user(email)
-        user.weixin_id = weixin_id
-        user.save
-        %w(id email name role).each {|i| session[i.to_sym] = user[i] if user[i].present? }
-        session[:expires_at] = 30.days.from_now
-        redirect_to("/sessions/success?message=verified")
+        send_time = Time.parse(source_arr[2])
+        p send_time
+        if send_time > Time.now - 1.days
+          user = Sys::User.check_user(email)
+          user.weixin_id = weixin_id
+          user.save
+          redirect_to("/sessions/success?message=verified")
+        else
+          render :text => "链接过期"
+        end
       else
-        render :text => "fail"
+        render :text => "Fail"
       end
   end
   
