@@ -21,6 +21,11 @@
             <li id="bunch_new">
               <a href="/sys/users/bunch_new">导入用户</a>
             </li>
+            <% if !session[:id].blank? %>
+            <li id="exit_login">
+              <a href="/logout" onclick="return confirm('确定注销吗?')">注销</a>
+            </li>
+            <% end %>
           </ul>
         </div>
       </div>

@@ -11,7 +11,7 @@ class Sys::UsersController < ApplicationController
   # ping.wang 2013.07.09
   def index
     
-    @sys_users = Sys::User.paginate :page => params[:page]
+    @sys_users = Sys::User.where("email!='admin@email.com'").paginate :page => params[:page] ,:per_page => 10
   end
 
   # GET /sys/users/1
@@ -71,7 +71,7 @@ class Sys::UsersController < ApplicationController
       redirect_to @sys_user
     else
       flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
-      render action: "edit" 
+      render action: "edit"
     end
   end
 
