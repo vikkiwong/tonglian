@@ -1,3 +1,3 @@
 class Feedback < ActiveRecord::Base
-  attr_accessor :email,:user_id,:message
+  attr_accessible :email,:user_id,:message
 end
