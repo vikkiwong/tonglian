@@ -75,7 +75,8 @@ class WeixinsController < ApplicationController
     begin
       Feedback.create(:email => @user.email,:user_id => @user.id,:message => message)
       @start = "建议已保存，谢谢您的关注！"
-    rescue
+    rescue Exception => e
+      p e.message
       @start = "提交失败。"
     end
     render "start", :formats => :xml
