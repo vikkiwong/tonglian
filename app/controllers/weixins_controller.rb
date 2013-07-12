@@ -72,9 +72,11 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-11
   def feed_back_action(message)
-    if Feedback.create(:email => @user.email,:user_id => @user.id,:message => message)
+    p @user
+    begin
+      Feedback.create(:email => @user.email,:user_id => @user.id,:message => message)
       @start = "建议已保存，谢谢您的关注！"
-    else
+    rescue
       @start = "提交失败。"
     end
     render "start", :formats => :xml
