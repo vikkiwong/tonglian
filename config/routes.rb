@@ -6,9 +6,10 @@ Tonglian::Application.routes.draw do
         post 'bunch_create'
       end
     end
-    resources :column_sets
   end
+  
   resources :weixins
+
   resources :sessions do
     collection do
       get "verification"

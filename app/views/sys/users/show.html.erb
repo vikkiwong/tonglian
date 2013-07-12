@@ -11,7 +11,7 @@
 <dl class="dl-horizontal dl-tlian">
   <p>
     <dt>邮箱:</dt>
-    <dd ><a href="mailto: <%= @sys_user.email %>"><%= @sys_user.email %></a></dd>
+    <dd ><a href="mailto:<%= @sys_user.email %>"><%=@sys_user.email %></a></dd>
   </p>
 
   <% if @sys_user.name.present? %>
@@ -24,14 +24,14 @@
   <% if @sys_user.mobile.present? %>
     <p>
       <dt>手机:</dt>
-      <dd><a href="tel: <%= @sys_user.mobile %>"><%= @sys_user.mobile %></a></dd>
+      <dd><a href="tel:<%=@sys_user.mobile %>"><%=@sys_user.mobile %></a></dd>
     </p>
   <% end %>
 
   <% if @sys_user.phone.present? %>
     <p>
       <dt>座机:</dt>
-      <dd><a href="tel: <%= @sys_user.phone %>"><%= @sys_user.phone %></a></dd>
+      <dd><a href="tel:<%=@sys_user.phone %>"><%=@sys_user.phone %></a></dd>
     </p>
   <% end %>
 
