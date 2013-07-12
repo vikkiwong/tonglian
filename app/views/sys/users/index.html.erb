@@ -15,7 +15,6 @@
   </tr>
 
 <% @sys_users.each do |sys_user| %>
-  <% next if sys_user.email == "admin@email.com" %>
   <tr>
     <td>
       <%= link_to sys_user.email, sys_user_path(sys_user) %>
@@ -31,6 +30,7 @@
   </tr>
 <% end %>
 </table>
+<p><%= will_paginate @sys_users,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
 
 
 
