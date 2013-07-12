@@ -12,6 +12,9 @@ class WeixinsController < ApplicationController
       if @user.present?
         if /^[0-9]+$/.match(params[:xml][:Content])
           system_info_action
+        elsif /^jy(:|：)/i.match(params[:xml][:Content])
+          feed_back_message = $'
+          feed_back_action(feed_back_message)
         elsif ["u","U"].include?(params[:xml][:Content])
           update_user_action
         elsif ["?","help","h","帮助","Help","HELP","H","？"].include?(params[:xml][:Content])
@@ -62,6 +65,19 @@ class WeixinsController < ApplicationController
       @start = "抱歉，没有找到相关通联信息，请重新查找。\n回复【h】以获取帮助。"
       render "start", :formats => :xml
     end
+  end
+
+  #用户反馈信息
+  #
+  #guanzuo.li
+  #2013-07-11
+  def feed_back_action(message)
+    if Feedback.create(:email => @user.email,:user_id => @user.id,:message => message)
+      @start = "建议已保存，谢谢您的关注！"
+    else
+      @start = "提交失败。"
+    end
+    render "start", :formats => :xml
   end
 
   #用户通联信息修改
