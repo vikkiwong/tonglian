@@ -2,15 +2,19 @@
   用户反馈-微信通联
 <% end %>
 
-<h2>用户反馈</h2>
+<h2 class="visible-phone" style="font-size:20px;line-height:20px;">
+    用户反馈
+</h2>
+
+<h2 class="hidden-phone">用户反馈</h2>
 
 <% if @feedbacks.present? %>
-  <table class="table table-borded table-hover">
+  <table class="table table-hover hidden-phone">
     <tr>
-      <th>邮箱</th>
-      <th>姓名</th>
-      <th>反馈内容</th>
-      <th>反馈时间</th>
+      <th style="width:20%">邮箱</th>
+      <th style="width:10%">姓名</th>
+      <th style="width:50%">反馈内容</th>
+      <th style="width:15%">反馈时间</th>
     </tr>
 
   <% @feedbacks.each do |feedback| %>
@@ -19,6 +23,15 @@
       <td><%= feedback.sys_user.name if feedback.sys_user.present?  %></td>
       <td><%= feedback.message %></td>
       <td><%= shown_time(feedback.created_at) %></td>
+    </tr>
+  <% end %>
+  </table>
+
+  <table class="table table-borded table-hover visible-phone">
+  <% @feedbacks.each do |feedback| %>
+    <tr>
+      <td><%= feedback.id %></td>
+      <td style="width:230px;"><%= feedback.message %></td>
     </tr>
   <% end %>
   </table>

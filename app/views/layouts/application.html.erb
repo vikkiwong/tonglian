@@ -33,7 +33,7 @@
                     <% else %><%= session[:name] %><% end %></b>
                     <b class="caret"></b>
                   </a>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu"  style="min-width: 80px;">
                     <li><a href="/logout">退出</a></li>
                   </ul>
                 </li>
@@ -44,20 +44,21 @@
     </div>
   </div>
 
-	<div class="navbar navbar-inverse navbar-fixed-top  visible-phone">
+<!-- 	<div class="navbar navbar-inverse navbar-fixed-top  visible-phone">
     <div class="navbar-inner">
       <div class="container">
       	<p class="brand" style="margin-left:20px;">微信通联</p>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="main-body" style="">
   	<div class="container">
   		<!-- 错误提示信息 -->
   		<div class="text-warning"><%= flash[:notice] if flash[:notice].present? %></div>
   		<!-- 页面主体 -->
-  		<%= yield %>
+      <div class="visible-phone" style="margin-top:-50px;"><%= yield %></div>
+  		<div class="hidden-phone"><%= yield %></div>
   	</div>
   </div>
   
