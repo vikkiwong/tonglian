@@ -11,7 +11,7 @@ class Sys::UsersController < ApplicationController
   # ping.wang 2013.07.09
   def index
     
-    @sys_users = Sys::User.where("email!='admin@email.com'").paginate :page => params[:page] ,:per_page => 10
+    @sys_users = Sys::User.where("email!='admin@email.com'").paginate :page => params[:page]
   end
 
   # GET /sys/users/1
