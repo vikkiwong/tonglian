@@ -1,0 +1,29 @@
+<% content_for :head do %>
+  用户反馈-微信通联
+<% end %>
+
+<h2>用户反馈</h2>
+
+<% if @feedbacks.present? %>
+  <table class="table table-borded table-hover">
+    <tr>
+      <th>邮箱</th>
+      <th>姓名</th>
+      <th>反馈内容</th>
+      <th>反馈时间</th>
+    </tr>
+
+  <% @feedbacks.each do |feedback| %>
+    <tr>
+      <td><%= link_to feedback.sys_user.email , sys_user_path(feedback.sys_user) if  feedback.sys_user.present?  %></td>
+      <td><%= feedback.sys_user.name if feedback.sys_user.present?  %></td>
+      <td><%= feedback.message %></td>
+      <td><%= shown_time(feedback.created_at) %></td>
+    </tr>
+  <% end %>
+  </table>
+  <p><%= will_paginate @feedbacks, option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
+<% end %>
+
+
+

@@ -4,33 +4,35 @@
 
 <h2>用户列表</h2>
 <%#= link_to '添加用户', new_sys_user_path %>
-<table class="table table-borded table-hover">
-  <tr>
-    <th>邮箱</th>
-    <th>姓名</th>
-    <th>手机</th>
-    <th>座机</th>
-    <th>QQ</th>
-    <th>操作</th>
-  </tr>
+<% if @sys_users.present? %>
+  <table class="table table-borded table-hover">
+    <tr>
+      <th>邮箱</th>
+      <th>姓名</th>
+      <th>手机</th>
+      <th>座机</th>
+      <th>QQ</th>
+      <th>操作</th>
+    </tr>
 
-<% @sys_users.each do |sys_user| %>
-  <tr>
-    <td>
-      <%= link_to sys_user.email, sys_user_path(sys_user) %>
-    </td>
-    <td><%= sys_user.name %></td>
-    <td><%= sys_user.mobile %></td>
-    <td><%= sys_user.phone %></td>
-    <td><%= sys_user.qq %></td>
-    <td>
-      <%= link_to '修改', edit_sys_user_path(sys_user) %>
-      <%= link_to '删除', sys_user, method: :delete, data: { confirm: '确定删除?' } %>
-    </td>
-  </tr>
+  <% @sys_users.each do |sys_user| %>
+    <tr>
+      <td>
+        <%= link_to sys_user.email, sys_user_path(sys_user) %>
+      </td>
+      <td><%= sys_user.name %></td>
+      <td><%= sys_user.mobile %></td>
+      <td><%= sys_user.phone %></td>
+      <td><%= sys_user.qq %></td>
+      <td>
+        <%= link_to '修改', edit_sys_user_path(sys_user) %>
+        <%= link_to '删除', sys_user, method: :delete, data: { confirm: '确定删除?' } %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+  <p><%= will_paginate @sys_users,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
 <% end %>
-</table>
-<p><%= will_paginate @sys_users,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
 
 
 

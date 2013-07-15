@@ -23,6 +23,8 @@ function settingMenuClass(){
 	    li_id = "bunch_new";
 	  }else if(ctrl_name == "sys/users" && act_name == "index"){
 	    li_id = "users";
+	  }else if(ctrl_name == "feedbacks"){
+	  	li_id = "feedbacks"
 	  }else{
 	    li_id = "none";
 	  };
