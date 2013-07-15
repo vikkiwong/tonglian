@@ -1,0 +1,8 @@
+<xml>
+    <ToUserName><![CDATA[<%= params[:xml][:FromUserName] %>]]></ToUserName>
+    <FromUserName><![CDATA[<%= params[:xml][:ToUserName] %>]]></FromUserName>
+    <CreateTime><%= Time.now.to_i %></CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[查找到多位用户，请点击姓名查看详细通联信息：<%="\n"%><% @feedbacks.each_with_index do |feedback,index| %><%= index + 1 %>: <%=feedback.message%><%="\n"%><% end %>]]></Content>
+    <FuncFlag>0</FuncFlag>
+</xml>
