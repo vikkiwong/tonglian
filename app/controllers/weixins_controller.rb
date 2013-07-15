@@ -54,7 +54,7 @@ class WeixinsController < ApplicationController
       @start = "绑定微信用户数 #{users.size}人 "
       render "start", :formats => :xml
     elsif params[:xml][:Content] == "1003" && @user.role == "manager"
-      @feed_backs = Feedback.first(10)
+      @feed_backs = Feedback.last(10)
       if @feed_backs.present?
         render "feedback_list", :formats => :xml
       else
