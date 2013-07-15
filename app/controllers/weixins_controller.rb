@@ -103,7 +103,7 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-08
   def help_info_action
-    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n 输入jy: + 建议信息可提交建议\n 如“jy:我是建议”\n\n【u】更新联系方式\n【h】获取帮助信息 "
+    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n 输入jy: + 建议信息\n 可提交建议\n 如“jy:我是建议”\n\n【u】更新联系方式\n【h】获取帮助信息 "
     render "start", :formats => :xml
   end
 
