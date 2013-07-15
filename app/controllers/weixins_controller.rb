@@ -43,7 +43,7 @@ class WeixinsController < ApplicationController
   # 2013-07-08
   def system_info_action
     if params[:xml][:Content] == "2408" && @user.role == "manager"
-      @start = "[1001] 总用户数\n[1002] 绑定微信用户数"
+      @start = "[1001] 总用户数\n[1002] 绑定微信用户数\n[1003] 最近10条反馈"
       render "start", :formats => :xml
     elsif params[:xml][:Content] == "1001" && @user.role == "manager"
       users = Sys::User.all
@@ -53,7 +53,10 @@ class WeixinsController < ApplicationController
       users = Sys::User.where("weixin_id is not null and weixin_id != ''")
       @start = "绑定微信用户数 #{users.size}人 "
       render "start", :formats => :xml
-    elsif params[:xml][:Content] == "1009" && @user.role == "manager"
+    elsif params[:xml][:Content] == "1003" && @user.role == "manager"
+      @feed_backs = Feedback.first(10)
+      render "feedback_list", :formats => :xml
+    elsif params[:xml][:Content] == "10000" && @user.role == "manager"
       user = Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
       @start = "已解除微信绑定。\n如需重新绑定，"
       if user.present?
