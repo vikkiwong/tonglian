@@ -25,10 +25,17 @@
               <a href="/feedbacks">反馈意见</a>
             </li>
           </ul>
-          <% if !session[:id].blank? %>
+          <% if session[:id].present? %>
               <ul class="nav pull-right">
                 <li id="exit_login">
-                  <a href="/logout" onclick="return confirm('确定退出吗?')">退出</a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <b><% if session[:name].nil?%><%= session[:email].split("@")[0] %>
+                    <% else %><%= session[:name] %><% end %></b>
+                    <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu"  style="min-width: 80px;">
+                    <li><a href="/logout">退出</a></li>
+                  </ul>
                 </li>
               </ul>
           <% end %>

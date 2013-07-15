@@ -55,7 +55,12 @@ class WeixinsController < ApplicationController
       render "start", :formats => :xml
     elsif params[:xml][:Content] == "1003" && @user.role == "manager"
       @feed_backs = Feedback.first(10)
-      render "feedback_list", :formats => :xml
+      if @feed_backs.present?
+        render "feedback_list", :formats => :xml
+      else
+        @start = "无反馈信息"
+        render "start", :formats => :xml
+      end
     elsif params[:xml][:Content] == "10000" && @user.role == "manager"
       user = Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
       @start = "已解除微信绑定。\n如需重新绑定，"
@@ -98,7 +103,7 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-08
   def help_info_action
-    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息"
+    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n 输入jy: + 建议信息\n 可提交建议\n 如“jy:我是建议”\n\n【u】更新联系方式\n【h】获取帮助信息 "
     render "start", :formats => :xml
   end
 
