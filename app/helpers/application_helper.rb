@@ -26,4 +26,12 @@ module ApplicationHelper
   def is_manager?
     session[:role] == "manager" ? true : false
   end
+
+  def shown_time(cur_time)
+    if cur_time.is_a?(Time)
+      cur_time.strftime("%Y-%m-%d %H:%M")
+    else
+      ""
+    end
+  end
 end

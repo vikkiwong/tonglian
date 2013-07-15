@@ -12,7 +12,7 @@
 *  rails 3.2.8
 *  mysql2
 
-GEM包
+Gem包
 --------
 *  分页插件  will_paginate, bootstrap-will_paginate
 *  汉字转拼音插件 ruby-pinyin
@@ -59,7 +59,7 @@ GEM包
 
 欢迎任何帮助
 --------
-###### 如果你喜欢这个项目，请通过(不限)以下方式帮助她!
+###### 如果你喜欢这个项目，请通过(不限)以下方式帮助它!
 *  各种使用
 *  各种宣传
 *  各种报告bug, 提供建议 (github issue tracker)

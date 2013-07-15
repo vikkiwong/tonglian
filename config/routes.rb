@@ -9,7 +9,7 @@ Tonglian::Application.routes.draw do
   end
   
   resources :weixins
-
+  resources :feedbacks
   resources :sessions do
     collection do
       get "verification"
