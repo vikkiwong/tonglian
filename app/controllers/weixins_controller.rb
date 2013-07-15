@@ -12,7 +12,7 @@ class WeixinsController < ApplicationController
       if @user.present?
         if /^[0-9]+$/.match(params[:xml][:Content])
           system_info_action
-        elsif /^jy(:|：)/i.match(params[:xml][:Content])
+        elsif /^(jy|建议)/i.match(params[:xml][:Content])
           feed_back_message = $'
           feed_back_action(feed_back_message)
         elsif ["u","U"].include?(params[:xml][:Content])
@@ -81,8 +81,12 @@ class WeixinsController < ApplicationController
   #2013-07-11
   def feed_back_action(message)
     begin
-      Feedback.create(:email => @user.email,:user_id => @user.id,:message => message)
-      @start = "建议已保存，谢谢您的关注！"
+      if message.length < 5  # "message不可能为nil 可能为‘’"
+        @start = "您的建议太短了，请重新编辑。"
+      else
+        Feedback.create(:email => @user.email,:user_id => @user.id,:message => message)
+        @start = "建议已保存，谢谢您的关注！"
+      end
     rescue Exception => e
       p e.message
       @start = "提交失败。"
@@ -103,7 +107,7 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-08
   def help_info_action
-    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n 输入jy: + 建议信息\n 可提交建议\n 如“jy:我是建议”\n\n【u】更新联系方式\n【h】获取帮助信息 "
+    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息\n【jy+文字】向我们提建议 "
     render "start", :formats => :xml
   end
 
@@ -140,7 +144,7 @@ class WeixinsController < ApplicationController
   #2013-07-08
   def event_action
     if params[:xml][:Event] == "subscribe"
-      @introduction  = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息"
+      @introduction  = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息\n【jy+文字】向我们提建议"
       render "new_user", :formats => :xml
     end
     if params[:xml][:Event] == "unsubscribe"
