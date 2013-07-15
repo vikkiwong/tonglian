@@ -55,7 +55,12 @@ class WeixinsController < ApplicationController
       render "start", :formats => :xml
     elsif params[:xml][:Content] == "1003" && @user.role == "manager"
       @feed_backs = Feedback.first(10)
-      render "feedback_list", :formats => :xml
+      if @feed_backs.present?
+        render "feedback_list", :formats => :xml
+      else
+        @start = "无反馈信息"
+        render "start", :formats => :xml
+      end
     elsif params[:xml][:Content] == "10000" && @user.role == "manager"
       user = Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
       @start = "已解除微信绑定。\n如需重新绑定，"
