@@ -3,6 +3,6 @@
     <FromUserName><![CDATA[<%= params[:xml][:ToUserName] %>]]></FromUserName>
     <CreateTime><%= Time.now.to_i %></CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[以下为最新反馈信息：<%="\n"%><% @feed_backs.each_with_index do |feedback,index| %><%= index + 1 %>: <%=feedback.message%><%="\n"%><% end %><%= link_to("反馈信息列表",feedbacks_url) %>]]></Content>
+    <Content><![CDATA[以下为最新反馈信息：<%="\n"%><% @feed_backs.each_with_index do |feedback,index| %><%= index + 1 %>: <%=feedback.message%><%="\n"%><% end %><%="\n"%><%="\n"%><%= link_to("反馈信息列表",feedbacks_url(:from_user => params[:xml][:ToUserName])) %>]]></Content>
     <FuncFlag>0</FuncFlag>
 </xml>
