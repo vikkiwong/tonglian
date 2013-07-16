@@ -68,6 +68,7 @@ class Sys::UsersController < ApplicationController
   # PUT /sys/users/1.json
   def update
     if @sys_user.update_attributes(params[:sys_user])
+      Sys::User.create_message_picture(@sys_user)    #为修改的用户重新生成用户图片
       redirect_to @sys_user
     else
       flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
