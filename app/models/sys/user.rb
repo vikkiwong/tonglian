@@ -9,6 +9,8 @@ class Sys::User < ActiveRecord::Base
   validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！", :allow_blank => true
   validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！", :allow_blank => true
 
+  has_many :user_groups, :class_name => "Sys::UserGroup"
+
   after_save :name_to_pinyin, :unless => :skip_callbacks
 
   ROLES = [
