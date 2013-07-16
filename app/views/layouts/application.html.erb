@@ -29,6 +29,7 @@
               <ul class="nav pull-right">
                 <li id="exit_login">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-user icon-white"></i>
                     <b><% if session[:name].nil?%><%= session[:email].split("@")[0] %>
                     <% else %><%= session[:name] %><% end %></b>
                     <b class="caret"></b>

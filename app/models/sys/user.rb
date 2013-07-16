@@ -8,7 +8,9 @@ class Sys::User < ActiveRecord::Base
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
   validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！", :allow_blank => true
   validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！", :allow_blank => true
-
+  validates_numericality_of :mobile, :message => "手机号必须是数字！"
+  validates_length_of :qq, :maximum => 12, :message => "qq号长度不能超过12位！", :allow_blank => true
+  validates_numericality_of :qq, :message => "qq号必须是数字！"
   has_many :user_groups, :class_name => "Sys::UserGroup"
 
   after_save :name_to_pinyin, :unless => :skip_callbacks
@@ -153,9 +155,7 @@ class Sys::User < ActiveRecord::Base
     #截取过长的用户信息
     name = user.name.length > 4 ? user.name[0..3] : user.name
     email = user.email.length > 20 ?  [user.email[0..19] , user.email[20..user.email.length-1]] : [user.email]
-    mobile = [user.mobile]
-    phone = [user.phone]
-    qq = user.qq.length > 19 ? [user.qq[0..18],user.qq[19..user.qq.length]] : [user.qq]
+    mobile,phone,qq = [user.mobile],[user.phone],[user.qq]
     gc.text_align(Magick::CenterAlign)
     gc.pointsize(40)
     user.name.present?? gc.text(90,130,name) : gc.text(90,130,"某位同学")
