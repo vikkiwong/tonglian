@@ -9,6 +9,8 @@ class Sys::User < ActiveRecord::Base
   validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！", :allow_blank => true
   validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！", :allow_blank => true
 
+  has_many :user_groups, :class_name => "Sys::UserGroup"
+
   after_save :name_to_pinyin, :unless => :skip_callbacks
 
   ROLES = [
@@ -128,7 +130,7 @@ class Sys::User < ActiveRecord::Base
   def self.check_user(email)
     return nil if !email
     user = where(:email => email).first
-    (user.present? && user.allow_access && user.role == "manager") ? user : nil
+    (user.present? && user.allow_access && ["manager","admin"].include?(user.role)) ? user : nil
   end
 
   #获得用户的信息图片位置
