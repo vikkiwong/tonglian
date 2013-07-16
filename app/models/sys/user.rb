@@ -135,7 +135,7 @@ class Sys::User < ActiveRecord::Base
   #
   #wangyang.shen 2013-07-15
   def message_picture()
-    return "#{Rails.root}/public/message_picture/message_picture_" + id.to_s
+    return "/message_picture/message_picture_#{id}.jpg"
   end
 
   #生成用户信息图片，图片命名规则为message_picture_用户id，存放在/public/message_picture
