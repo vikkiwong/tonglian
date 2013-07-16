@@ -11,8 +11,7 @@ class WeixinsController < ApplicationController
     if params[:xml][:MsgType] == "text"
       if params[:xml][:Content] = "apply"
         apply_for_admin_action
-      end
-      if @user.present?
+      elsif @user.present?
         if /^[0-9]+$/.match(params[:xml][:Content])
           system_info_action
         elsif /^(jy|建议)/i.match(params[:xml][:Content])
