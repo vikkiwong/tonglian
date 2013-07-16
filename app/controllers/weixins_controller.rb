@@ -9,7 +9,7 @@ class WeixinsController < ApplicationController
   def create
     @user= Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
     if params[:xml][:MsgType] == "text"
-      if params[:xml][:Content] = "apply"
+      if params[:xml][:Content] == "apply"
         apply_for_admin_action
       elsif @user.present?
         if /^[0-9]+$/.match(params[:xml][:Content])

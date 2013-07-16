@@ -47,7 +47,8 @@ class SessionsController < ApplicationController
       redirect_to :back, :notice => "此邮箱已成为圈主"
     else
       rand_num = 100000 + rand(100000)
-      code = Base64.encode64(rand_num.to_s)
+      code = Base64.encode64(rand_num.to_s).chomp
+      p code
       begin
         Sys::User.create(:email => params[:email], :role => "admin", :password => code ,:weixin_id => params[:FromUser])
         Notifier.send_apply_for_admin_mail(params[:email],code)
