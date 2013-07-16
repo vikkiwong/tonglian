@@ -128,7 +128,7 @@ class Sys::User < ActiveRecord::Base
   def self.check_user(email)
     return nil if !email
     user = where(:email => email).first
-    (user.present? && user.allow_access && user.role == "manager") ? user : nil
+    (user.present? && user.allow_access && ["manager","admin"].include?(user.role)) ? user : nil
   end
 
   #获得用户的信息图片位置
