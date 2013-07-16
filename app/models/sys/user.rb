@@ -2,7 +2,7 @@
 class Sys::User < ActiveRecord::Base
   cattr_accessor :skip_callbacks
   attr_accessible :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
-                  :f_letters, :pinyin, :skip_callbacks
+                  :f_letters, :pinyin, :skip_callbacks, :message_picture
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :message => "邮箱格式不正确！"
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
@@ -55,7 +55,8 @@ class Sys::User < ActiveRecord::Base
   # 批量导入用户
   # 
   # guanzuo.li 2013.07.05  
-  # ping.wang 2013.7.08 修改 
+  # ping.wang 2013.7.08 修改
+  # wangyang.shen 2013.07.15 修改
   def self.import_bunch_users(bunch_users)
     return false unless bunch_users.present?
 
@@ -65,7 +66,11 @@ class Sys::User < ActiveRecord::Base
       name = name.present? ? name.strip.gsub(/\s+/, "") : ""
       email = email.present? ? email.strip.gsub(/\s+/, "") : ""
       user = Sys::User.new(:email => email, :name => name, :role => "member")
-      wrong_line << email unless user.save   # 将创建出错的邮箱记录下来
+      if user.save
+        create_message_picture(user)   #为创建成功的用户生成用户图片
+      else
+        wrong_line << email      # 将创建出错的邮箱记录下来
+      end
     end
     wrong_line
   end
@@ -125,4 +130,37 @@ class Sys::User < ActiveRecord::Base
     user = where(:email => email).first
     (user.present? && user.allow_access && user.role == "manager") ? user : nil
   end
+
+  #获得用户的信息图片位置
+  #
+  #wangyang.shen 2013-07-15
+  def message_picture()
+    return "#{Rails.root}/public/message_picture/message_picture_" + id.to_s
+  end
+
+  #生成用户信息图片，图片命名规则为message_picture_用户id，存放在/public/message_picture
+  #
+  # wangyang.shen 2013.07.15
+  def self.create_message_picture(user)
+    img = Magick::Image.read("#{Rails.root}/app/assets/images/message_picture_background.jpg").first
+    gc = Magick::Draw.new
+    gc.stroke('transparent')
+    gc.pointsize(40)
+    gc.font("'#{Rails.root}/app/assets/fonts/FZCYSK.TTF'")
+    #截取过长的用户信息
+    user.name = user.name[0..2]+"…" if user.name.length > 3
+    user.email = user.email[0..19]+"…" if user.email.length > 20
+    user.qq = user.qq[0..12] if user.qq.length > 13
+
+    user.name.nil?? gc.text(20,130, user.email.split("@")[0]) : gc.text(30,130, user.name)
+    gc.pointsize(20)
+    i = 0
+    [["邮箱:",user.email],["电话:",user.mobile],["QQ:",user.qq]].each do|value|
+        gc.text(200,75+i*30, "#{value[0]+value[1].to_s}") and i=i+1 if value[1].present?
+    end
+
+    gc.draw(img)
+    img.write("#{Rails.root}/public/message_picture/message_picture_#{user.id}.jpg")
+  end
 end
+
