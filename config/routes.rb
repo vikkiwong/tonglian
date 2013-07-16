@@ -2,8 +2,10 @@ Tonglian::Application.routes.draw do
   namespace :sys do
     resources :users do
       collection do
-        get 'bunch_new'
+        get  'bunch_new'
         post 'bunch_create'
+        get  'group_new'
+        post 'group_create'
       end
     end
     resources :groups 

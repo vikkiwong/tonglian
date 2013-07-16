@@ -42,6 +42,21 @@ class SessionsController < ApplicationController
   # 创建管理员用户
   def apply
     p "---------#{params}-------------"
+    elder_admin = Sys::User.where(:email => params[:email],:role => "admin").first
+    if elder_admin.present?
+      redirect_to :back, :notice => "此邮箱已成为圈主"
+    else
+      rand_num = 100000 + rand(100000)
+      code = Base64.encode64(rand_num.to_s)
+      begin
+        Sys::User.create(:email => params[:email], :role => "admin", :password => code ,:weixin_id => params[:FromUser])
+        Notifier.send_apply_for_admin_mail(params[:email],code)
+        redirect_to success_sessions_path(:message => "send_application_mail")
+      rescue Exception => e
+        p e.message
+        redirect_to :back, :notice => "申请失败"
+      end
+    end
     # 在这里创建管理员用户，并发送包含临时密码的邮件
   end
 
@@ -99,6 +114,9 @@ class SessionsController < ApplicationController
       when "send_mail"
         @head = "验证邮件发送-微信通联"
         @success_message = "已发送验证邮件"
+      when "send_application_mail"
+        @head = "申请邮件发送-微信通联"
+        @success_message = "已成功发送邮件，请查看邮箱"
       when "verified"
         @head = "验证成功-微信通联"
         @success_message = "成功绑定微信号，进入微信体验通联吧！"

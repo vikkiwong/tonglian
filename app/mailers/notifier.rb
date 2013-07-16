@@ -23,6 +23,15 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :subject => "绑定验证").deliver!
   end
 
+  #管理员申请回复邮件
+  #
+  #guanzuo.li
+  #2013.07.16
+  def send_apply_for_admin_mail(email,code)
+    @code = code
+    mail(:to => email, :subject => "管理员申请").deliver!
+  end
+
   def send_mail(params = {})
     @mail_body = params[:mail_body]
     mail(:subject => params[:subject],

@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]
-  before_filter :if_manager, :only => [:index, :new, :bunch_new, :bunch_create, :create, :destroy]
+  before_filter :if_manager, :only => [:index, :new, :bunch_new, :bunch_create, :create, :destroy, :group_new, :group_create]
   before_filter :if_can_manage, :only => [:edit, :update]
 
   # GET /sys/users
@@ -11,6 +11,7 @@ class Sys::UsersController < ApplicationController
   # ping.wang 2013.07.09
   def index
     @sys_users = Sys::User.where("email!='admin@email.com'").paginate :page => params[:page]
+    #render :layout => 'application'
   end
 
   # GET /sys/users/1
@@ -83,6 +84,21 @@ class Sys::UsersController < ApplicationController
   def destroy
     @sys_user.destroy
     redirect_to sys_users_url
+  end
+
+  # GET  /sys/users/group_new(.:format)
+  # 项目初始化页面
+  # 
+  # ping.wang 2013.07.16
+  def group_new
+    @sys_user = Sys::User.find_by_id(session[:id])
+    @group = Sys::Group.new
+  end
+
+  # POST   /sys/users/group_create(.:format)
+  # 项目初始化方法：修改用户密码，创建group，创建group 用户，给group用户发送邀请邮件
+  def group_create
+    p "---------#{params}------------------"
   end
 
   # before_filter方法，检查用户是否存在
