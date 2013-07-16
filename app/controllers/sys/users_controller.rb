@@ -82,6 +82,7 @@ class Sys::UsersController < ApplicationController
   # 
   # ping.wang 2013.07.05 
   def destroy
+    File.delete("public/" + @sys_user.message_picture)
     @sys_user.destroy
     redirect_to sys_users_url
   end
