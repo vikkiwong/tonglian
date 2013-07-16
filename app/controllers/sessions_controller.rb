@@ -29,19 +29,34 @@ class SessionsController < ApplicationController
     redirect_to("/login")
   end
 
+  # GET    /sessions/apply_for_admin(.:format)
+  # 申请管理员页面
+  #
+  # params :from_user => 微信标识
+  # ping.wang  2013.07.16
+  def apply_for_admin
+    @from_user = params[:from_user]
+  end
+
+  # POST   /sessions/apply(.:format)
+  # 创建管理员用户
+  def apply
+    p "---------#{params}-------------"
+    # 在这里创建管理员用户，并发送包含临时密码的邮件
+  end
+
   # 用户邮箱验证页面进入方法
   #
   # params :from_user => 微信标识
   # guanzuo.li
   # 2013.07.10
   def verification
-      p "session_id: #{session[:id]}"
-      user = Sys::User.find_by_weixin_id(params[:from_user])
-      if user.present?
-        redirect_to("/sessions/success?message=verified")
-      else
-        @from_user = params[:from_user]
-      end
+    user = Sys::User.find_by_weixin_id(params[:from_user])
+    if user.present?
+      redirect_to("/sessions/success?message=verified")
+    else
+      @from_user = params[:from_user]
+    end
   end
 
   # 邮箱验证方法

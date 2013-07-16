@@ -6,6 +6,7 @@ Tonglian::Application.routes.draw do
         post 'bunch_create'
       end
     end
+    resources :groups 
   end
   
   resources :weixins
@@ -16,6 +17,8 @@ Tonglian::Application.routes.draw do
       post "verify"
       get "success"
       get "mail_verify"
+      get 'apply_for_admin'
+      post 'apply'
     end
   end
   
