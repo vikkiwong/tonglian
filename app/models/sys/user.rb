@@ -152,15 +152,16 @@ class Sys::User < ActiveRecord::Base
     name = user.name.length > 4 ? user.name[0..3] : user.name
     email = user.email.length > 20 ?  [user.email[0..19] , user.email[20..user.email.length-1]] : [user.email]
     mobile = [user.mobile]
+    phone = [user.phone]
     qq = user.qq.length > 19 ? [user.qq[0..18],user.qq[19..user.qq.length]] : [user.qq]
     gc.text_align(Magick::CenterAlign)
     gc.pointsize(40)
-    user.name.nil?? gc.text(90,130, user.email.split("@")[0]) : gc.text(90,130, name)
+    user.name.present?? gc.text(90,130,name) : gc.text(90,130,"某位同学")
 
     gc.text_align(Magick::LeftAlign)
     gc.pointsize(20)
     i = 0
-    [["邮箱:",email],["电话:",mobile],["QQ:",qq]].each do|arr|
+    [["邮箱:",email],["电话:",mobile],["座机:",phone],["QQ:",qq]].each do|arr|
       arr[1].each_with_index do|value,index|
         if index == 0
           gc.text(200,75+i*30, "#{arr[0]+value.to_s}") and i=i+1 if value.present?
