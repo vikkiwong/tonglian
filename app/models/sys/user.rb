@@ -147,10 +147,10 @@ class Sys::User < ActiveRecord::Base
     gc.stroke('transparent')
     gc.font("'#{Rails.root}/app/assets/fonts/FZCYSK.TTF'")
     #截取过长的用户信息
-    user.name.length > 4 ? name = user.name[0..3] : name = user.name
-    user.email.length > 20 ? email = [user.email[0..19] , user.email[20..user.email.length-1]] : email = [user.email]
+    name = user.name.length > 4 ? user.name[0..3] : user.name
+    email = user.email.length > 20 ?  [user.email[0..19] , user.email[20..user.email.length-1]] : [user.email]
     mobile = [user.mobile]
-    user.qq.length > 19 ? qq = [user.qq[0..18],user.qq[19..user.qq.length]] : qq = [user.qq]
+    qq = user.qq.length > 19 ? [user.qq[0..18],user.qq[19..user.qq.length]] : [user.qq]
     gc.text_align(Magick::CenterAlign)
     gc.pointsize(40)
     user.name.nil?? gc.text(90,130, user.email.split("@")[0]) : gc.text(90,130, name)
