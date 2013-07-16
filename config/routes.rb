@@ -16,6 +16,8 @@ Tonglian::Application.routes.draw do
       post "verify"
       get "success"
       get "mail_verify"
+      get 'apply_for_admin'
+      post 'apply'
     end
   end
   
