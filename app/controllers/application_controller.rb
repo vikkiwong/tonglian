@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   #
   # ping.wang 2013.07.09
   def if_manager
-    unless ["manager","admin"].include(session[:role])
+    unless ["manager","admin"].include?(session[:role])
       redirect_to("/login", :notice => '您没有权限进行此操作！') and return
     end
   end
