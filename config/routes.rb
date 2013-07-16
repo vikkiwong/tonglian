@@ -6,6 +6,7 @@ Tonglian::Application.routes.draw do
         post 'bunch_create'
       end
     end
+    resources :groups 
   end
   
   resources :weixins
