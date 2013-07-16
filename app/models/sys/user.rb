@@ -130,6 +130,8 @@ class Sys::User < ActiveRecord::Base
   def self.check_user(email)
     return nil if !email
     user = where(:email => email).first
+    p user
+    p ["manager","admin"].include?(user.role)
     (user.present? && user.allow_access && ["manager","admin"].include?(user.role)) ? user : nil
   end
 
