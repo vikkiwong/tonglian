@@ -9,6 +9,9 @@ class WeixinsController < ApplicationController
   def create
     @user= Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
     if params[:xml][:MsgType] == "text"
+      if params[:xml][:Content] = "apply"
+        apply_for_admin_action
+      end
       if @user.present?
         if /^[0-9]+$/.match(params[:xml][:Content])
           system_info_action
@@ -109,6 +112,14 @@ class WeixinsController < ApplicationController
   def help_info_action
     @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息\n【jy+文字】向我们提建议 "
     render "start", :formats => :xml
+  end
+
+  #管理员申请
+  #
+  #guanzuo.li
+  #2013-07-16
+  def apply_for_admin_action
+    render "apply_for_admin"
   end
 
   #用户通联信息搜索
