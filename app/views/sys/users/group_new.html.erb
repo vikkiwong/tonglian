@@ -9,18 +9,18 @@
 <h2 class="hidden-phone">创建圈子</h2>
 
 <div>
-  <%= form_for @sys_user, :url => { :action => "group_create" } do |f| %>
+  <%= form_tag(group_create_sys_users_path,:html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
     <div>
       <label>新密码</label>
-      <%= f.password_field(:password)%>
+      <%= password_field_tag(:password)%>
     </div>
     <div>
       <label>确认密码</label>
-      <%= f.password_field(:password_confirmation) %>
+      <%= password_field_tag(:password_confirmation) %>
     </div>
     <div>
       <label>姓名</label>
-	  	<%= f.text_field(:name)%>
+	  	<%= text_field_tag(:name)%>
     </div>
 	  <%= fields_for @group do |g| %>
 	  	<label>圈子名</label>
@@ -29,6 +29,9 @@
     <div>
       <label>邀请好友</label>
 	  	<textarea name="bunch_users" class="bunch_new_textarea" style="width:400px;height:150px;" placeholder="example1@email.com, example2@email.com..."></textarea>
+    </div>
+    <div>
+      <input type="hidden" name="id" value=<%= @sys_user.id %>>
     </div>
     <div >
       <%= link_to "取消", sys_user_path(@sys_user), :class => "btn"%>
