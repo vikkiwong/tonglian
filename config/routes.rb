@@ -21,6 +21,10 @@ Tonglian::Application.routes.draw do
       get "mail_verify"
       get 'apply_for_admin'
       post 'apply'
+      get 'step_one'
+      get 'step_two'
+      get 'step_three'
+      post 'create_group_manager'
     end
   end
   

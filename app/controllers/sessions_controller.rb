@@ -1,6 +1,33 @@
 #encoding: utf-8
 class SessionsController < ApplicationController
   skip_before_filter :login_check
+  skip_before_filter :verify_authenticity_token
+
+  # 一分钟搭建第一步：创建账号
+  #
+  # ping.wang 2013.07.17
+  def step_one
+    render :layout => 'no_nav'
+  end
+
+  def create_group_manager
+    @user = Sys::User.find_by_email(params[:email])
+    if @user.present?
+      # 提示该邮箱已注册，请登陆
+      set_session
+    else
+      # 创建用户
+      set_session
+    end
+    redirect_to step_two_sessions_path
+  end
+
+  # 一分钟搭建第二步:创建圈子
+  #
+  # ping.wang 2013.07.17
+  def step_two
+    render :layout => 'no_nav'
+  end
   
   # 登陆方法
   #
@@ -42,7 +69,7 @@ class SessionsController < ApplicationController
   # 创建管理员用户
   def apply
     p "---------#{params}-------------"
-    elder_admin = Sys::User.where(:email => params[:email],:role => "admin").first
+    elder_admin = Sys::User.where(:email => params[:email],:role => "group_manager").first
     if elder_admin.present?
       redirect_to :back, :notice => "此邮箱已成为圈主"
     else
@@ -50,7 +77,7 @@ class SessionsController < ApplicationController
       code = Base64.encode64(rand_num.to_s).chomp
       p code
       begin
-        Sys::User.create(:email => params[:email], :role => "admin", :password => code ,:weixin_id => params[:FromUser])
+        Sys::User.create(:email => params[:email], :role => "group_manager", :password => code ,:weixin_id => params[:FromUser])
         Notifier.send_apply_for_admin_mail(params[:email],code)
         redirect_to success_sessions_path(:message => "send_application_mail")
       rescue Exception => e

@@ -1,0 +1,27 @@
+<% content_for :head do %>
+  一分钟搭建-微信通联
+<% end %>
+
+<h2>第一步：创建账号</h2>
+<p class="muted">如有账号，请直接登陆</p>
+<form action="/sessions/create_group_manager" method="post">
+	<div>
+	  <label>邮箱</label>
+	  <input type="email" name="email">
+	</div>
+	<div>
+	  <label>姓名</label>
+	  <input type="text" name="name">
+	</div>
+	<div>
+	  <label>密码</label>
+	  <input type="password" name="password">
+	</div>
+	<div>
+	  <label>确认密码</label>
+	  <input type="password" name="password_confirm">
+	</div>
+  <div>
+  	<button type="submit" class="btn">下一步</button>
+  </div>
+</form>
