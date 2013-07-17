@@ -23,7 +23,16 @@ class ApplicationController < ActionController::Base
   #
   # ping.wang 2013.07.09
   def if_manager
-    unless ["manager","group_manager"].include?(session[:role])
+    unless ["manager"].include?(session[:role])
+      redirect_to("/login", :notice => '您没有权限进行此操作！') and return
+    end
+  end
+
+  # before_filter方法，检查用户是否是圈子管理员
+  #
+  # ping.wang 2013.07.17
+  def if_group_manager
+    unless ["group_manager"].include?(session[:role])
       redirect_to("/login", :notice => '您没有权限进行此操作！') and return
     end
   end

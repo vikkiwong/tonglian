@@ -12,18 +12,25 @@
 	<div class="navbar navbar-inverse navbar-fixed-top  hidden-phone">
     <div class="navbar-inner">
       <div class="container hidden-phone">
-        <a class="brand" href="/">微信通联</a>
+        <% if session[:role] == "manager" %>
+          <a class="brand" href="/sys/groups">微信通联</a>
+        <% else %>
+          <a class="brand" href="/sys/groups/my_group">微信通联</a>
+        <% end %>
         <div class="nav-collapse collapse">
           <ul class="nav">
-            <li id="users">
-              <a href="/sys/users">用户列表</a>
-            </li>
-            <li id="bunch_new">
-              <a href="/sys/users/bunch_new">导入用户</a>
-            </li>
-            <li id="feedbacks">
-              <a href="/feedbacks">反馈意见</a>
-            </li>
+            <% if session[:role] == "manager" %>
+              <li id="groups">
+                <a href="/sys/groups">圈子列表</a>
+              </li>
+              <li id="feedbacks">
+                <a href="/feedbacks">反馈意见</a>
+              </li>
+            <% elsif session[:role] == "group_manager" %>
+              <li id="my_group">
+                <a href="/sys/groups/my_group">我的圈子</a>
+              </li>
+            <% end %>
           </ul>
           <% if session[:id].present? %>
               <ul class="nav pull-right">

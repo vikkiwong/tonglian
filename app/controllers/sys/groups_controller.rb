@@ -1,5 +1,11 @@
 # encoding: utf-8
 class Sys::GroupsController < ApplicationController
+  def index
+  end
+
+  def my_group
+  end
+
   def create
   	p "---------#{params}-------"
     user = Sys::User.where(:id => session[:id]).first

@@ -19,10 +19,10 @@ function settingMenuClass(){
 		var act_name = $("label#current_action_name").html();
 	  var ctrl_name = $("label#current_controller_name").html();
 	  var li_id = "";
-	  if(ctrl_name == "sys/users" && act_name == "bunch_new"){
-	    li_id = "bunch_new";
-	  }else if(ctrl_name == "sys/users" && act_name == "index"){
-	    li_id = "users";
+	  if(ctrl_name == "sys/groups" && act_name == "my_group"){
+	    li_id = "my_group";
+	  }else if(ctrl_name == "sys/groups" && act_name == "index"){
+	    li_id = "groups";
 	  }else if(ctrl_name == "feedbacks"){
 	  	li_id = "feedbacks"
 	  }else{
