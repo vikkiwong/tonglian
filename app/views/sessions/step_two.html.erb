@@ -4,16 +4,17 @@
 
 <h2>第二步：创建圈子</h2>
 
-<form action="/sys/groups/" method="post">
+<%= form_tag(sys_groups_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
 	<div>
 	  <label>名称</label>
 	  <input type="text" name="name">
 	</div>
 	<div>
 	  <label>联系方式</label>
-	  <input type="text" name="phone">
+	  <input type="text" name="phone" value=<%= session[:id] %>>
 	</div>
+    <div><input type="hidden" name="s_test" value=<%= session[:id] %>></div>
   <div>
   	<button type="submit" class="btn">下一步</button>
   </div>
-</form>
+<% end %>

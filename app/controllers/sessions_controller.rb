@@ -15,11 +15,17 @@ class SessionsController < ApplicationController
     if @user.present?
       # 提示该邮箱已注册，请登陆
       set_session
+      redirect_to step_two_sessions_path
     else
-      # 创建用户
-      set_session
+      if params[:password] != params[:password_confirm]
+        redirect_to step_one_sessions_path, :notice => "密码验证不一致"
+      else
+        @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password])
+        set_session
+        redirect_to step_two_sessions_path
+      end
     end
-    redirect_to step_two_sessions_path
+
   end
 
   # 一分钟搭建第二步:创建圈子
@@ -33,6 +39,7 @@ class SessionsController < ApplicationController
   #
   # ping.wang 2013.07.17
   def step_three
+    @group_id = params[:group_id]
     render :layout => 'no_nav'
   end
   
@@ -82,7 +89,6 @@ class SessionsController < ApplicationController
     else
       rand_num = 100000 + rand(100000)
       code = Base64.encode64(rand_num.to_s).chomp
-      p code
       begin
         Sys::User.create(:email => params[:email], :role => "group_manager", :password => code ,:weixin_id => params[:FromUser])
         Notifier.send_apply_for_admin_mail(params[:email],code)

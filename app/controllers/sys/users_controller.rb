@@ -86,7 +86,7 @@ class Sys::UsersController < ApplicationController
     @sys_user.destroy
     redirect_to sys_users_url
   end
-
+=begin
   # GET  /sys/users/group_new(.:format)
   # 项目初始化页面
   # 
@@ -102,21 +102,36 @@ class Sys::UsersController < ApplicationController
   # 项目初始化方法：修改用户密码，创建group，创建group 用户，给group用户发送邀请邮件
   def group_create
     p "---------#{params}------------------"
-    p @sys_user
-    if params[:password] != params[:password_confirmation]
-      redirect_to group_new_sys_users_path, :notice => "密码验证不一致"
-    else
-      @sys_user.password = params[:password]
-      @sys_user.name = params[:name]
-      @sys_user.save
-      group = Sys::Group.new(:user_id => @sys_user.id,:name => params[:sys_group][:name])
-      group.save
-      wrong_line = Sys::User.import_group_users(params[:bunch_users],group.id)
-      Sys::UserGroup.create(:user_id => @sys_user.id,:group_id => group.id)
-      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+    if params[:password].present?
+      if params[:password] != params[:password_confirmation]
+        redirect_to group_new_sys_users_path, :notice => "密码验证不一致"
+      else
+        @sys_user.password = params[:password]
+        @sys_user.name = params[:name]
+        @sys_user.save
+      end
     end
+    group = Sys::Group.new(:user_id => @sys_user.id,:name => params[:sys_group][:name])
+    group.save
+    Sys::UserGroup.create(:user_id => @sys_user.id,:group_id => group.id)
+    wrong_line = Sys::User.import_group_users(params[:bunch_users],group.id)
     Notifier.send_group_invite_mails(group)
+    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
     render :text => "success"
+  end
+
+  #添加圈子成员页面
+  def group_member_info
+      @group_id = params[:group_id]
+  end
+=end
+
+  #添加圈子成员
+  def import_group_member
+    wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
+    group = Sys::Group.where(:id => params[:group_id]).first
+    Notifier.send_group_invite_mails(group)
+    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
   end
 
   # before_filter方法，检查用户是否存在

@@ -6,6 +6,7 @@ Tonglian::Application.routes.draw do
         post 'bunch_create'
         get  'group_new'
         post 'group_create'
+        post 'import_group_member'
       end
     end
     resources :groups 
