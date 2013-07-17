@@ -173,7 +173,7 @@ class Sys::User < ActiveRecord::Base
   #
   # wangyang.shen 2013.07.15
   def self.create_message_picture(user)
-    img = Magick::Image.read("#{Rails.root}/app/assets/images/message_picture_background.jpg").first
+    img = Magick::Image.read("#{Rails.root}/app/assets/images/picture_background.jpg").first
     gc = Magick::Draw.new
     gc.stroke('transparent')
     gc.font("'#{Rails.root}/app/assets/fonts/FZCYSK.TTF'")
@@ -197,6 +197,10 @@ class Sys::User < ActiveRecord::Base
         end
       end
     end
+
+    gc.stroke_color("#c7568a")
+    gc.stroke_width(2)
+    gc.line(187,60,187,200)
 
     gc.draw(img)
     img.write("#{Rails.root}/public/message_picture/message_picture_#{user.id}.jpg")
