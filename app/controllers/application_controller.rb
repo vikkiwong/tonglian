@@ -4,9 +4,6 @@ class ApplicationController < ActionController::Base
   before_filter :login_check
 
   def login_check
-    p session
-    p session[:id]
-    p session[:role]
     if session[:id].blank? || session[:role].blank? 
       if params[:from_user].present?   # 若是带有微信id的请求链接
         @user = Sys::User.find_by_weixin_id(params[:from_user])
@@ -26,7 +23,6 @@ class ApplicationController < ActionController::Base
   #
   # ping.wang 2013.07.09
   def if_manager
-
     unless ["manager","group_manager"].include?(session[:role])
       redirect_to("/login", :notice => '您没有权限进行此操作！') and return
     end
