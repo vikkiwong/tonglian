@@ -1,6 +1,6 @@
 #encoding: utf-8
 class SessionsController < ApplicationController
-  layout 'no_nav'
+  #layout 'no_nav'
   skip_before_filter :login_check
   skip_before_filter :verify_authenticity_token
 
@@ -10,12 +10,26 @@ class SessionsController < ApplicationController
   def step_one
   end
 
+  # 一分钟搭建第二步:创建圈子
+  #
+  # ping.wang 2013.07.17
+  def step_two
+  end
+
+  # 一分钟搭建第三步:邀请好友
+  #
+  # ping.wang 2013.07.17
+  def step_three
+    @group_id = params[:group_id]
+  end
+
   def create_group_manager
     @user = Sys::User.find_by_email(params[:email])
     if @user.present?
       # 提示该邮箱已注册，请登陆
-      set_session
-      redirect_to step_two_sessions_path
+      # set_session
+      # redirect_to step_two_sessions_path
+      redirect_to(:back, :notice => "此邮箱已注册，请登陆！")
     else
       if params[:password] != params[:password_confirm]
         redirect_to step_one_sessions_path, :notice => "密码验证不一致"
@@ -25,22 +39,8 @@ class SessionsController < ApplicationController
         redirect_to step_two_sessions_path
       end
     end
-
   end
 
-  # 一分钟搭建第二步:创建圈子
-  #
-  # ping.wang 2013.07.17
-  def step_two
-  end
-
-  # 一分钟搭建第二步:邀请好友
-  #
-  # ping.wang 2013.07.17
-  def step_three
-    @group_id = params[:group_id]
-  end
-  
   # 登陆方法
   #
   # ping.wang 2013.07.05
@@ -52,8 +52,7 @@ class SessionsController < ApplicationController
       set_session  # 设置session
       # 跳转到登陆前访问的页面
       back_path = session[:back_path]
-      default_path = (session[:role] == "manager") ? "/sys/groups" : "/sys/groups/my_group"  # 根据角色设置默认跳转路径
-      back_path = default_path if back_path.blank? || back_path =~ /login/
+      back_path = '/' if back_path.blank? || back_path =~ /login/
       session[:back_path] = nil
       redirect_to(back_path)      
     else

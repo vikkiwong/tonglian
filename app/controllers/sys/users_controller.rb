@@ -26,26 +26,6 @@ class Sys::UsersController < ApplicationController
     @sys_user = Sys::User.new
   end
 
-  # GET /sys/users/bunch_new(.:format) 
-  # 批量创建用户
-  # 
-  # ping.wang 2013.07.08
-  def bunch_new
-  end
-
-  # 批量导入用户
-  # ==== 参数格式 ====
-  # 邮箱1，姓名1
-  # 邮箱2，姓名2
-  # 
-  # ping.wang 2013.07.08 修改
-  def bunch_create
-    bunch_users = params[:bunch_users]
-    wrong_line = Sys::User.import_bunch_users(bunch_users)
-    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-    redirect_to sys_users_url
-  end
-
   # GET /sys/users/1/edit
   def edit
   end
@@ -68,7 +48,6 @@ class Sys::UsersController < ApplicationController
   # PUT /sys/users/1.json
   def update
     if @sys_user.update_attributes(params[:sys_user])
-      Sys::User.create_message_picture(@sys_user)    #为修改的用户重新生成用户图片
       redirect_to @sys_user
     else
       flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
@@ -78,15 +57,49 @@ class Sys::UsersController < ApplicationController
 
   # DELETE /sys/users/1
   # DELETE /sys/users/1.json
-  # 软删除用户，将active 设为false
   # 
   # ping.wang 2013.07.05 
   def destroy
-    File.delete("public/" + @sys_user.message_picture)
     @sys_user.destroy
     redirect_to sys_users_url
   end
+
+  # OPTIMIZE
+  # 添加圈子成员
+  def import_group_member
+    begin
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
+      group = Sys::Group.where(:id => params[:group_id]).first
+      Notifier.send_group_invite_mails(group)
+      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+      redirect_to sys_group_path(group)
+    rescue Exception => e
+      p e.message
+      redirect_to step_three_sessions_path(:group_id => group.id)
+    end
+  end
+
 =begin
+  # GET /sys/users/bunch_new(.:format) 
+  # 批量创建用户
+  # 
+  # ping.wang 2013.07.08
+  def bunch_new
+  end
+
+  # 批量导入用户
+  # ==== 参数格式 ====
+  # 邮箱1，姓名1
+  # 邮箱2，姓名2
+  # 
+  # ping.wang 2013.07.08 修改
+  def bunch_create
+    bunch_users = params[:bunch_users]
+    wrong_line = Sys::User.import_bunch_users(bunch_users)
+    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+    redirect_to sys_users_url
+  end
+
   # GET  /sys/users/group_new(.:format)
   # 项目初始化页面
   # 
@@ -126,19 +139,6 @@ class Sys::UsersController < ApplicationController
   end
 =end
 
-  #添加圈子成员
-  def import_group_member
-    begin
-      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
-      group = Sys::Group.where(:id => params[:group_id]).first
-      Notifier.send_group_invite_mails(group)
-      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-      render :text => "success"
-    rescue Exception => e
-      p e.message
-      redirect_to step_three_sessions_path(:group_id => group.id)
-    end
-  end
 
   # before_filter方法，检查用户是否存在
   # ==== params ====
@@ -152,7 +152,6 @@ class Sys::UsersController < ApplicationController
       redirect_to sys_users_url
     end
   end
-
 
   # before_filter方法，检查用户是否有权限操作
   # (如果是管理员或者操作对象是自己则有权限)
