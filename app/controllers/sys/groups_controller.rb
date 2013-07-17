@@ -3,7 +3,7 @@ class Sys::GroupsController < ApplicationController
   def create
   	p "---------#{params}-------"
     user = Sys::User.where(:id => session[:id]).first
-    group = Sys::Group.new(:user_id => user.id,:name => params[:name])
+    group = Sys::Group.new(:user_id => user.id,:name => params[:name],:contact_phone => params[:phone])
     if group.save
       Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
       redirect_to step_three_sessions_path(:group_id => group.id)

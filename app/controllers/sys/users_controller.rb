@@ -128,10 +128,16 @@ class Sys::UsersController < ApplicationController
 
   #添加圈子成员
   def import_group_member
-    wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
-    group = Sys::Group.where(:id => params[:group_id]).first
-    Notifier.send_group_invite_mails(group)
-    flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+    begin
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
+      group = Sys::Group.where(:id => params[:group_id]).first
+      Notifier.send_group_invite_mails(group)
+      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+      render :text => "success"
+    rescue Exception => e
+      p e.message
+      redirect_to step_three_sessions_path(:group_id => group.id)
+    end
   end
 
   # before_filter方法，检查用户是否存在
