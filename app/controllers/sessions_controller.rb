@@ -28,6 +28,13 @@ class SessionsController < ApplicationController
   def step_two
     render :layout => 'no_nav'
   end
+
+  # 一分钟搭建第二步:邀请好友
+  #
+  # ping.wang 2013.07.17
+  def step_three
+    render :layout => 'no_nav'
+  end
   
   # 登陆方法
   #
