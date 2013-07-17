@@ -52,7 +52,8 @@ class SessionsController < ApplicationController
       set_session  # 设置session
       # 跳转到登陆前访问的页面
       back_path = session[:back_path]
-      back_path = "/" if back_path.blank? || back_path =~ /login/
+      default_path = (session[:role] == "manager") ? "/sys/groups" : "/sys/groups/my_group"  # 根据角色设置默认跳转路径
+      back_path = default_path if back_path.blank? || back_path =~ /login/
       session[:back_path] = nil
       redirect_to(back_path)      
     else
