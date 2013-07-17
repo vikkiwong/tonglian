@@ -8,9 +8,9 @@ class Sys::User < ActiveRecord::Base
   #validates_uniqueness_of :email, :message => "此邮箱已存在！"
   validates_format_of :phone, :with => /\d{3}-\d{8}|\d{4}-\d{7}/, :message => "座机格式不正确！", :allow_blank => true
   validates_length_of :mobile, :is => 11, :message => "手机号长度应为11位！", :allow_blank => true
-  validates_numericality_of :mobile, :message => "手机号必须是数字！"
+  validates_numericality_of :mobile, :message => "手机号必须是数字！", :allow_blank => true
   validates_length_of :qq, :maximum => 12, :message => "qq号长度不能超过12位！", :allow_blank => true
-  validates_numericality_of :qq, :message => "qq号必须是数字！"
+  validates_numericality_of :qq, :message => "qq号必须是数字！", :allow_blank => true
   has_many :user_groups, :class_name => "Sys::UserGroup"
 
   after_save :name_to_pinyin, :unless => :skip_callbacks
