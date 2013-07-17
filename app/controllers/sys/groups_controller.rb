@@ -1,13 +1,16 @@
 # encoding: utf-8
 class Sys::GroupsController < ApplicationController
+  before_filter :if_manager, :only => :index
+
   def index
+    @group = Sys::Group.all
   end
 
   def my_group
+    @group = Sys::Group.find_by_user_id(session[:id])
   end
 
   def create
-  	p "---------#{params}-------"
     user = Sys::User.where(:id => session[:id]).first
     group = Sys::Group.new(:user_id => user.id,:name => params[:name])
     if group.save
