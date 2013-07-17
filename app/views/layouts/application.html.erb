@@ -32,7 +32,7 @@
                     <i class="icon-user icon-white"></i>
                     <b><% if session[:name].nil?%><%= session[:email].split("@")[0] %>
                     <% else %><%= session[:name] %><% end %></b>
-                    <b class="caret"></b>
+                    <b class="caret" style="border-top-color:#ffffff;"></b>
                   </a>
                   <ul class="dropdown-menu"  style="min-width: 80px;">
                     <li><a href="/logout">退出</a></li>
