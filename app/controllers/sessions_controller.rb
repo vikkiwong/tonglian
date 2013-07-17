@@ -1,5 +1,6 @@
 #encoding: utf-8
 class SessionsController < ApplicationController
+  layout 'no_nav'
   skip_before_filter :login_check
   skip_before_filter :verify_authenticity_token
 
@@ -7,7 +8,6 @@ class SessionsController < ApplicationController
   #
   # ping.wang 2013.07.17
   def step_one
-    render :layout => 'no_nav'
   end
 
   def create_group_manager
@@ -32,7 +32,6 @@ class SessionsController < ApplicationController
   #
   # ping.wang 2013.07.17
   def step_two
-    render :layout => 'no_nav'
   end
 
   # 一分钟搭建第二步:邀请好友
@@ -40,7 +39,6 @@ class SessionsController < ApplicationController
   # ping.wang 2013.07.17
   def step_three
     @group_id = params[:group_id]
-    render :layout => 'no_nav'
   end
   
   # 登陆方法
