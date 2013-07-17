@@ -109,7 +109,13 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-08
   def help_info_action
-    @start = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息\n【jy+文字】向我们提建议 "
+    @start = "您好，我是通联助手！\n 想建立一个圈子，和好友方便的联系? <a href进入这里申请成为管理员！* \n
+              已经加入圈子了？*进入这里验证邮箱，体验微信通联！* \n
+              已经验证邮箱？那就快快体验微通联吧！ \n
+              输入姓名或拼音首字母即可查询联系方式！\n
+              回复u更新自己的联系方式! \n
+              回复jy+文字向我们提建议! \n
+              回复h查看本条帮助信息!"
     render "start", :formats => :xml
   end
 
