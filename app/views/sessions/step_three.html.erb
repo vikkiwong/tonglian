@@ -4,4 +4,14 @@
 
 <h2>第三步：邀请好友</h2>
 
-这里需要一个表单
+<%= form_tag(sessions_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+  <div>
+  	<label></label>
+	  <textarea name="bunch_users" style="width:450px;height:200px;" placeholder="example1@email.com,姓名1                   
+                                                                                                      example2@email.com,姓名2
+                                                                                                                                                     ……"></textarea>
+  </div>
+  <div >
+    <button type="submit" class="btn" >确认邀请</button>
+  </div>
+<% end %>
