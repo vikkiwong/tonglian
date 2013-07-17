@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
-  before_filter :find_user, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_user, :only => [:show, :edit, :update, :destroy,:group_create]
   before_filter :if_manager, :only => [:index, :new, :bunch_new, :bunch_create, :create, :destroy, :group_new, :group_create]
   before_filter :if_can_manage, :only => [:edit, :update]
 
@@ -92,14 +92,31 @@ class Sys::UsersController < ApplicationController
   # 
   # ping.wang 2013.07.16
   def group_new
+
     @sys_user = Sys::User.find_by_id(session[:id])
     @group = Sys::Group.new
+    p @sys_user
   end
 
   # POST   /sys/users/group_create(.:format)
   # 项目初始化方法：修改用户密码，创建group，创建group 用户，给group用户发送邀请邮件
   def group_create
     p "---------#{params}------------------"
+    p @sys_user
+    if params[:password] != params[:password_confirmation]
+      redirect_to group_new_sys_users_path, :notice => "密码验证不一致"
+    else
+      @sys_user.password = params[:password]
+      @sys_user.name = params[:name]
+      @sys_user.save
+      group = Sys::Group.new(:user_id => @sys_user.id,:name => params[:sys_group][:name])
+      group.save
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],group.id)
+      Sys::UserGroup.create(:user_id => @sys_user.id,:group_id => group.id)
+      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+    end
+    Notifier.send_group_invite_mails(group)
+    render :text => "success"
   end
 
   # before_filter方法，检查用户是否存在

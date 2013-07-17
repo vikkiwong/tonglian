@@ -79,6 +79,31 @@ class Sys::User < ActiveRecord::Base
     wrong_line
   end
 
+  #批量导入用户，添加用户分组关联
+  #
+  #guanzuo.li
+  #2013.07.16
+  def self.import_group_users(group_users,group_id)
+    return false unless group_users.present?
+    wrong_line = []
+    group_users.split("\n").each do |line|
+      email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
+      name = name.present? ? name.strip.gsub(/\s+/, "") : ""
+      email = email.present? ? email.strip.gsub(/\s+/, "") : ""
+      user = Sys::User.find_or_initialize_by_email_and_name(email,name)
+      if user.new_record?
+        user.role = "member"
+        if user.save
+          create_message_picture(user)   #为创建成功的用户生成用户图片
+        else
+          wrong_line << email      # 将创建出错的邮箱记录下来
+        end
+      end
+      Sys::UserGroup.create(:user_id => user.id, :group_id => group_id)
+    end
+    wrong_line
+  end
+
   # 按中文姓名或拼音或邮箱查找用户
   # ================
   # 参数:(查询词)string

@@ -32,6 +32,17 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :subject => "管理员申请").deliver!
   end
 
+  #圈成员邀请邮件
+  #
+  #guanzuo.li
+  #2013.07.16
+  def send_group_invite_mails(group)
+    group.users.each do |user|
+      next if user.id == group.user_id
+      mail(:to => user.email, :subject => "邀请您加入#{group.name}").deliver!
+    end
+  end
+
   def send_mail(params = {})
     @mail_body = params[:mail_body]
     mail(:subject => params[:subject],
