@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
-  skip_before_filter :login_check, :only => [:new, :create]
+  skip_before_filter :login_check, :only => [:new, :create, :activate_group_manager]
   before_filter :find_user, :only => [:show, :edit, :update, :destroy,:group_create]
   before_filter :if_manager, :only => [:index, :bunch_new, :bunch_create, :destroy, :group_new, :group_create]
   before_filter :if_can_manage, :only => [:edit, :update]
@@ -42,14 +42,14 @@ class Sys::UsersController < ApplicationController
         redirect_to(:back, :notice => "此邮箱已注册，请登陆！") and return
       end
       @user.update_attributes(:role => "group_manager", :name => params[:name],:password => params[:password], :active => false)
-      # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
+      Notifier.send_activate_group_manager_mail(@user)
       set_session and redirect_to step2_path
     else
       unless params[:password] == params[:password_confirm]
         redirect_to step1_path, :notice => "密码验证不一致" and return
       end
       @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password])
-      # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
+      Notifier.send_activate_group_manager_mail(@user)
       set_session and redirect_to step2_path
     end
   end
@@ -87,6 +87,30 @@ class Sys::UsersController < ApplicationController
       p e.message
       redirect_to step_three_sessions_path(:group_id => group.id)
     end
+  end
+
+  #接收圈子管理员激活邮件,激活管理员及其创建圈子使用权限
+  def activate_group_manager
+    source = Base64.decode64(params[:code])
+      if source.present?
+        source_arr = source.split("&")
+        user_id = source_arr[0]
+        send_time = Time.parse(source_arr[1])
+        if send_time > Time.now - 1.days
+          begin
+            Sys::User.update(user_id,:active => true)
+            Sys::Group.update_all(:active => true,:user_id => user_id)
+            redirect_to success_sessions_path(:message => "activate_group_manager")
+          rescue Exception => e
+            p e.message
+            render :text => "激活失败" + e.message
+          end
+        else
+          render :text => "链接过期"
+        end
+      else
+        render :text => "Fail"
+      end
   end
 
   # before_filter方法，检查用户是否存在

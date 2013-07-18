@@ -24,7 +24,7 @@ class Sys::GroupsController < ApplicationController
     user = Sys::User.where(:id => session[:id]).first
     group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => false)
     if group.save
-      #Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
+      Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
       Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
       redirect_to invitation_sys_group_path(group)
     else

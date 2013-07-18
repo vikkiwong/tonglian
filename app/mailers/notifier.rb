@@ -32,6 +32,15 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :subject => "管理员申请").deliver!
   end
 
+  #管理员及其创建的圈子激活邮件
+  def send_activate_group_manager_mail(user)
+    @name = user.name
+    code_str = user.id.to_s + "&" + Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s
+    @code = Base64.encode64(code_str)
+    mail(:to => user.email, :subject => "微信圈管理员激活邮件").deliver!
+  end
+
+
   #圈成员邀请邮件
   #
   #guanzuo.li
