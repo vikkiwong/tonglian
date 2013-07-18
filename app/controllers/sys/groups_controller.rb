@@ -37,6 +37,44 @@ class Sys::GroupsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @sys_group.update_attributes(params[:sys_group])
+      Sys::Group.create_group_picture(@sys_group)      #圈子修改成功后生成图片
+      redirect_to @sys_group
+    else
+      flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
+      render action: "edit"
+    end
+  end
+
+  #添加用户
+  def invitation
+    user = Sys::User.where(:id => session[:id]).first
+    @active_flag = user.active  # 标志当前登陆用户账号是否激活
+  end
+
+  # 邀请用户方法
+  def invite_users
+    begin
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
+      group = Sys::Group.where(:id => params[:group_id]).first
+      if group.active
+        Notifier.send_group_invite_mails(group)
+        flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+        redirect_to sys_group_path(group)
+      else
+        flash[:notice] = "请先激活管理员权限。"
+        render invitation_sys_group_path(group)
+      end
+    rescue Exception => e
+      p e.message
+      redirect_to invitation_sys_group_path(group)
+    end
+  end
+
   def destroy
     File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
     @sys_group.destroy
@@ -53,40 +91,6 @@ class Sys::GroupsController < ApplicationController
       end
     end
     redirect_to sys_group_url(@sys_group = Sys::Group.find_by_id(group_id))
-  end
-
-  def edit
-  end
-
-  #添加用户
-  def invitation
-    user = Sys::User.where(:id => session[:id]).first
-    @active_flag = user.active  # 标志当前登陆用户账号是否激活
-  end
-
-  # 邀请用户方法
-  def invite_users
-    begin
-      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:id])
-      group = Sys::Group.where(:id => params[:id]).first
-      Notifier.send_group_invite_mails(group)
-      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-      redirect_to sys_group_path(group)
-    rescue Exception => e
-      p e.message
-      redirect_to invitation_sys_group_path(group)
-    end
-
-  end
-
-  def update
-    if @sys_group.update_attributes(params[:sys_group])
-      Sys::Group.create_group_picture(@sys_group)      #圈子修改成功后生成图片
-      redirect_to @sys_group
-    else
-      flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
-      render action: "edit"
-    end
   end
 
   def find_group
