@@ -23,13 +23,20 @@ class SessionsController < ApplicationController
     @group_id = params[:group_id]
   end
 
+  # 创建圈子管理员账号，如邮箱已经存在: 
+  # 1.角色是manager或者group_manager -> 提示已注册请登陆
+  # 2.角色是member, 则更新用户角色为group_manager, 记住密码，设置session，跳转到第二步
   def create_group_manager
     @user = Sys::User.find_by_email(params[:email])
     if @user.present?
-      # 提示该邮箱已注册，请登陆
-      # set_session
-      # redirect_to step_two_sessions_path
-      redirect_to(:back, :notice => "此邮箱已注册，请登陆！")
+      # 如果角色是group_manager或者manager, 提示该邮箱已注册，
+      if ["manager", "group_manager"].include? (@user.role)
+        redirect_to(:back, :notice => "此邮箱已注册，请登陆！")
+      else  # 如果该邮箱已注册，但是角色是member，更新用户信息，设置session, 且跳转到第二步
+        @user.update_attributes(:role => "group_manager", :name => params[:name],:password => params[:password])
+        set_session
+        redirect_to step_two_sessions_path
+      end
     else
       if params[:password] != params[:password_confirm]
         redirect_to step_one_sessions_path, :notice => "密码验证不一致"
