@@ -2,16 +2,23 @@
   登陆-微信通联
 <% end %>
 
-<form action="/sessions" method="post">
-	<div>
-	  <label>用户名</label>
-	  <input type="email" name="email">
+<div class="row">
+	<div class="span5">
+		<form action="/sessions" method="post">
+			<div>
+			  <label>用户名</label>
+			  <input type="email" name="email">
+			</div>
+			<div>
+			  <label>密码</label>
+			  <input type="password" name="password">
+			</div>
+		  <div>
+		  	<button type="submit" class="btn">登陆</button>
+		  </div>
+		</form>
 	</div>
-	<div>
-	  <label>密码</label>
-	  <input type="password" name="password">
+	<div class="span6" style="padding-left:30px;height:150px;border-left:#DDD solid 1px;">
+		<p style="margin-top:50px;font-size:16px;">没有账号？<a href="/sessions/step_one">一分钟搭建微通联!</a></p>
 	</div>
-  <div>
-  	<button type="submit" class="btn">登陆</button>
-  </div>
-</form>
+</div>
