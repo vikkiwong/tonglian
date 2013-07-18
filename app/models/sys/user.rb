@@ -134,24 +134,25 @@ class Sys::User < ActiveRecord::Base
       users = Sys::User.includes(:user_groups).find(:all, :conditions => ["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "%#{str}%"], :limit => 10) unless users.present?   # 若无该姓，按名查找
     end
 =end
+    select_fields = "sys_users.email,sys_users.role,sys_users.mobile,sys_users.phone,sys_users.name,sys_users.id,sys_user_groups.group_id,"
     if /[\d._@]/.match(str).present?   # 若包含数字或._, 按照email查找
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.email LIKE ? ",group_ids,"%#{str}%"]).limit(10).all
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.email LIKE ? ",group_ids,"%#{str}%"]).limit(10).all
     elsif /^[A-Za-z]+$/.match(str).present?  # 分优先级，按拼音和email查找
       # 先按拼音查找
       # 按首字母
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.f_letters = ? ",group_ids, "#{str}"]).limit(10).all
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.f_letters = ? ",group_ids, "#{str}"]).limit(10).all
       # 按姓
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.family_name = ? ",group_ids, "#{str}"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.family_name = ? ",group_ids, "#{str}"]).limit(10).all unless users.present?
       # 匹配全拼,连续
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.pinyin LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.pinyin LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
       # 匹配全拼,断续
       regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.pinyin REGEXP ? ",group_ids, regrep_str]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.pinyin REGEXP ? ",group_ids, regrep_str]).limit(10).all unless users.present?
       # 按邮箱查找
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and and sys_users.email LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and and sys_users.email LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
     else  # 按name查找
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "#{str}%"]).limit(10).all   # 按姓查找
-      users = Sys::User.includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?   # 若无该姓，按名查找
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "#{str}%"]).limit(10).all   # 按姓查找
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?   # 若无该姓，按名查找
     end
     return users
   end
