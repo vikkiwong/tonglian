@@ -3,6 +3,7 @@ Tonglian::Application.routes.draw do
     resources :users do
       collection do
         post 'import_group_member'
+        get 'activate_group_manager'
       end
     end
     resources :groups do
