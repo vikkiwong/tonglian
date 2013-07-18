@@ -11,9 +11,12 @@ Tonglian::Application.routes.draw do
         get 'invitation'
         post 'invite_users'
       end
+      collection do
+        delete 'destroy_user_group'
+      end
     end
   end
-  
+
   resources :weixins
   resources :feedbacks
   resources :sessions do

@@ -36,7 +36,22 @@ class Sys::GroupsController < ApplicationController
       render :new
     end
   end
-
+  def destroy
+    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
+    @sys_group.destroy
+    redirect_to sys_groups_url
+  end
+  #删除圈子中的成员
+  def destroy_user_group
+    if params[:group_id].present? && params[:user_id].present?
+      if params[:user_id].to_i != session[:id].to_i
+        group_id = params[:group_id]
+        user_id = params[:user_id]
+        Sys::UserGroup.where("user_id = #{user_id} and group_id = #{group_id}").first.destroy
+      end
+    end
+    redirect_to sys_group_url(@sys_group = Sys::Group.find_by_id(group_id))
+  end
 
   def edit
   end
@@ -82,7 +97,7 @@ class Sys::GroupsController < ApplicationController
   def find_group
     @sys_group = Sys::Group.find_by_id(params[:id])
     unless @sys_group.present? 
-      flash[:notice] = "用户不存在！"
+      flash[:notice] = "圈子不存在！"
       redirect_to sys_groups_url
     end
   end
