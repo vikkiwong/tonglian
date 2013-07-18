@@ -1,33 +1,35 @@
 <% content_for :head do %>
-小组列表-微信通联
+圈子列表-微信通联
 <% end %>
 
-<h2>小组列表</h2>
+<h2>圈子列表</h2>
 <%#= link_to '添加用户', new_sys_user_path %>
-<% if @group.present? %>
+<% if @sys_groups.present? %>
 <table class="table table-borded table-hover">
     <tr>
-        <th>小组名称</th>
+        <th>圈子名称</th>
         <th>创建人</th>
-        <th>小组成员数</th>
+        <th>圈子成员数</th>
+        <th>创建时间</th>
         <th>操作</th>
     </tr>
 
-    <% @group.each do |group| %>
+    <% @sys_groups.each do |group| %>
     <tr>
         <td>
-            <%= link_to group.name %>
+            <%= link_to group.name, sys_group_path(group) %>
         </td>
         <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] %></td>
         <td><%= group.users.size %></td>
+        <td><%= group.created_at.strftime("%Y年%m月%d日") %></td>
         <td>
-            <%= link_to '修改'%>
-            <%= link_to '删除'%>
+            <%= link_to '编辑' , edit_sys_group_path(group) %>
+            <%= link_to '删除' , group , :method => :delete , method: :delete, data: { confirm: '确定删除?' } %>
         </td>
     </tr>
     <% end %>
 </table>
-<p><%= will_paginate @group,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
+<p><%= will_paginate @sys_groups,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
 <% end %>
 
 

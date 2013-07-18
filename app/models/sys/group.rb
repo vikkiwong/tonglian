@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Sys::Group < ActiveRecord::Base
-  attr_accessible :id, :name, :user_id, :group_picture,:contact_phone, :create_user
+  attr_accessible :id, :name, :user_id, :group_picture,:contact_phone, :create_user, :created_at
 
   has_many :user_groups, :class_name => "Sys::UserGroup"
   has_many :users, :through => :user_groups, :source => :user
@@ -28,15 +28,15 @@ class Sys::Group < ActiveRecord::Base
     gc.font("'#{Rails.root}/app/assets/fonts/FZCYSK.TTF'")
     #绘制标题
     gc.text_align(Magick::CenterAlign)
-    gc.pointsize(90)
-    gc.kerning(20)
-    group.name.present?? gc.text(260,130,group.name) : gc.text(260,130,"微信通联")
+    gc.pointsize(60)
+    gc.kerning(10)
+    group.name.present?? gc.text(260,130,group.name) : gc.text(260,130,"圈子名称")
     #绘制电话
     gc.kerning(10)
     gc.pointsize(30)
-    gc.text(260,220,"13876543567")
-    gc.stroke_color("#c7568a")
+    group.contact_phone.present?? gc.text(260,220,group.contact_phone) : gc.text(260,220,"还没有联系方式")
     #绘制分割线
+    gc.stroke_color("#c7568a")
     gc.stroke_width(3)
     gc.line(60,180,460,180)
     gc.draw(img)
