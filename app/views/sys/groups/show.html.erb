@@ -7,7 +7,23 @@
 </h2>
 
 <h2 class="hidden-phone"><%= @sys_group.name %></h2>
-圈子的其他信息
-
+<%= image_tag(@sys_group.group_picture) %>
+<div>
+    <h3>创建人: <%= @sys_group.create_user.name %></h3>
+    <h3>圈子成员:
+        <% @sys_group.users.each do |user| %>
+        <%= link_to user.name , sys_user_path(user)%>
+        <% end %>
+    </h3>
+    <h3>创建时间: <%= @sys_group.created_at.strftime("%Y年%m月%d日 %H时%M分%S秒") %></h3>
+    <h3>联系方式: <%= @sys_group.contact_phone %></h3>
+</div>
+<div class="hidden-phone">
+    <%= link_to '编辑' , edit_sys_group_path(@sys_group) %> |
+    <%= link_to '返回' , sys_groups_path %>
+</div>
+<div class="visible-phone">
+  <%= link_to '编辑', edit_sys_group_path(@sys_group) %>
+</div>
 
 
