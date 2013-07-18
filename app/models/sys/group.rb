@@ -1,10 +1,16 @@
 # encoding: utf-8
 class Sys::Group < ActiveRecord::Base
-  attr_accessible :id, :name, :user_id, :group_picture,:contact_phone
+  attr_accessible :id, :name, :user_id, :group_picture,:contact_phone, :create_user
 
   has_many :user_groups, :class_name => "Sys::UserGroup"
   has_many :users, :through => :user_groups, :source => :user
 
+  #获得创建人的信息
+  #
+  #wangyang.shen 2013-07-17
+  def create_user
+    return Sys::User.find_by_id(user_id)
+  end
   #获得小组的信息图片位置
   #
   #wangyang.shen 2013-07-17

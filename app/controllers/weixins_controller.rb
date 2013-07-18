@@ -109,8 +109,8 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-08
   def help_info_action(from_user)
-    @start = "您好，我是通联助手！
-想建立一个圈子，和好友方便的联系? <a href='http://#{SITE_DOMAIN}/sessions/apply_for_admin?from_user=#{from_user}'>进入这里申请成为管理员</a>!
+    @start = "您好，我是通联助手!
+想建立一个圈子，和好友方便的联系?<a href='http://#{SITE_DOMAIN}/sessions/apply_for_admin?from_user=#{from_user}'>进入这里申请成为管理员</a>!
 已经加入圈子了？<a href='http://<%=SITE_DOMAIN%>/sessions/verification?from_user=#{from_user}'>进入这里验证邮箱，体验微信通联</a>!
 已经验证邮箱？那就快快体验微通联吧!
 输入姓名或拼音首字母即可查询联系方式!

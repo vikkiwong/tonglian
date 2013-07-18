@@ -3,7 +3,7 @@ class Sys::GroupsController < ApplicationController
   before_filter :if_manager, :only => :index
 
   def index
-    @group = Sys::Group.all
+    @group = Sys::Group.all.paginate :page => params[:page]
   end
 
   def my_group
@@ -19,5 +19,10 @@ class Sys::GroupsController < ApplicationController
     else
       redirect_to step_two_sessions_path :notice => "圈子创建失败。"
     end
+  end
+
+  def destroy
+      @group.destroy
+      redirect_to sys_group_url
   end
 end

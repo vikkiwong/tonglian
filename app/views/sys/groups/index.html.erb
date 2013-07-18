@@ -1,0 +1,34 @@
+<% content_for :head do %>
+小组列表-微信通联
+<% end %>
+
+<h2>小组列表</h2>
+<%#= link_to '添加用户', new_sys_user_path %>
+<% if @group.present? %>
+<table class="table table-borded table-hover">
+    <tr>
+        <th>小组名称</th>
+        <th>创建人</th>
+        <th>小组成员数</th>
+        <th>操作</th>
+    </tr>
+
+    <% @group.each do |group| %>
+    <tr>
+        <td>
+            <%= link_to group.name %>
+        </td>
+        <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] %></td>
+        <td><%= group.users.size %></td>
+        <td>
+            <%= link_to '修改'%>
+            <%= link_to '删除'%>
+        </td>
+    </tr>
+    <% end %>
+</table>
+<p><%= will_paginate @group,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
+<% end %>
+
+
+
