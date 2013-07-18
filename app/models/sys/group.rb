@@ -34,9 +34,9 @@ class Sys::Group < ActiveRecord::Base
     #绘制电话
     gc.kerning(10)
     gc.pointsize(30)
-    gc.text(260,220,group.contact_phone)
-    gc.stroke_color("#c7568a")
+    group.contact_phone.present?? gc.text(260,220,group.contact_phone) : gc.text(260,220,"还没有联系方式")
     #绘制分割线
+    gc.stroke_color("#c7568a")
     gc.stroke_width(3)
     gc.line(60,180,460,180)
     gc.draw(img)
