@@ -1,23 +1,41 @@
+
 <% content_for :head do %>
   圈子信息-微信通联
 <% end %>
-
 <h2 class="visible-phone" style="font-size:20px;line-height:20px;">
     我的圈子
 </h2>
-
 <h2 class="hidden-phone"><%= @sys_group.name %></h2>
 <%= image_tag(@sys_group.group_picture) %>
-<div>
-    <h3>创建人: <%= @sys_group.create_user.name %></h3>
-    <h3>圈子成员:
-        <% @sys_group.users.each do |user| %>
-        <%= link_to user.name , sys_user_path(user)%>
-        <% end %>
-    </h3>
-    <h3>创建时间: <%= @sys_group.created_at.strftime("%Y年%m月%d日 %H时%M分%S秒") %></h3>
-    <h3>联系方式: <%= @sys_group.contact_phone %></h3>
-</div>
+<dl class="dl-horizontal dl-tlian">
+  <% if @sys_group.create_user.present? %>
+        <dt style="width: 70px;">创建人:</dt>
+        <dd>
+          <%= @sys_group.create_user.name.present?? @sys_group.create_user.name : @sys_group.create_user.email.split("@")[0]%>
+        </dd>
+  <% end %>
+  <% if @sys_group.users.present? %>
+        <dt style="width: 70px;">圈子成员:</dt>
+        <dd>
+          <% @sys_group.users.each do |user| %>
+              <% if user.name.present?%>
+                <%= link_to user.name , sys_user_path(user) %>
+              <% else %>
+                <%= link_to user.email.split("@")[0] , sys_user_path(user) %>
+              <% end %>
+          <% end %>
+          <a> </a>
+        </dd>
+  <% end %>
+  <% if @sys_group.created_at.present?%>
+        <dt style="width: 70px;">创建时间:</dt>
+        <dd><%= shown_time(@sys_group.created_at) %></dd>
+  <% end %>
+  <% if @sys_group.contact_phone.present?%>
+        <dt style="width: 70px;">联系方式:</dt>
+        <dd><%= @sys_group.contact_phone %></dd>
+  <% end %>
+</dl>
 <div class="hidden-phone">
     <%= link_to '编辑' , edit_sys_group_path(@sys_group) %> |
     <%= link_to '返回' , sys_groups_path %>

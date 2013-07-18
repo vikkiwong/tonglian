@@ -5,9 +5,9 @@ class Sys::GroupsController < ApplicationController
 
   def index
     if session[:role] == "manager"
-      @sys_groups = Sys::Group.all.paginate :page => params[:page]
+      @sys_groups = Sys::Group.order("created_at DESC").all.paginate :page => params[:page]
     else # group_manager
-      @sys_groups = Sys::Group.find_all_by_user_id(session[:id]).paginate :page => params[:page]
+      @sys_groups = Sys::Group.order("created_at DESC").find_all_by_user_id(session[:id]).paginate :page => params[:page]
     end
   end
 
@@ -29,11 +29,22 @@ class Sys::GroupsController < ApplicationController
   end
 
   def destroy
+      #File.delete("/public/#{@group.group_picture}") if File.file?("/public/#{@group.group_picture}")
+      File.delete(@group.group_picture)
       @group.destroy
       redirect_to sys_groups_url
   end
 
   def edit
+  end
+
+  def invitation
+    
+  end
+
+  # 
+  def invite_users
+    # 邀请用户方法
   end
 
   def update
