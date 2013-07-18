@@ -84,17 +84,20 @@ class Sys::User < ActiveRecord::Base
   #guanzuo.li
   #2013.07.16
   def self.import_group_users(group_users,group_id)
+    p group_users
+    p group_id
     return false unless group_users.present?
     wrong_line = []
     group_users.split("\n").each do |line|
       email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
       name = name.present? ? name.strip.gsub(/\s+/, "") : ""
       email = email.present? ? email.strip.gsub(/\s+/, "") : ""
-      user = Sys::User.find_or_initialize_by_email_and_name(email,name)
+      user = Sys::User.find_or_initialize_by_email(email)
       if user.new_record?
         user.role = "member"
+        user.name = name
         if user.save
-          create_message_picture(user)   #为创建成功的用户生成用户图片
+          #create_message_picture(user)   #为创建成功的用户生成用户图片
         else
           wrong_line << email      # 将创建出错的邮箱记录下来
         end

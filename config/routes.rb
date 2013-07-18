@@ -12,7 +12,7 @@ Tonglian::Application.routes.draw do
     resources :groups do
       member do
         get 'invitation'
-        put 'invite_users'
+        post 'invite_users'
       end
     end
   end
