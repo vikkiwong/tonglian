@@ -3,29 +3,52 @@
 <% end %>
 
 <h2>创建圈子</h2>
+
 <% unless @active_flag %>
 	<a href="#">请激活账号</a>
 <% end %>
+
 <div class="row">
 	<div class="span5">
-		<%= form_tag(sys_groups_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+		<%= form_tag('/sys/groups', :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
 			<div>
-			  <label>名称</label>
-			  <input type="text" name="name">
+			  <label>圈子名称</label>
+			  <input type="text" name="name" id="form_name">
 			</div>
 			<div>
 			  <label>联系方式</label>
-			  <input type="text" name="phone">
+			  <input type="text" name="phone" id="form_phone">
 			</div>
 		  <div>
 		  	<button type="submit" class="btn">下一步</button>
 		  </div>
 		<% end %>
 	</div>
-	<div class="span6" style="padding-left:70px;height:180px;border-left:#DDD solid 1px;">
-		<p>微信头图样式</p>
-		<div>
-			<img src="/assets/default_2.jpg" style="height:140px;">
-		</div>
-	</div>
+
+<!-- 	<div class="span6 select_wxtp">
+		<table>
+			<tr>
+				<td>
+					<div class="wxtp_box default_wxtp">
+						<p>微信通联</p>
+					</div>
+				</td>
+				<td>
+					<div class="wxtp_box wxtp" >
+						<div style="height:40px;"></div>
+						<p class="wxtp_title">微信通联</p>
+						<hr>
+						<p class="wxtp_phone">联系方式</p>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div> -->
 </div>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+	});
+</script>
