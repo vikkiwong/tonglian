@@ -4,7 +4,9 @@
 
 <p class="muted visible-phone">网页登陆tonglian.benyue.us,邀请好友更便捷！</p>
 <h2>第三步：邀请好友</h2>
-<a href="#">激活账号>>></a>
+<% unless @active_flag %>
+  <a href="#">请激活账号</a>
+<% end %>
 <p class="muted">分行填写好友邮箱和姓名</p>
 <%= form_tag(invite_users_sys_group_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
   <div>
