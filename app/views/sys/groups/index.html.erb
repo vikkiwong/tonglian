@@ -19,9 +19,9 @@
         <td>
             <%= link_to group.name, sys_group_path(group) %>
         </td>
-        <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] %></td>
+        <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] if group.create_user.present? %></td>
         <td><%= group.users.size %></td>
-        <td><%= group.created_at.strftime("%Y年%m月%d日") %></td>
+        <td><%= shown_time(group.created_at) %></td>
         <td>
             <%= link_to '编辑' , edit_sys_group_path(group) %>
             <%= link_to '删除' , group , :method => :delete , method: :delete, data: { confirm: '确定删除?' } %>
