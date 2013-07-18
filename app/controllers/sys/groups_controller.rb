@@ -15,6 +15,8 @@ class Sys::GroupsController < ApplicationController
   end
 
   def new
+    user = Sys::User.where(:id => session[:id]).first
+    @active_flag = user.active  # 标志当前登陆用户账号是否激活
   end
 
   # step_two的form提交到该方法
@@ -40,6 +42,8 @@ class Sys::GroupsController < ApplicationController
   end
 
   def invitation
+    user = Sys::User.where(:id => session[:id]).first
+    @active_flag = user.active  # 标志当前登陆用户账号是否激活
   end
 
   def invite_users

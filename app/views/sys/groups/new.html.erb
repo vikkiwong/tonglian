@@ -3,7 +3,9 @@
 <% end %>
 
 <h2>创建圈子</h2>
-<a href="#">激活账号>>></a>
+<% unless @active_flag %>
+	<a href="#">请激活账号</a>
+<% end %>
 <div class="row">
 	<div class="span5">
 		<%= form_tag(sys_groups_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
