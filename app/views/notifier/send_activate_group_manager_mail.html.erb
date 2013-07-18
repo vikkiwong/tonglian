@@ -1,0 +1,4 @@
+<p><%= @name + "，" if @name.present? %>您好：</p>
+<p>点击以下链接，激活微信管理员权限</p>
+<p><%= link_to(activate_group_manager_sys_users_url({:host => SITE_DOMAIN,:code => @code}),activate_group_manager_sys_users_url({:host => SITE_DOMAIN,:code => @code}))%></p>
+<p>如无法点击，请将链接拷贝到浏览器地址栏中直接访问。</p>
