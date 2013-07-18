@@ -53,7 +53,7 @@
             <td><%= sys_user.qq %></td>
             <td>
               <% if sys_user.id != session[:id].to_i %>
-                <%= link_to '从圈子中删除', "destroy_user_group", method: :delete, user_id: sys_user.id, group_id: @sys_group.id, data: { confirm: '确定删除?' } %>
+                <%= link_to '从圈子中删除', destroy_user_group_sys_groups_path(:user_id => sys_user.id,:group_id => @sys_group.id), method: :delete , data: { confirm: '确定删除?' } %>
               <% end %>
             </td>
           </tr>
