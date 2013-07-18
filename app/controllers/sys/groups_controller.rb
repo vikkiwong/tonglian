@@ -23,9 +23,11 @@ class Sys::GroupsController < ApplicationController
       Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
       redirect_to step_three_sessions_path(:group_id => group.id)
     else
-      redirect_to step_two_sessions_path :notice => "圈子创建失败。"
+      flash[:notice] = group.errors.collect {|attr,error| error}.join("\n")
+      render 'sessions/step_two'
     end
   end
+
   def destroy
       @group.destroy
       redirect_to sys_groups_url
