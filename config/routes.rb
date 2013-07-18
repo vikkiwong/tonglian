@@ -9,11 +9,7 @@ Tonglian::Application.routes.draw do
         post 'import_group_member'
       end
     end
-    resources :groups do
-      collection do
-        get 'my_group'
-      end
-    end
+    resources :groups
   end
   
   resources :weixins
@@ -35,5 +31,5 @@ Tonglian::Application.routes.draw do
   
   match "/login" => "sessions#new"
   match "/logout" => "sessions#destroy"
-  root :to => 'sessions#step_one'
+  root :to => 'sys/groups#index'
 end

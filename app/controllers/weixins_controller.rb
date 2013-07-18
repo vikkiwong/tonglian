@@ -133,7 +133,7 @@ class WeixinsController < ApplicationController
   #guanzuo.li
   #2013-07-08
   def search_user_action
-    @users = Sys::User.find_user(params[:xml][:Content])
+    @users = Sys::User.find_user(params[:xml][:Content],@user)
     if @users.present?
       if @users.size == 1
         render "single_address",:formats => :xml
