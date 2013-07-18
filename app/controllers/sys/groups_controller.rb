@@ -27,10 +27,9 @@ class Sys::GroupsController < ApplicationController
     end
   end
   def destroy
-      #File.delete("/public/#{@group.group_picture}") if File.file?("/public/#{@group.group_picture}")
-      File.delete(@group.group_picture)
-      @group.destroy
-      redirect_to sys_groups_url
+    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
+    @sys_group.destroy
+    redirect_to sys_groups_url
   end
 
   def edit
@@ -44,11 +43,6 @@ class Sys::GroupsController < ApplicationController
       flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
       render action: "edit"
     end
-  end
-
-  def destroy
-    @sys_group.destroy
-    redirect_to sys_groups_url
   end
 
   def find_group
