@@ -44,20 +44,13 @@ class Sys::GroupsController < ApplicationController
 
   #添加用户
   def invitation
-<<<<<<< HEAD
-    @group = Sys::Group.where(:id => params[:id]).first
-  end
-
-   # 邀请用户方法
-=======
     user = Sys::User.where(:id => session[:id]).first
     @active_flag = user.active  # 标志当前登陆用户账号是否激活
   end
 
->>>>>>> cb99e1460e0a4a74b1b3a77a26ae3f54ebc0cc49
+  # 邀请用户方法
   def invite_users
     begin
-
       wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:id])
       group = Sys::Group.where(:id => params[:id]).first
       Notifier.send_group_invite_mails(group)
