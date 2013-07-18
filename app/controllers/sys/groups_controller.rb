@@ -1,13 +1,13 @@
 # encoding: utf-8
 class Sys::GroupsController < ApplicationController
   before_filter :if_member
-  before_filter :find_group, :only => [:show, :edit, :update, :destroy, :invitation]
+  before_filter :find_group, :only => [:show, :edit, :update, :destroy, :invitation, :invite_users]
 
   def index
     if session[:role] == "manager"
-      @sys_groups = Sys::Group.order("created_at DESC").all.paginate :page => params[:page]
-    else # group_manager
-      @sys_groups = Sys::Group.order("created_at DESC").find_all_by_user_id(session[:id]).paginate :page => params[:page]
+      @sys_groups = Sys::Group.is_valided.ordered.paginate :page => params[:page]
+    else
+      @sys_groups = Sys::Group.where(:user_id => session[:id]).is_valided.ordered.paginate :page => params[:page]
     end
   end
 
@@ -22,7 +22,8 @@ class Sys::GroupsController < ApplicationController
   # step_two的form提交到该方法
   def create
     unless params[:name].present? && params[:phone].present?
-      render :new,  :notice => "圈子名称和圈子名称都不能为空" and return
+      flash[:notice] = "圈子名称和联系方式都不能为空"
+      render :new and return
     end
 
     user = Sys::User.where(:id => session[:id]).first
@@ -36,7 +37,7 @@ class Sys::GroupsController < ApplicationController
       render :new
     end
   end
-
+  
   def edit
   end
 
@@ -59,25 +60,25 @@ class Sys::GroupsController < ApplicationController
   # 邀请用户方法
   def invite_users
     begin
-      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
-      group = Sys::Group.where(:id => params[:group_id]).first
-      if group.active
-        Notifier.send_group_invite_mails(group)
+      if @sys_group.active
+        wrong_line = Sys::User.import_group_users(params[:bunch_users], params[:id])  # 导入方法需要修改
+        Notifier.send_group_invite_mails(@sys_group)
         flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-        redirect_to sys_group_path(group)
+        redirect_to sys_group_path(@sys_group)
       else
-        flash[:notice] = "请先激活管理员权限。"
-        render invitation_sys_group_path(group)
+        flash[:notice] = "您需要激活账号才能邀请好友~"
+        render :invitation
       end
     rescue Exception => e
       p e.message
-      redirect_to invitation_sys_group_path(group)
+      redirect_to invitation_sys_group_path(@sys_group)
     end
   end
 
+  # DELETE /sys/groups/:id(.:format)
   def destroy
     File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
-    @sys_group.destroy
+    @sys_group.update_attribute(:is_valid, false)
     redirect_to sys_groups_url
   end
 
@@ -93,9 +94,13 @@ class Sys::GroupsController < ApplicationController
     redirect_to sys_group_url(@sys_group = Sys::Group.find_by_id(group_id))
   end
 
+  # before_filter方法，检查用户是否有权限操作
+  # (如果是管理员或者操作对象是自己则有权限)
+  # 
+  # ping.wang 2013.07.18
   def find_group
     @sys_group = Sys::Group.find_by_id(params[:id])
-    unless @sys_group.present? 
+    unless @sys_group.present?  && @sys_group.user_id == session[:id] || session[:role] == "manager"
       flash[:notice] = "圈子不存在！"
       redirect_to sys_groups_url
     end

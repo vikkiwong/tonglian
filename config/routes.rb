@@ -2,9 +2,11 @@ Tonglian::Application.routes.draw do
   namespace :sys do
     resources :users do
       collection do
-        post 'import_group_member'
         get 'activate_group_manager'
         get 'send_activate_mail'
+        get 'need_active'
+        get 'active_mail_sended'
+        get 'is_actived'
       end
     end
     resources :groups do

@@ -11,8 +11,8 @@ class Sys::UsersController < ApplicationController
   #
   # ping.wang 2013.07.09
   def index
-    @sys_users = Sys::User.where("email!='admin@email.com'").paginate :page => params[:page]
-    #render :layout => 'application'
+    # @sys_users = Sys::User.where("email!='admin@email.com'").paginate :page => params[:page]
+    # render :layout => 'application'
   end
 
   # GET /sys/users/1
@@ -27,31 +27,37 @@ class Sys::UsersController < ApplicationController
     @sys_user = Sys::User.new
   end
 
-  # GET /sys/users/1/edit
-  def edit
-  end
-
-
   # POST /sys/users
   # POST /sys/users.json
-  # 注册用户方法
+  # 注册账号
   def create
-    @user = Sys::User.find_by_email(params[:email])
-    if @user.present?
-      unless @user.role == "member"
+    unless params[:sys_user].present? && params[:sys_user][:password].present? && params[:sys_user][:password] == params[:password_confirm]
+      flash[:notice] = "密码验证不一致" and render :new and return
+    end
+
+    @sys_user = Sys::User.find_by_email_and_is_valid(params[:sys_user][:email], true)
+    if @sys_user.present?
+      if @sys_user.role == "member"
+        @sys_user.update_attributes(:role => "group_manager", :name => params[:sys_user][:name], :password => params[:sys_user][:password], :active => false)
+        %w(id email name role).each {|i| session[i.to_sym] = @sys_user[i] if @sys_user[i].present? }
+        redirect_to need_active_sys_users_path   # 跳转到激活页     
+      else
         redirect_to(:back, :notice => "此邮箱已注册，请登陆！") and return
       end
-      @user.update_attributes(:role => "group_manager", :name => params[:name],:password => params[:password], :active => false)
-      Notifier.send_activate_group_manager_mail(@user)
-      set_session and redirect_to step2_path
     else
-      unless params[:password] == params[:password_confirm]
-        redirect_to step1_path, :notice => "密码验证不一致" and return
+      @sys_user = Sys::User.new(params[:sys_user])  
+      @sys_user.active = false 
+      @sys_user.role = "group_manager"
+      if @sys_user.save
+        #set_session
+        %w(id email name role).each {|i| session[i.to_sym] = @sys_user[i] if @sys_user[i].present? }
+        redirect_to need_active_sys_users_path
       end
-      @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password], :active => false)
-      Notifier.send_activate_group_manager_mail(@user)
-      set_session and redirect_to step2_path
     end
+  end
+
+  # GET /sys/users/1/edit
+  def edit
   end
 
   # PUT /sys/users/1
@@ -65,35 +71,28 @@ class Sys::UsersController < ApplicationController
     end
   end
 
-  # DELETE /sys/users/1
-  # DELETE /sys/users/1.json
-  # 
-  # ping.wang 2013.07.05 
-  def destroy
-    @sys_user.destroy
-    redirect_to sys_users_url
+  # GET    /sys/users/need_active(.:format)
+  # 成功注册账号后，跳转到激活页面, 页面提供发送激活邮件按钮
+  def need_active
+    sys_user = Sys::User.where(:id => session[:id]).first
+    @active_flag = sys_user.active   # 标志当前账号是否激活
   end
-=begin
-  # OPTIMIZE
-  # 添加圈子成员
-  def import_group_member
-    begin
-      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
-      group = Sys::Group.where(:id => params[:group_id]).first
-      if group.active
-        Notifier.send_group_invite_mails(group)
-        flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-        redirect_to sys_group_path(group)
-      else
-        flash[:notice] = "请先激活管理员权限。"
-        render step3_path
-      end
-    rescue Exception => e
-      p e.message
-      redirect_to step_three_sessions_path(:group_id => group.id)
-    end
+
+  # GET    /sys/users/send_activate_mail(.:format)
+  # 发送管理员激活邮件
+  def send_activate_mail
+    sys_user = Sys::User.where(:id => session[:id]).first
+    Notifier.send_activate_group_manager_mail(sys_user) if sys_user.present?
+    redirect_to active_mail_sended_sys_users_path
   end
-=end
+
+  # GET    /sys/users/active_mail_sended(.:format)
+  # 邮件发送后的跳转页面，提示邮件已发送，请登陆邮箱查看
+  def active_mail_sended
+    sys_user = Sys::User.where(:id => session[:id]).first
+    @email = sys_user.email
+  end
+
   #接收圈子管理员激活邮件,激活管理员及其创建圈子使用权限
   def activate_group_manager
     source = Base64.decode64(params[:code])
@@ -105,7 +104,8 @@ class Sys::UsersController < ApplicationController
           begin
             Sys::User.update(user_id,:active => true)
             Sys::Group.update_all(:active => true,:user_id => user_id)
-            redirect_to success_sessions_path(:message => "activate_group_manager")
+            is_actived_sys_users
+            #redirect_to success_sessions_path(:message => "activate_group_manager")
           rescue Exception => e
             p e.message
             render :text => "激活失败" + e.message
@@ -118,11 +118,17 @@ class Sys::UsersController < ApplicationController
       end
   end
 
-  #发送管理员激活邮件
-  def send_activate_mail
-    user = Sys::User.where(:id => session[:id]).first
-    Notifier.send_activate_group_manager_mail(user) if user.present?
-    redirect_to step2_path
+  # 已激活
+  def is_actived
+  end
+
+  # DELETE /sys/users/1
+  # DELETE /sys/users/1.json
+  # 
+  # ping.wang 2013.07.05 
+  def destroy
+    @sys_user.update_attribute(:is_valid, false)
+    redirect_to sys_users_url
   end
 
   # before_filter方法，检查用户是否存在

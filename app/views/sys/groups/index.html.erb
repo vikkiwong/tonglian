@@ -8,7 +8,9 @@
 <table class="table table-borded table-hover">
     <tr>
         <th>圈子名称</th>
-        <th>创建人</th>
+        <% if session[:role] == "manager"%>
+          <th>创建人</th>
+        <% end %>
         <th>圈子成员数</th>
         <th>创建时间</th>
         <th>操作</th>
@@ -17,9 +19,17 @@
     <% @sys_groups.each do |group| %>
     <tr>
         <td>
-            <%= link_to group.name, sys_group_path(group) %>
+          <% if group.active %>
+            <a href="/sys/groups/<%=group.id %>">
+          <% else %>
+            <a href="/sys/groups/<%=group.id %>" class="muted">
+          <% end %>          
+            <%=group.name %>
+          </a>
         </td>
-        <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] if group.create_user.present? %></td>
+        <% if session[:role] == "manager"%>
+          <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] if group.create_user.present? %></td>
+         <% end %>
         <td><%= group.users.size %></td>
         <td><%= shown_time(group.created_at) %></td>
         <td>

@@ -1,0 +1,9 @@
+<% content_for :head do %>
+  一分钟搭建-微信通联
+<% end %>
+
+<% if @active_flag %>
+  <p class="muted">成功激活，<a href="/sys/groups/new" >创建圈子，体验微通联!</a></p>
+<% else %>
+  <p class="muted">成功注册！需要激活之后才能创建圈子, <%= link_to("发送激活邮件", send_activate_mail_sys_users_url) %></p>
+<% end %>
