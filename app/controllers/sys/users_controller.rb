@@ -48,7 +48,7 @@ class Sys::UsersController < ApplicationController
       unless params[:password] == params[:password_confirm]
         redirect_to step1_path, :notice => "密码验证不一致" and return
       end
-      @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password])
+      @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password], :active => false)
       # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
       set_session and redirect_to step2_path
     end
