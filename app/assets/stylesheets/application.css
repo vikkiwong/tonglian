@@ -21,3 +21,13 @@ body { /*background-image: url('../assets/theme_bgs/twttr-13.gif');*/}
 
 .dl-horizontal.dl-tlian dt{ width:40px; text-align:left; }
 .dl-horizontal.dl-tlian dd { margin-left: 40px; }
+
+.select_wxtp{ padding-left:50px; height:180px; border-left:#DDD solid 1px; }
+.select_wxtp table td { width: 250px; }
+.select_wxtp .wxtp_box{ width:200px;height:150px;text-align:center;border:1px #DDD solid; }
+.wxtp_box { cursor: pointer; background-color: pink;}
+.wxtp_box:hover { }
+.select_wxtp .default_wxtp{ font-weight:bold;font-size:28px;text-align:center;line-height:130px; }
+.wxtp .wxtp_title { font-weight:bold;font-size:28px;text-align:center;line-height:50px; }
+.wxtp hr{ margin-top:0px;margin-bottom:10px;}
+.wxtp .wxtp_phone{ font-size:16px;line-height:16px; }

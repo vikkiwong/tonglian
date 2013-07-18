@@ -15,21 +15,27 @@ class Sys::GroupsController < ApplicationController
   end
 
   def new
+    user = Sys::User.where(:id => session[:id]).first
+    @active_flag = user.active  # 标志当前登陆用户账号是否激活
   end
 
   # step_two的form提交到该方法
   def create
+    unless params[:name].present? && params[:phone].present?
+      render :new,  :notice => "圈子名称和圈子名称都不能为空" and return
+    end
+
     user = Sys::User.where(:id => session[:id]).first
-    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => false)
+    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => user.active)
     if group.save
       Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
-      Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
-      redirect_to step_three_sessions_path(:group_id => group.id)
+      Sys::UserGroup.find_or_create_by_user_id_and_group_id(:user_id => user.id, :group_id => group.id)
+      redirect_to step3_path
     else
-      redirect_to step_two_sessions_path :notice => "圈子创建失败。"
+      flash[:notice] = group.errors.collect {|attr,error| error}.join("\n")
+      render :new
     end
   end
-
   def destroy
     File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
     @sys_group.destroy
@@ -50,11 +56,25 @@ class Sys::GroupsController < ApplicationController
   def edit
   end
 
+  #添加用户
   def invitation
+    user = Sys::User.where(:id => session[:id]).first
+    @active_flag = user.active  # 标志当前登陆用户账号是否激活
   end
 
+  # 邀请用户方法
   def invite_users
-    # 邀请用户方法
+    begin
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:id])
+      group = Sys::Group.where(:id => params[:id]).first
+      Notifier.send_group_invite_mails(group)
+      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+      redirect_to sys_group_path(group)
+    rescue Exception => e
+      p e.message
+      redirect_to invitation_sys_group_path(group)
+    end
+
   end
 
   def update
@@ -65,6 +85,13 @@ class Sys::GroupsController < ApplicationController
       flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
       render action: "edit"
     end
+  end
+
+
+  def destroy
+    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
+    @sys_group.update_attribute(:active, false)
+    redirect_to sys_groups_url
   end
 
   def find_group

@@ -8,7 +8,7 @@ Tonglian::Application.routes.draw do
     resources :groups do
       member do
         get 'invitation'
-        put 'invite_users'
+        post 'invite_users'
       end
       collection do
         delete 'destroy_user_group'

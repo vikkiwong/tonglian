@@ -1,10 +1,10 @@
 # encoding: utf-8
 class Sys::Group < ActiveRecord::Base
-  attr_accessible :id, :name, :user_id, :group_picture, :contact_phone, :create_user, :created_at
+  attr_accessible :id, :name, :user_id, :group_picture, :contact_phone, :create_user, :created_at, :active
 
   has_many :user_groups, :class_name => "Sys::UserGroup"
   has_many :users, :through => :user_groups, :source => :user
-
+  validates_presence_of :name,  :message => "圈子名不能为空！"
   #获得创建人的信息
   #
   #wangyang.shen 2013-07-17
