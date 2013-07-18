@@ -1,7 +1,8 @@
 # encoding: utf-8
 class Sys::UsersController < ApplicationController
+  skip_before_filter :login_check, :only => [:new, :create]
   before_filter :find_user, :only => [:show, :edit, :update, :destroy,:group_create]
-  before_filter :if_manager, :only => [:index, :new, :bunch_new, :bunch_create, :create, :destroy, :group_new, :group_create]
+  before_filter :if_manager, :only => [:index, :bunch_new, :bunch_create, :destroy, :group_new, :group_create]
   before_filter :if_can_manage, :only => [:edit, :update]
 
   # GET /sys/users
@@ -30,17 +31,35 @@ class Sys::UsersController < ApplicationController
   def edit
   end
 
+
   # POST /sys/users
   # POST /sys/users.json
+  # 注册用户方法
   def create
-    @sys_user = Sys::User.new(params[:sys_user])
-    @sys_user.role = "member"
+    # @sys_user = Sys::User.new(params[:sys_user])
+    # @sys_user.role = "member"
 
-    if @sys_user.save
-      redirect_to @sys_user
-    else 
-      flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
-      render action: "new"
+    # if @sys_user.save
+    #   redirect_to @sys_user
+    # else 
+    #   flash[:notice] = @sys_user.errors.collect{|attr,error| error}.join(" ") if @sys_user.errors.any?
+    #   render action: "new"
+    # end
+    @user = Sys::User.find_by_email(params[:email])
+    if @user.present?
+      unless @user.role == "member"
+        redirect_to(:back, :notice => "此邮箱已注册，请登陆！") and return
+      end
+      @user.update_attributes(:role => "group_manager", :name => params[:name],:password => params[:password], :active => false)
+      # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
+      set_session and redirect_to step2_path
+    else
+      unless params[:password] == params[:password_confirm]
+        redirect_to step_one_sessions_path, :notice => "密码验证不一致" and return
+      end
+      @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password])
+      # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
+      set_session and redirect_to step2_path
     end
   end
 

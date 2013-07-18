@@ -1,20 +1,27 @@
-<h1>新建用户</h1>
+<% content_for :head do %>
+  一分钟搭建-微信通联
+<% end %>
 
-<div>
-  <%= form_for(@sys_user) do |f| %>
-    <div>
-      <label>邮箱</label>
-      <%= f.text_field(:email)%>
-    </div>
-    <div>
-      <label>姓名</label>
-			<%= f.text_field(:name)%>
-    </div>
-    <div >
-      <a class="btn" href="/sys/users">取消</a>
-      <button type="submit" class="btn" >保存</button>
-    </div>
-  <% end %>
-</div>
-
-
+<h2>注册账号</h2>
+<p class="muted">如有账号，<a href="/login">请直接登陆</a></p>
+<form action="/sys/users" method="post">
+  <div>
+    <label>邮箱</label>
+    <input type="email" name="email">
+  </div>
+  <div>
+    <label>姓名</label>
+    <input type="text" name="name">
+  </div>
+  <div>
+    <label>密码</label>
+    <input type="password" name="password">
+  </div>
+  <div>
+    <label>确认密码</label>
+    <input type="password" name="password_confirm">
+  </div>
+  <div>
+    <button type="submit" class="btn">下一步</button>
+  </div>
+</form>

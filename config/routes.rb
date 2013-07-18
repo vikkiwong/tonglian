@@ -33,6 +33,10 @@ Tonglian::Application.routes.draw do
       post 'create_group_manager'
     end
   end
+
+  match '/step1' => 'sys/users#new'
+  match '/step2' => 'sys/groups#new'
+  match '/step3' => 'sys/groups#invitation'
   
   match "/login" => "sessions#new"
   match "/logout" => "sessions#destroy"

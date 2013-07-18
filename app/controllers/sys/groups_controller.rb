@@ -17,7 +17,7 @@ class Sys::GroupsController < ApplicationController
   # step_two的form提交到该方法
   def create
     user = Sys::User.where(:id => session[:id]).first
-    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone])
+    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => false)
     if group.save
       #Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
       Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
@@ -29,10 +29,9 @@ class Sys::GroupsController < ApplicationController
   end
 
   def destroy
-      #File.delete("/public/#{@group.group_picture}") if File.file?("/public/#{@group.group_picture}")
-      File.delete(@group.group_picture)
-      @group.destroy
-      redirect_to sys_groups_url
+    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
+    @sys_group.destroy
+    redirect_to sys_groups_url
   end
 
   def edit
@@ -67,11 +66,6 @@ class Sys::GroupsController < ApplicationController
       flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
       render action: "edit"
     end
-  end
-
-  def destroy
-    @sys_group.destroy
-    redirect_to sys_groups_url
   end
 
   def find_group

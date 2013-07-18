@@ -4,50 +4,47 @@ class SessionsController < ApplicationController
   skip_before_filter :login_check
   skip_before_filter :verify_authenticity_token
 
-  # 一分钟搭建第一步：创建账号
-  #
-  # ping.wang 2013.07.17
-  def step_one
-  end
+  # # 一分钟搭建第一步：创建账号
+  # #
+  # # ping.wang 2013.07.17
+  # def step_one
+  # end
 
-  # 一分钟搭建第二步:创建圈子
-  #
-  # ping.wang 2013.07.17
-  def step_two
+  # # 一分钟搭建第二步:创建圈子
+  # #
+  # # ping.wang 2013.07.17
+  # def step_two
+  # end
 
-  end
 
-  # 一分钟搭建第三步:邀请好友
-  #
-  # ping.wang 2013.07.17
-  def step_three
-    @group_id = params[:group_id]
-  end
+  # # 一分钟搭建第三步:邀请好友
+  # #
+  # # ping.wang 2013.07.17
+  # def step_three
+  #   @group_id = params[:group_id]
+  # end
 
-  # 创建圈子管理员账号，如邮箱已经存在: 
-  # 1.角色是manager或者group_manager -> 提示已注册请登陆
-  # 2.角色是member, 则更新用户角色为group_manager, 记住密码，设置session，跳转到第二步
-  def create_group_manager
-    @user = Sys::User.find_by_email(params[:email])
-    if @user.present?
-      # 如果角色是group_manager或者manager, 提示该邮箱已注册，
-      if ["manager", "group_manager"].include? (@user.role)
-        redirect_to(:back, :notice => "此邮箱已注册，请登陆！")
-      else  # 如果该邮箱已注册，但是角色是member，更新用户信息，设置session, 且跳转到第二步
-        @user.update_attributes(:role => "group_manager", :name => params[:name],:password => params[:password])
-        set_session
-        redirect_to step_two_sessions_path
-      end
-    else
-      if params[:password] != params[:password_confirm]
-        redirect_to step_one_sessions_path, :notice => "密码验证不一致"
-      else
-        @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password])
-        set_session
-        redirect_to step_two_sessions_path
-      end
-    end
-  end
+  # # 创建圈子管理员账号，如邮箱已经存在: 
+  # # 1.角色是manager或者group_manager -> 提示已注册请登陆
+  # # 2.角色是member, 则更新用户角色为group_manager, 记住密码，设置session，跳转到第二步
+  # def create_group_manager
+  #   @user = Sys::User.find_by_email(params[:email])
+  #   if @user.present?
+  #     unless @user.role == "member"
+  #       redirect_to(:back, :notice => "此邮箱已注册，请登陆！") and return
+  #     end
+  #     @user.update_attributes(:role => "group_manager", :name => params[:name],:password => params[:password], :active => false)
+  #     # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
+  #     set_session and redirect_to step_two_sessions_path
+  #   else
+  #     unless params[:password] == params[:password_confirm]
+  #       redirect_to step_one_sessions_path, :notice => "密码验证不一致" and return
+  #     end
+  #     @user = Sys::User.create(:email => params[:email], :role => "group_manager",:name => params[:name],:password => params[:password])
+  #     # 这里需要发送一封发送激活邮件, 点击激活邮件中的链接后，更新active值
+  #     set_session and redirect_to step_two_sessions_path
+  #   end
+  # end
 
   # 登陆方法
   #
@@ -76,36 +73,36 @@ class SessionsController < ApplicationController
     redirect_to("/login")
   end
 
-  # GET    /sessions/apply_for_admin(.:format)
-  # 申请管理员页面
-  #
-  # params :from_user => 微信标识
-  # ping.wang  2013.07.16
-  def apply_for_admin
-    @from_user = params[:from_user]
-  end
+  # # GET    /sessions/apply_for_admin(.:format)
+  # # 申请管理员页面
+  # #
+  # # params :from_user => 微信标识
+  # # ping.wang  2013.07.16
+  # def apply_for_admin
+  #   @from_user = params[:from_user]
+  # end
 
-  # POST   /sessions/apply(.:format)
-  # 创建管理员用户
-  def apply
-    p "---------#{params}-------------"
-    elder_admin = Sys::User.where(:email => params[:email],:role => "group_manager").first
-    if elder_admin.present?
-      redirect_to :back, :notice => "此邮箱已成为圈主"
-    else
-      rand_num = 100000 + rand(100000)
-      code = Base64.encode64(rand_num.to_s).chomp
-      begin
-        Sys::User.create(:email => params[:email], :role => "group_manager", :password => code ,:weixin_id => params[:FromUser])
-        Notifier.send_apply_for_admin_mail(params[:email],code)
-        redirect_to success_sessions_path(:message => "send_application_mail")
-      rescue Exception => e
-        p e.message
-        redirect_to :back, :notice => "申请失败"
-      end
-    end
-    # 在这里创建管理员用户，并发送包含临时密码的邮件
-  end
+  # # POST   /sessions/apply(.:format)
+  # # 创建管理员用户
+  # def apply
+  #   p "---------#{params}-------------"
+  #   elder_admin = Sys::User.where(:email => params[:email],:role => "group_manager").first
+  #   if elder_admin.present?
+  #     redirect_to :back, :notice => "此邮箱已成为圈主"
+  #   else
+  #     rand_num = 100000 + rand(100000)
+  #     code = Base64.encode64(rand_num.to_s).chomp
+  #     begin
+  #       Sys::User.create(:email => params[:email], :role => "group_manager", :password => code ,:weixin_id => params[:FromUser])
+  #       Notifier.send_apply_for_admin_mail(params[:email],code)
+  #       redirect_to success_sessions_path(:message => "send_application_mail")
+  #     rescue Exception => e
+  #       p e.message
+  #       redirect_to :back, :notice => "申请失败"
+  #     end
+  #   end
+  #   # 在这里创建管理员用户，并发送包含临时密码的邮件
+  # end
 
   # 用户邮箱验证页面进入方法
   #
