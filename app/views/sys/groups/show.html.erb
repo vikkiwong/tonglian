@@ -5,26 +5,12 @@
 <h2 class="visible-phone" style="font-size:20px;line-height:20px;">
     我的圈子
 </h2>
-<h2 class="hidden-phone"><%= @sys_group.name %></h2>
-<%= image_tag(@sys_group.group_picture) %>
+<h1 class="hidden-phone"><%= @sys_group.name %></h1>
 <dl class="dl-horizontal dl-tlian">
   <% if @sys_group.create_user.present? %>
         <dt style="width: 70px;">创建人:</dt>
         <dd>
           <%= @sys_group.create_user.name.present?? @sys_group.create_user.name : @sys_group.create_user.email.split("@")[0]%>
-        </dd>
-  <% end %>
-  <% if @sys_group.users.present? %>
-        <dt style="width: 70px;">圈子成员:</dt>
-        <dd>
-          <% @sys_group.users.each do |user| %>
-              <% if user.name.present?%>
-                <%= link_to user.name , sys_user_path(user) %>
-              <% else %>
-                <%= link_to user.email.split("@")[0] , sys_user_path(user) %>
-              <% end %>
-          <% end %>
-          <a> </a>
         </dd>
   <% end %>
   <% if @sys_group.created_at.present?%>
@@ -37,11 +23,41 @@
   <% end %>
 </dl>
 <div class="hidden-phone">
-    <%= link_to '编辑' , edit_sys_group_path(@sys_group) %> |
-    <%= link_to '返回' , sys_groups_path %>
+  <%= link_to '编辑' , edit_sys_group_path(@sys_group) %> |
+  <%= link_to '返回' , sys_groups_path %>
 </div>
 <div class="visible-phone">
   <%= link_to '编辑', edit_sys_group_path(@sys_group) %>
 </div>
+<hr/>
+<h3 class="hidden-phone">圈子成员</h3>
+<% if @sys_group.users.present? %>
+    <table class="table table-borded table-hover">
+      <tr>
+        <th>邮箱</th>
+        <th>姓名</th>
+        <th>手机</th>
+        <th>座机</th>
+        <th>QQ</th>
+        <th>操作</th>
+      </tr>
+
+      <% @sys_group.users.each do |sys_user| %>
+          <tr>
+            <td>
+              <%= link_to sys_user.email, sys_user_path(sys_user) %>
+            </td>
+            <td><%= sys_user.name %></td>
+            <td><%= sys_user.mobile %></td>
+            <td><%= sys_user.phone %></td>
+            <td><%= sys_user.qq %></td>
+            <td>
+              <%= link_to '从圈子中删除', data: { confirm: '确定删除?' } %>
+            </td>
+          </tr>
+      <% end %>
+    </table>
+<% end %>
+
 
 
