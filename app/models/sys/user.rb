@@ -2,7 +2,7 @@
 class Sys::User < ActiveRecord::Base
   cattr_accessor :skip_callbacks
   attr_accessible :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
-                  :f_letters, :pinyin, :skip_callbacks, :message_picture, :active
+                  :f_letters, :pinyin, :skip_callbacks, :active
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :message => "邮箱格式不正确！"
   validates_uniqueness_of :email, :message => "此邮箱已存在！"

@@ -21,23 +21,27 @@ class Sys::GroupsController < ApplicationController
 
   # step_two的form提交到该方法
   def create
+    unless params[:name].present? && params[:phone].present?
+      render :new,  :notice => "圈子名称和圈子名称都不能为空" and return
+    end
+
     user = Sys::User.where(:id => session[:id]).first
-    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => false)
+    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => user.active)
     if group.save
       Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
+<<<<<<< HEAD
       Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
       redirect_to invitation_sys_group_path(group)
+=======
+      Sys::UserGroup.find_or_create_by_user_id_and_group_id(:user_id => user.id, :group_id => group.id)
+      redirect_to step3_path
+>>>>>>> 0affb56eba0648978b8f9c189f7484247c45beda
     else
       flash[:notice] = group.errors.collect {|attr,error| error}.join("\n")
-      render 'sessions/step_two'
+      render :new
     end
   end
 
-  def destroy
-    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
-    @sys_group.destroy
-    redirect_to sys_groups_url
-  end
 
   def edit
   end
@@ -71,6 +75,13 @@ class Sys::GroupsController < ApplicationController
       flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
       render action: "edit"
     end
+  end
+
+
+  def destroy
+    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
+    @sys_group.update_attribute(:active, false)
+    redirect_to sys_groups_url
   end
 
   def find_group
