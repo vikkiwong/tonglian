@@ -13,6 +13,7 @@ Tonglian::Application.routes.draw do
       member do
         get 'invitation'
         put 'invite_users'
+        delete 'destroy_user_group'
       end
     end
   end
