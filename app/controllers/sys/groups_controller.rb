@@ -68,11 +68,11 @@ class Sys::GroupsController < ApplicationController
         redirect_to sys_group_path(group)
       else
         flash[:notice] = "请先激活管理员权限。"
-        render invitation_sys_group_path(group)
+        redirect_to invitation_sys_group_path(group)
       end
     rescue Exception => e
       p e.message
-      render invitation_sys_group_path(group)
+      redirect_to invitation_sys_group_path(group)
     end
   end
 
