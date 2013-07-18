@@ -5,12 +5,12 @@
 <h2>创建圈子</h2>
 
 <% unless @active_flag %>
-	<a href="#">请激活账号</a>
+	<%= link_to("请激活账号",send_activate_mail_sys_users_url) %>
 <% end %>
 
 <div class="row">
 	<div class="span5">
-		<%= form_tag('/sys/groups', :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+		<%= form_tag(sys_groups_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
 			<div>
 			  <label>圈子名称</label>
 			  <input type="text" name="name" id="form_name">

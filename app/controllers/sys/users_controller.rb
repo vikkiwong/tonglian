@@ -73,22 +73,27 @@ class Sys::UsersController < ApplicationController
     @sys_user.destroy
     redirect_to sys_users_url
   end
-
+=begin
   # OPTIMIZE
   # 添加圈子成员
   def import_group_member
     begin
       wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
       group = Sys::Group.where(:id => params[:group_id]).first
-      Notifier.send_group_invite_mails(group)
-      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-      redirect_to sys_group_path(group)
+      if group.active
+        Notifier.send_group_invite_mails(group)
+        flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+        redirect_to sys_group_path(group)
+      else
+        flash[:notice] = "请先激活管理员权限。"
+        render step3_path
+      end
     rescue Exception => e
       p e.message
       redirect_to step_three_sessions_path(:group_id => group.id)
     end
   end
-
+=end
   #接收圈子管理员激活邮件,激活管理员及其创建圈子使用权限
   def activate_group_manager
     source = Base64.decode64(params[:code])
@@ -111,6 +116,13 @@ class Sys::UsersController < ApplicationController
       else
         render :text => "Fail"
       end
+  end
+
+  #发送管理员激活邮件
+  def send_activate_mail
+    user = Sys::User.where(:id => session[:id]).first
+    Notifier.send_activate_group_manager_mail(user) if user.present?
+    redirect_to step2_path
   end
 
   # before_filter方法，检查用户是否存在

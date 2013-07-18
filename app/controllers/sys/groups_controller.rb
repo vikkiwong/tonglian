@@ -30,17 +30,19 @@ class Sys::GroupsController < ApplicationController
     if group.save
       Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
       Sys::UserGroup.find_or_create_by_user_id_and_group_id(:user_id => user.id, :group_id => group.id)
-      redirect_to step3_path
+      redirect_to invitation_sys_group_path(group)
     else
       flash[:notice] = group.errors.collect {|attr,error| error}.join("\n")
       render :new
     end
   end
+
   def destroy
     File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
     @sys_group.destroy
     redirect_to sys_groups_url
   end
+
   #删除圈子中的成员
   def destroy_user_group
     if params[:group_id].present? && params[:user_id].present?
@@ -65,16 +67,20 @@ class Sys::GroupsController < ApplicationController
   # 邀请用户方法
   def invite_users
     begin
-      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:id])
-      group = Sys::Group.where(:id => params[:id]).first
-      Notifier.send_group_invite_mails(group)
-      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
-      redirect_to sys_group_path(group)
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:group_id])
+      group = Sys::Group.where(:id => params[:group_id]).first
+      if group.active
+        Notifier.send_group_invite_mails(group)
+        flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+        redirect_to sys_group_path(group)
+      else
+        flash[:notice] = "请先激活管理员权限。"
+        render invitation_sys_group_path(group)
+      end
     rescue Exception => e
       p e.message
       redirect_to invitation_sys_group_path(group)
     end
-
   end
 
   def update
