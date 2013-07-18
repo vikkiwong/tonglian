@@ -2,10 +2,6 @@ Tonglian::Application.routes.draw do
   namespace :sys do
     resources :users do
       collection do
-        get  'bunch_new'
-        post 'bunch_create'
-        get  'group_new'
-        post 'group_create'
         post 'import_group_member'
       end
     end
@@ -26,14 +22,12 @@ Tonglian::Application.routes.draw do
       post "verify"
       get "success"
       get "mail_verify"
-      get 'apply_for_admin'
-      post 'apply'
-      get 'step_one'
-      get 'step_two'
-      get 'step_three'
-      post 'create_group_manager'
     end
   end
+
+  match '/step1' => 'sys/users#new'
+  match '/step2' => 'sys/groups#new'
+  match '/step3' => 'sys/groups#invitation'
   
   match "/login" => "sessions#new"
   match "/logout" => "sessions#destroy"
