@@ -14,10 +14,13 @@ class Sys::GroupsController < ApplicationController
   def show
   end
 
+  def new
+  end
+
   # step_two的form提交到该方法
   def create
     user = Sys::User.where(:id => session[:id]).first
-    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone])
+    group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => false)
     if group.save
       Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
       Sys::UserGroup.create(:user_id => user.id,:group_id => group.id)
@@ -26,23 +29,8 @@ class Sys::GroupsController < ApplicationController
       redirect_to step_two_sessions_path :notice => "圈子创建失败。"
     end
   end
-  def destroy
-      #File.delete("/public/#{@group.group_picture}") if File.file?("/public/#{@group.group_picture}")
-      File.delete(@group.group_picture)
-      @group.destroy
-      redirect_to sys_groups_url
-  end
 
   def edit
-  end
-
-  def invitation
-    
-  end
-
-  # 
-  def invite_users
-    # 邀请用户方法
   end
 
   def update
@@ -55,10 +43,24 @@ class Sys::GroupsController < ApplicationController
     end
   end
 
+  def invitation
+  end
+
+  def invite_users
+    # 邀请用户方法
+  end
+
   def destroy
     @sys_group.destroy
     redirect_to sys_groups_url
   end
+
+  # def destroy
+  #   #File.delete("/public/#{@group.group_picture}") if File.file?("/public/#{@group.group_picture}")
+  #   File.delete(@group.group_picture)
+  #   @group.destroy
+  #   redirect_to sys_groups_url
+  # end
 
   def find_group
     @sys_group = Sys::Group.find_by_id(params[:id])
