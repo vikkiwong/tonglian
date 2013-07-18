@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Sys::GroupsController < ApplicationController
   before_filter :if_member
-  before_filter :find_group, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_group, :only => [:show, :edit, :update, :destroy, :invitation]
 
   def index
     if session[:role] == "manager"
@@ -37,25 +37,17 @@ class Sys::GroupsController < ApplicationController
     end
   end
 
-  def destroy
-    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
-    @sys_group.destroy
-    redirect_to sys_groups_url
-  end
-
-  #删除圈子中的成员
-  def destroy_user_group
-    if params[:group_id].present? && params[:user_id].present?
-      if params[:user_id].to_i != session[:id].to_i
-        group_id = params[:group_id]
-        user_id = params[:user_id]
-        Sys::UserGroup.where("user_id = #{user_id} and group_id = #{group_id}").first.destroy
-      end
-    end
-    redirect_to sys_group_url(@sys_group = Sys::Group.find_by_id(group_id))
-  end
-
   def edit
+  end
+
+  def update
+    if @sys_group.update_attributes(params[:sys_group])
+      Sys::Group.create_group_picture(@sys_group)      #圈子修改成功后生成图片
+      redirect_to @sys_group
+    else
+      flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
+      render action: "edit"
+    end
   end
 
   #添加用户
@@ -84,21 +76,22 @@ class Sys::GroupsController < ApplicationController
     end
   end
 
-  def update
-    if @sys_group.update_attributes(params[:sys_group])
-      Sys::Group.create_group_picture(@sys_group)      #圈子修改成功后生成图片
-      redirect_to @sys_group
-    else
-      flash[:notice] = @sys_group.errors.collect{|attr,error| error}.join(" ") if @sys_group.errors.any?
-      render action: "edit"
-    end
-  end
-
-
   def destroy
     File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
-    @sys_group.update_attribute(:active, false)
+    @sys_group.destroy
     redirect_to sys_groups_url
+  end
+
+  #删除圈子中的成员
+  def destroy_user_group
+    if params[:group_id].present? && params[:user_id].present?
+      if params[:user_id].to_i != session[:id].to_i
+        group_id = params[:group_id]
+        user_id = params[:user_id]
+        Sys::UserGroup.where("user_id = #{user_id} and group_id = #{group_id}").first.destroy
+      end
+    end
+    redirect_to sys_group_url(@sys_group = Sys::Group.find_by_id(group_id))
   end
 
   def find_group

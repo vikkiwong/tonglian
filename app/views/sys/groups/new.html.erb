@@ -5,7 +5,7 @@
 <h2>创建圈子</h2>
 
 <% unless @active_flag %>
-	<%= link_to("请激活账号",send_activate_mail_sys_users_url) %>
+	<p class="muted">账号未激活, <%= link_to("请激活账号",send_activate_mail_sys_users_url) %></p>
 <% end %>
 
 <div class="row">
