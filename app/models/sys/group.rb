@@ -4,7 +4,7 @@ class Sys::Group < ActiveRecord::Base
 
   has_many :user_groups, :class_name => "Sys::UserGroup"
   has_many :users, :through => :user_groups, :source => :user
-
+  validates_presence_of :name,  :message => "圈子名不能为空！"
   #获得创建人的信息
   #
   #wangyang.shen 2013-07-17

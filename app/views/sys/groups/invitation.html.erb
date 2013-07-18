@@ -8,15 +8,11 @@
   <a href="#">请激活账号</a>
 <% end %>
 <p class="muted">分行填写好友邮箱和姓名</p>
-<%= form_tag(import_group_member_sys_users_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+<%= form_tag(invite_users_sys_group_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
   <div>
   	<label></label>
-	  <textarea name="bunch_users" class="hidden-phone" style="width:450px;height:200px;" placeholder="example@email.com, 姓名"></textarea>
-    <textarea name="bunch_users" class="visible-phone" style="width:250px;height:150px;" placeholder="example@email.com, 姓名"></textarea>
+	<textarea name="bunch_users" class="hidden-phone" style="width:450px;height:200px;" placeholder="example@email.com, 姓名"></textarea>
   </div>
-    <div>
-      <input type="hidden" name="group_id" value=<%= @group_id %>>
-    </div>
   <div >
     <button type="submit" class="btn" >确认邀请</button>
   </div>

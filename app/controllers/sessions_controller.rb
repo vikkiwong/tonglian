@@ -16,6 +16,7 @@ class SessionsController < ApplicationController
   # def step_two
   # end
 
+
   # # 一分钟搭建第三步:邀请好友
   # #
   # # ping.wang 2013.07.17

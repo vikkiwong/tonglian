@@ -32,7 +32,8 @@ class Sys::GroupsController < ApplicationController
       Sys::UserGroup.find_or_create_by_user_id_and_group_id(:user_id => user.id, :group_id => group.id)
       redirect_to step3_path
     else
-      render :new,  :notice => "创建失败"
+      flash[:notice] = group.errors.collect {|attr,error| error}.join("\n")
+      render :new
     end
   end
 
@@ -40,13 +41,25 @@ class Sys::GroupsController < ApplicationController
   def edit
   end
 
+  #添加用户
   def invitation
     user = Sys::User.where(:id => session[:id]).first
     @active_flag = user.active  # 标志当前登陆用户账号是否激活
   end
 
+  # 邀请用户方法
   def invite_users
-    # 邀请用户方法
+    begin
+      wrong_line = Sys::User.import_group_users(params[:bunch_users],params[:id])
+      group = Sys::Group.where(:id => params[:id]).first
+      Notifier.send_group_invite_mails(group)
+      flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+      redirect_to sys_group_path(group)
+    rescue Exception => e
+      p e.message
+      redirect_to invitation_sys_group_path(group)
+    end
+
   end
 
   def update
