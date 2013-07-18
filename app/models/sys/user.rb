@@ -149,7 +149,7 @@ class Sys::User < ActiveRecord::Base
       regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
       users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.pinyin REGEXP ? ",group_ids, regrep_str]).limit(10).all unless users.present?
       # 按邮箱查找
-      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and and sys_users.email LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.email LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
     else  # 按name查找
       users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "#{str}%"]).limit(10).all   # 按姓查找
       users = Sys::User.select(select_fields).includes(:user_groups).where(["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?   # 若无该姓，按名查找
