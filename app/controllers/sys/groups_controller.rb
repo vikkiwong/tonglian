@@ -14,6 +14,10 @@ class Sys::GroupsController < ApplicationController
   def show
   end
 
+  def new
+
+  end
+
   # step_two的form提交到该方法
   def create
     user = Sys::User.where(:id => session[:id]).first

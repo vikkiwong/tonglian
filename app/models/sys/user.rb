@@ -2,7 +2,7 @@
 class Sys::User < ActiveRecord::Base
   cattr_accessor :skip_callbacks
   attr_accessible :allow_access, :blog, :email, :id, :mobile, :name, :phone, :qq, :role, :sex, :weibo, :weixin, :weixin_id, :password, :family_name, 
-                  :f_letters, :pinyin, :skip_callbacks, :message_picture
+                  :f_letters, :pinyin, :skip_callbacks, :message_picture, :active
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :message => "邮箱格式不正确！"
   validates_uniqueness_of :email, :message => "此邮箱已存在！"
@@ -84,8 +84,6 @@ class Sys::User < ActiveRecord::Base
   #guanzuo.li
   #2013.07.16
   def self.import_group_users(group_users,group_id)
-    p group_users
-    p group_id
     return false unless group_users.present?
     wrong_line = []
     group_users.split("\n").each do |line|
@@ -102,7 +100,8 @@ class Sys::User < ActiveRecord::Base
           wrong_line << email      # 将创建出错的邮箱记录下来
         end
       end
-      Sys::UserGroup.create(:user_id => user.id, :group_id => group_id)
+      user_group = Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user.id,group_id)
+      user_group.save if user_group.new_record?
     end
     wrong_line
   end
