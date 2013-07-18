@@ -104,8 +104,9 @@ class Sys::UsersController < ApplicationController
           begin
             Sys::User.update(user_id,:active => true)
             Sys::Group.update_all(:active => true,:user_id => user_id)
-            is_actived_sys_users
+            #is_actived_sys_users
             #redirect_to success_sessions_path(:message => "activate_group_manager")
+            redirect_to is_actived_sys_users_path
           rescue Exception => e
             p e.message
             render :text => "激活失败" + e.message
