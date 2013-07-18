@@ -8,7 +8,7 @@
   <a href="#">请激活账号</a>
 <% end %>
 <p class="muted">分行填写好友邮箱和姓名</p>
-<%= form_tag(invite_users_sys_group_path, :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
+<%= form_tag(invite_users_sys_group_path(@sys_group), :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
   <div>
   	<label></label>
 	<textarea name="bunch_users" class="hidden-phone" style="width:450px;height:200px;" placeholder="example@email.com, 姓名"></textarea>
