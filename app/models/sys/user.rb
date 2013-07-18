@@ -134,7 +134,7 @@ class Sys::User < ActiveRecord::Base
       users = Sys::User.includes(:user_groups).find(:all, :conditions => ["sys_user_groups.group_id in (?) and sys_users.name LIKE ? ",group_ids, "%#{str}%"], :limit => 10) unless users.present?   # 若无该姓，按名查找
     end
 =end
-    select_fields = "sys_users.email,sys_users.role,sys_users.mobile,sys_users.phone,sys_users.name,sys_users.id,sys_user_groups.group_id"
+    select_fields = "sys_users.email,sys_users.role,sys_users.mobile,sys_users.phone,sys_users.name,sys_users.id,sys_user_groups.group_id,sys_user_groups.name as group_name"
     if /[\d._@]/.match(str).present?   # 若包含数字或._, 按照email查找
       users = Sys::User.select(select_fields).joins("join sys_user_groups on sys_users.id = sys_user_groups.user_id ").where(["sys_user_groups.group_id in (?) and sys_users.email LIKE ? ",group_ids,"%#{str}%"]).limit(10).all
     elsif /^[A-Za-z]+$/.match(str).present?  # 分优先级，按拼音和email查找

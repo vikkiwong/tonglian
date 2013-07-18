@@ -3,6 +3,6 @@
     <FromUserName><![CDATA[<%= params[:xml][:ToUserName] %>]]></FromUserName>
     <CreateTime><%= Time.now.to_i %></CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[<%= link_to("点击链接申请",apply_for_admin_sessions_url(:from_user => params[:xml][:FromUserName])) %>]]></Content>
+    <Content><![CDATA[<%= link_to("点击链接申请",step_one_sessions_url(:from_user => params[:xml][:FromUserName])) %>]]></Content>
     <FuncFlag>0</FuncFlag>
 </xml>
