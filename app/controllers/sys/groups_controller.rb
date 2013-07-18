@@ -36,6 +36,15 @@ class Sys::GroupsController < ApplicationController
   def edit
   end
 
+  def invitation
+    
+  end
+
+  # 
+  def invite_users
+    # 邀请用户方法
+  end
+
   def update
     if @sys_group.update_attributes(params[:sys_group])
       Sys::Group.create_group_picture(@sys_group)      #圈子修改成功后生成图片

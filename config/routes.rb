@@ -9,7 +9,12 @@ Tonglian::Application.routes.draw do
         post 'import_group_member'
       end
     end
-    resources :groups
+    resources :groups do
+      member do
+        get 'invitation'
+        put 'invite_users'
+      end
+    end
   end
   
   resources :weixins
