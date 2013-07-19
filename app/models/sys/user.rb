@@ -31,7 +31,7 @@ class Sys::User < ActiveRecord::Base
   validates_numericality_of :qq, :message => "qq号必须是数字！", :allow_blank => true
 
   has_many :user_groups, :class_name => "Sys::UserGroup"
-
+  has_many :groups, :through => :user_groups, :source => :group
   after_save :name_to_pinyin, :unless => :skip_callbacks
 
   ROLES = [

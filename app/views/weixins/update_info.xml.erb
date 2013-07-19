@@ -8,7 +8,7 @@
     <item>
         <Title><![CDATA[<%= @user.name %>]]></Title>
         <Description><![CDATA[IhaveU]]></Description>
-        <PicUrl><![CDATA[http://<%=SITE_DOMAIN%><%=@user.message_picture%>]]></PicUrl>
+        <PicUrl><![CDATA[http://<%=SITE_DOMAIN%>/group_picture/group_picture_<%=@user.groups.first.id%>.jpg]]></PicUrl>
         <Url><![CDATA[http://<%=SITE_DOMAIN%>/sys/users/<%=@user.id%>?from_user=<%= params[:xml][:FromUserName] %>]]></Url>
     </item>
     <% @user.item_info[1].each do |item| %>
