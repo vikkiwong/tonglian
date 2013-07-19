@@ -36,11 +36,6 @@ class Sys::GroupsController < ApplicationController
       render :new
     end
   end
-  def destroy
-    File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")
-    @sys_group.destroy
-    redirect_to sys_groups_url
-  end
   #删除圈子中的成员
   def destroy_user_group
     if params[:group_id].present? && params[:user_id].present?
