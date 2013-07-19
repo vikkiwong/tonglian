@@ -152,19 +152,19 @@ class Sys::User < ActiveRecord::Base
     elsif /^[A-Za-z]+$/.match(str).present?  # 分优先级，按拼音和email查找
       # 先按拼音查找
       # 按首字母
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.f_letters = ? ",group_ids, "#{str}"]).limit(10).all
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.f_letters = ? and sys_user.is_valid = true and g.is_valid = true",group_ids, "#{str}"]).limit(10).all
       # 按姓
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.family_name = ? ",group_ids, "#{str}"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.family_name = ? and sys_user.is_valid = true and g.is_valid = true",group_ids, "#{str}"]).limit(10).all unless users.present?
       # 匹配全拼,连续
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.pinyin LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.pinyin LIKE ? and sys_user.is_valid = true and g.is_valid = true",group_ids, "%#{str}%"]).limit(10).all unless users.present?
       # 匹配全拼,断续
       regrep_str = ".*" + str.scan(/\w/).join(".*") + ".*"
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.pinyin REGEXP ? ",group_ids, regrep_str]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.pinyin REGEXP ? and sys_user.is_valid = true and g.is_valid = true",group_ids, regrep_str]).limit(10).all unless users.present?
       # 按邮箱查找
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.email LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.email LIKE ? and sys_user.is_valid = true and g.is_valid = true",group_ids, "%#{str}%"]).limit(10).all unless users.present?
     else  # 按name查找
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.name LIKE ? ",group_ids, "#{str}%"]).limit(10).all   # 按姓查找
-      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.name LIKE ? ",group_ids, "%#{str}%"]).limit(10).all unless users.present?   # 若无该姓，按名查找
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.name LIKE ? and sys_user.is_valid = true and g.is_valid = true",group_ids, "#{str}%"]).limit(10).all   # 按姓查找
+      users = Sys::User.select(select_fields).joins(join_tag).where(["u_g.group_id in (?) and sys_users.name LIKE ? and sys_user.is_valid = true and g.is_valid = true",group_ids, "%#{str}%"]).limit(10).all unless users.present?   # 若无该姓，按名查找
     end
     return users
   end
