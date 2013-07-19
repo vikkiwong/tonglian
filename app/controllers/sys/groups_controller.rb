@@ -29,10 +29,11 @@ class Sys::GroupsController < ApplicationController
     user = Sys::User.where(:id => session[:id]).first
     group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => user.active)
     if group.save
-      #Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
+      Sys::Group.create_group_picture(group)     #圈子创建成功后生成图片
       Sys::UserGroup.find_or_create_by_user_id_and_group_id(:user_id => user.id, :group_id => group.id)
       redirect_to invitation_sys_group_path(group)
     else
+      @active_flag = user.active
       flash[:notice] = group.errors.collect {|attr,error| error}.join("\n")
       render :new
     end
