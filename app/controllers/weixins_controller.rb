@@ -63,7 +63,7 @@ class WeixinsController < ApplicationController
         @start = "无反馈信息"
         render "start", :formats => :xml
       end
-    elsif params[:xml][:Content] == "10000" && @user.role == "manager"
+    elsif params[:xml][:Content] == "10000"
       user = Sys::User.find_by_weixin_id(params[:xml][:FromUserName])
       @start = "已解除微信绑定。\n如需重新绑定，"
       if user.present?
