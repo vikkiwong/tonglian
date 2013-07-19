@@ -4,18 +4,19 @@
 
 <h2>注册账号</h2>
 <p class="muted">如有账号，<a href="/login">请直接登陆</a></p>
+
 <form action="/sys/users" method="post">
   <div>
     <label>邮箱</label>
-    <input type="email" name="email">
+    <input type="email" name="sys_user[email]" id="sys_user_email" value="<%= @sys_user.email if @sys_user.present? && @sys_user.email.present? %>">
   </div>
   <div>
     <label>姓名</label>
-    <input type="text" name="name">
+    <input type="text" name="sys_user[name]" id="sys_user_name" value="<%= @sys_user.name if @sys_user.present? && @sys_user.name.present? %>">
   </div>
   <div>
     <label>密码</label>
-    <input type="password" name="password">
+    <input type="password" name="sys_user[password]"id="sys_user_password">
   </div>
   <div>
     <label>确认密码</label>

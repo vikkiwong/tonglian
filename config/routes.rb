@@ -2,8 +2,11 @@ Tonglian::Application.routes.draw do
   namespace :sys do
     resources :users do
       collection do
-        post 'import_group_member'
         get 'activate_group_manager'
+        get 'send_activate_mail'
+        get 'need_active'
+        get 'active_mail_sended'
+        get 'is_actived'
       end
     end
     resources :groups do
@@ -30,7 +33,6 @@ Tonglian::Application.routes.draw do
 
   match '/step1' => 'sys/users#new'
   match '/step2' => 'sys/groups#new'
-  match '/step3' => 'sys/groups#invitation'
   
   match "/login" => "sessions#new"
   match "/logout" => "sessions#destroy"

@@ -17,7 +17,7 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li id="groups">
-                  <a href="/sys/groups">我的圈子</a>
+                <a href="/sys/groups"><%= session[:role] == "manager" ? "所有圈子" : "我的圈子" %></a>
               </li>
               <% if session[:role] == "manager" %>
                 <li id="feedbacks">
@@ -39,7 +39,7 @@
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu"  style="min-width: 80px;">
-                  <li><a href="/step2">创建圈子</a></li>
+                  <li><a href="/sys/groups/new">创建圈子</a></li>
                   <li class="divider"></li>
                   <li><a href="/logout">退出</a></li>
                 </ul>

@@ -1,22 +1,38 @@
 # encoding: utf-8
+# 字段设置
+# t.integer  "user_id",       :null => false
+# t.string   "name"
+# t.datetime "created_at",    :null => false
+# t.datetime "updated_at",    :null => false
+# t.string   "contact_phone", :default => ""
+# t.boolean  "active",        :default => true    # 标志账号是否激活
+# t.boolean  "is_valid",         :default => true    # 标志账号是否被删除
+
 class Sys::Group < ActiveRecord::Base
-  attr_accessible :id, :name, :user_id, :group_picture, :contact_phone, :create_user, :created_at, :active
+  attr_accessible :id, :name, :user_id, :group_picture, :contact_phone, :create_user, :created_at, :active, :is_valid
+
+  validates_presence_of :name,  :message => "圈子名不能为空！"
 
   has_many :user_groups, :class_name => "Sys::UserGroup"
   has_many :users, :through => :user_groups, :source => :user
-  validates_presence_of :name,  :message => "圈子名不能为空！"
+
+  scope :is_valided, :conditions => { :is_valid => true }
+  scope :ordered, :order => "sys_groups.id DESC"
+  
   #获得创建人的信息
   #
   #wangyang.shen 2013-07-17
   def create_user
-    return Sys::User.find_by_id(user_id)
+    Sys::User.find_by_id(user_id)
   end
+
   #获得小组的信息图片位置
   #
   #wangyang.shen 2013-07-17
   def group_picture
-    return "/group_picture/group_picture_#{id}.jpg"
+    "/group_picture/group_picture_#{id}.jpg"
   end
+
   #生成小组信息图片，图片命名规则为group_picture_小组id，存放在/public/group_picture
   #
   # wangyang.shen 2013.07.17

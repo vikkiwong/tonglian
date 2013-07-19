@@ -50,10 +50,10 @@ class SessionsController < ApplicationController
   #
   # ping.wang 2013.07.05
   def create
-    @user = Sys::User.check_user(params[:email])   # 检查数据库是否有该用户，且该用户是否有登陆权限
-    redirect_to("/login", :notice => "抱歉，该邮箱没有权限！") and return unless @user.present?
+    @sys_user = Sys::User.check_user(params[:email])   # 检查数据库是否有该用户，且该用户是否有登陆权限
+    redirect_to("/login", :notice => "抱歉，该邮箱没有权限！") and return unless @sys_user.present?
 
-    if @user.password.present? && @user.password == params[:password]
+    if @sys_user.password.present? && @sys_user.password == params[:password]
       set_session  # 设置session
       # 跳转到登陆前访问的页面
       back_path = session[:back_path]
@@ -198,7 +198,8 @@ class SessionsController < ApplicationController
   
   protected
   def set_session
-      %w(id email name role).each {|i| session[i.to_sym] = @user[i] if @user[i].present? }
+     p "********"*30
+      %w(id email name role).each {|i| session[i.to_sym] = @sys_user[i] if @sys_user[i].present? }
       session[:expires_at] = 1.month.from_now
   end
 end
