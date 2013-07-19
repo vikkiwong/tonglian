@@ -38,7 +38,7 @@ class Sys::GroupsController < ApplicationController
       render :new
     end
   end
-  
+
   def edit
   end
 
@@ -84,6 +84,8 @@ class Sys::GroupsController < ApplicationController
   end
 
   #删除圈子中的成员
+  #
+  #wangyang.shen 2013.07.18
   def destroy_user_group
     if params[:group_id].present? && params[:user_id].present?
       if params[:user_id].to_i != session[:id].to_i

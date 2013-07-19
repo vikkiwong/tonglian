@@ -15,28 +15,29 @@
         <th>创建时间</th>
         <th>操作</th>
     </tr>
-
     <% @sys_groups.each do |group| %>
-    <tr>
-        <td>
-          <% if group.active %>
-            <a href="/sys/groups/<%=group.id %>">
-          <% else %>
-            <a href="/sys/groups/<%=group.id %>" class="muted">
-          <% end %>          
-            <%=group.name %>
-          </a>
-        </td>
-        <% if session[:role] == "manager"%>
-          <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] if group.create_user.present? %></td>
-         <% end %>
-        <td><%= group.users.size %></td>
-        <td><%= shown_time(group.created_at) %></td>
-        <td>
-            <%= link_to '编辑' , edit_sys_group_path(group) %>
-            <%= link_to '删除' , group , :method => :delete , method: :delete, data: { confirm: '确定删除?' } %>
-        </td>
-    </tr>
+      <% if group.users.present? && group.users.size > 0 %>
+        <tr>
+            <td>
+              <% if group.active %>
+                <a href="/sys/groups/<%=group.id %>">
+              <% else %>
+                <a href="/sys/groups/<%=group.id %>" class="muted">
+              <% end %>
+                <%=group.name %>
+              </a>
+            </td>
+            <% if session[:role] == "manager"%>
+              <td><%= group.create_user.name.present?? group.create_user.name : group.create_user.email.split("@")[0] if group.create_user.present? %></td>
+             <% end %>
+            <td><%= group.users.size %></td>
+            <td><%= shown_time(group.created_at) %></td>
+            <td>
+                <%= link_to '编辑' , edit_sys_group_path(group) %>
+                <%= link_to '删除' , group , method: :delete, data: { confirm: '确定删除?' } %>
+            </td>
+        </tr>
+      <% end %>
     <% end %>
 </table>
 <p><%= will_paginate @sys_groups,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
