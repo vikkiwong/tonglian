@@ -103,7 +103,7 @@ class Sys::UsersController < ApplicationController
         if send_time > Time.now - 1.days
           begin
             Sys::User.update(user_id,:active => true)
-            Sys::Group.update_all("active = true",:user_id => user_id)
+            Sys::Group.find_by_user_id(user_id).update_all(:active => true)
             #is_actived_sys_users
             #redirect_to success_sessions_path(:message => "activate_group_manager")
             redirect_to is_actived_sys_users_path
