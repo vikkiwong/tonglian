@@ -40,6 +40,7 @@
                 </a>
                 <ul class="dropdown-menu"  style="min-width: 80px;">
                   <li><a href="/sys/groups/new">创建圈子</a></li>
+                  <li><%= link_to "修改个人信息",edit_sys_user_path(session[:id])%></li>
                   <li class="divider"></li>
                   <li><a href="/logout">退出</a></li>
                 </ul>
