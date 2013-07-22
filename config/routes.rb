@@ -15,6 +15,7 @@ Tonglian::Application.routes.draw do
         post 'invite_users'
       end
       collection do
+        get 'create_group_user'
         delete 'destroy_user_group'
       end
     end
