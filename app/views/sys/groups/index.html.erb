@@ -1,10 +1,9 @@
 <% content_for :head do %>
 圈子列表-微信通联
 <% end %>
-
-<h2>圈子列表</h2>
 <%#= link_to '添加用户', new_sys_user_path %>
 <% if @sys_groups.present? %>
+<h2>圈子列表</h2>
 <table class="table table-borded table-hover">
     <tr>
         <th>圈子名称</th>
@@ -41,6 +40,8 @@
     <% end %>
 </table>
 <p><%= will_paginate @sys_groups,option = {:next_label => "下一页", :previous_label => "上一页"} %></p>
+<% else %>
+    <p class="muted">你还没有自己的圈子，<a href="/sys/groups/new">创建</a>一个吧!</p>
 <% end %>
 
 

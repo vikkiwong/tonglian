@@ -31,10 +31,13 @@ class Sys::UsersController < ApplicationController
   # POST /sys/users.json
   # 注册账号
   def create
+
+    unless params[:sys_user].present? && params[:sys_user][:email].present? && params[:sys_user][:name].present? && params[:sys_user][:password].present?
+      flash[:notice] = "信息填写不完整" and render :new and return
+    end
     unless params[:sys_user].present? && params[:sys_user][:password].present? && params[:sys_user][:password] == params[:password_confirm]
       flash[:notice] = "密码验证不一致" and render :new and return
     end
-
     @sys_user = Sys::User.find_by_email_and_is_valid(params[:sys_user][:email], true)
     if @sys_user.present?
       if @sys_user.role == "member"
@@ -51,7 +54,7 @@ class Sys::UsersController < ApplicationController
       if @sys_user.save
         #set_session
         %w(id email name role).each {|i| session[i.to_sym] = @sys_user[i] if @sys_user[i].present? }
-        redirect_to need_active_sys_users_path
+        self.send_activate_mail
       end
     end
   end
@@ -82,7 +85,9 @@ class Sys::UsersController < ApplicationController
   # 发送管理员激活邮件
   def send_activate_mail
     sys_user = Sys::User.where(:id => session[:id]).first
-    Notifier.send_activate_group_manager_mail(sys_user) if sys_user.present?
+    unless sys_user.active
+      Notifier.send_activate_group_manager_mail(sys_user) if sys_user.present?
+    end
     redirect_to active_mail_sended_sys_users_path
   end
 

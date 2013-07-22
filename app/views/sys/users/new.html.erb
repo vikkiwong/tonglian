@@ -5,7 +5,7 @@
 <h2>注册账号</h2>
 <p class="muted">如有账号，<a href="/login">请直接登陆</a></p>
 
-<form action="/sys/users" method="post">
+<form action="/sys/users" id="user_form" method="post">
   <div>
     <label>邮箱</label>
     <input type="email" name="sys_user[email]" id="sys_user_email" value="<%= @sys_user.email if @sys_user.present? && @sys_user.email.present? %>">
@@ -20,7 +20,7 @@
   </div>
   <div>
     <label>确认密码</label>
-    <input type="password" name="password_confirm">
+    <input type="password" name="password_confirm" id="password_confirm">
   </div>
   <div>
     <button type="submit" class="btn">下一步</button>
