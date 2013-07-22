@@ -46,6 +46,9 @@ class Notifier < ActionMailer::Base
   #guanzuo.li
   #2013.07.16
   def send_group_invite_mails(group,group_users)
+    group_manager = Sys::User.where(:id => group.user_id).first
+    @group_manager_name = group_manager.name if group_manager.present?
+    @group_name = group.name if group.present?
     group_users.split("\n").each do |line|
       email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
       name = name.present? ? name.strip.gsub(/\s+/, "") : ""
