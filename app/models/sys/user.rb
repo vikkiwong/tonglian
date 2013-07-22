@@ -103,9 +103,7 @@ class Sys::User < ActiveRecord::Base
       if user.new_record?
         user.role = "member"
         user.name = name
-        if user.save
-          create_message_picture(user)   #为创建成功的用户生成用户图片
-        else
+        unless user.save
           wrong_line << email      # 将创建出错的邮箱记录下来
         end
       end
