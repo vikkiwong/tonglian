@@ -154,7 +154,7 @@ class WeixinsController < ApplicationController
   #2013-07-08
   def event_action
     if params[:xml][:Event] == "subscribe"
-      @introduction  = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息\n【jy+文字】向我们提建议"
+      @introduction  = " 您好，我是通联助手！\n 输入姓名可查询通联\n 如“通联”“tonglian”“tl”\n\n【u】更新联系方式\n【h】获取帮助信息\n【jy+文字】向我们提建议\n初次使用请输入【u】完善个人信息。"
       render "new_user", :formats => :xml
     end
     if params[:xml][:Event] == "unsubscribe"

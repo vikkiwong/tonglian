@@ -4,7 +4,11 @@
     <title>用户邀请</title>
   </head>
   <body >
-    <img width="120" height="120" src="http://<%=SITE_DOMAIN%>/assets/daohang.jpg"/>
+    <p>先生/女士:</p>
+    <p>您收到圈主<%=@group_manager_name if @group_manager_name.present?%>邀请加入圈子<%=@group_name if @group_name.present? %></p>
+    <p>请使用微信扫描下图，关注微通联</p>
+    <img width="120" height="120" style="float:right;" src="http://<%=SITE_DOMAIN%>/assets/daohang.jpg"/>
+    <p>如果您同意将个人信息在此圈内公开，并获取查询圈内成员信息权限，请点击如下链接</p>
     <p><%= link_to(create_group_user_sys_groups_url({:host => SITE_DOMAIN,:code => @code}),create_group_user_sys_groups_url({:host => SITE_DOMAIN,:code => @code}))%></p>
   </body>
 </html>
