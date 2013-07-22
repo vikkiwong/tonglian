@@ -76,6 +76,33 @@ class Sys::GroupsController < ApplicationController
     end
   end
 
+  #接收邀请用户邮件中的同意链接
+  def create_group_user
+    source = Base64.decode64(params[:code])
+      if source.present?
+        source_arr = source.split("&")
+        group_id = source_arr[0]
+        email = source_arr[1]
+        send_time = Time.parse(source_arr[2])
+        if send_time > Time.now - 1.days
+          begin
+            user = Sys::User.where(:email => email).first
+            Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user.id,group_id)
+            #is_actived_sys_users
+            #redirect_to success_sessions_path(:message => "activate_group_manager")
+            render :text => "用户添加成功"
+          rescue Exception => e
+            p e.message
+            render :text => "激活失败" + e.message
+          end
+        else
+          render :text => "链接过期"
+        end
+      else
+        render :text => "Fail"
+      end
+  end
+
   # DELETE /sys/groups/:id(.:format)
   def destroy
     File.delete("#{Rails.root}/public#{@sys_group.group_picture}")  if File.exist?("#{Rails.root}/public#{@sys_group.group_picture}")

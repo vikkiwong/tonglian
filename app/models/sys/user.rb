@@ -104,13 +104,11 @@ class Sys::User < ActiveRecord::Base
         user.role = "member"
         user.name = name
         if user.save
-          #create_message_picture(user)   #为创建成功的用户生成用户图片
+          create_message_picture(user)   #为创建成功的用户生成用户图片
         else
           wrong_line << email      # 将创建出错的邮箱记录下来
         end
       end
-      user_group = Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user.id,group_id)
-      user_group.save if user_group.new_record?
     end
     wrong_line
   end

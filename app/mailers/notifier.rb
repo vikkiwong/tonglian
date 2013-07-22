@@ -48,7 +48,14 @@ class Notifier < ActionMailer::Base
   def send_group_invite_mails(group)
     group.users.each do |user|
       next if user.id == group.user_id
+      invited_groups_arr = user.invited_groups.split(",")
+      next if invited_groups_arr.include?(group.id.to_s)
+      code_str = user.email + "&" + group.id + "&" + Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s
+      @code = Base64.encode64(code_str)
       mail(:to => user.email, :subject => "邀请您加入#{group.name}").deliver!
+      invited_groups_arr << group.id.to_s
+      user.invited_groups = invited_groups_arr.join(",")
+      user.save
     end
   end
 
