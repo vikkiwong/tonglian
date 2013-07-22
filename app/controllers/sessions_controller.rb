@@ -127,7 +127,7 @@ class SessionsController < ApplicationController
   # 2013.07.10
   def verify
     if /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i.match(params[:email]).present?
-      user = Sys::User.check_user(params[:email])
+      user = Sys::User.where(:email => params[:email], :is_valid => true).first
       if user.present?
         registered_user = Sys::User.find_by_weixin_id(params[:FromUser])
         if registered_user.present?
