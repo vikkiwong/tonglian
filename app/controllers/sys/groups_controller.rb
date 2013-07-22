@@ -63,7 +63,7 @@ class Sys::GroupsController < ApplicationController
     begin
       if @sys_group.active
         wrong_line = Sys::User.import_group_users(params[:bunch_users], params[:id])  # 导入方法需要修改
-        Notifier.send_group_invite_mails(@sys_group)
+        Notifier.send_group_invite_mails(@sys_group,params[:bunch_users])
         flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
         redirect_to sys_group_path(@sys_group)
       else
@@ -81,13 +81,13 @@ class Sys::GroupsController < ApplicationController
     source = Base64.decode64(params[:code])
       if source.present?
         source_arr = source.split("&")
-        group_id = source_arr[0]
-        email = source_arr[1]
+        group_id = source_arr[1].to_i
+        user_id = source_arr[0].to_i
         send_time = Time.parse(source_arr[2])
         if send_time > Time.now - 1.days
           begin
-            user = Sys::User.where(:email => email).first
-            Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user.id,group_id)
+            group_user = Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user_id,group_id)
+            group_user.save
             #is_actived_sys_users
             #redirect_to success_sessions_path(:message => "activate_group_manager")
             render :text => "用户添加成功"

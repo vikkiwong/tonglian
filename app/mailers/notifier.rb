@@ -45,12 +45,15 @@ class Notifier < ActionMailer::Base
   #
   #guanzuo.li
   #2013.07.16
-  def send_group_invite_mails(group)
-    group.users.each do |user|
-      next if user.id == group.user_id
+  def send_group_invite_mails(group,group_users)
+    group_users.split("\n").each do |line|
+      email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
+      name = name.present? ? name.strip.gsub(/\s+/, "") : ""
+      email = email.present? ? email.strip.gsub(/\s+/, "") : ""
+      user = Sys::User.where(:email => email).first
       invited_groups_arr = user.invited_groups.split(",")
       next if invited_groups_arr.include?(group.id.to_s)
-      code_str = user.email + "&" + group.id + "&" + Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s
+      code_str = user.id.to_s + "&" + group.id.to_s + "&" + Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s
       @code = Base64.encode64(code_str)
       mail(:to => user.email, :subject => "邀请您加入#{group.name}").deliver!
       invited_groups_arr << group.id.to_s
