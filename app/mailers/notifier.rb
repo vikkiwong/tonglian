@@ -45,17 +45,13 @@ class Notifier < ActionMailer::Base
   #
   #guanzuo.li
   #2013.07.16
-  def send_group_invite_mails(group,group_users)
+  def send_group_invite_mails(email,group)
     group_manager = Sys::User.where(:id => group.user_id).first
     @group_manager_name = group_manager.name if group_manager.present?
     @group_name = group.name if group.present?
-    group_users.split("\n").each do |line|
-      email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
-      name = name.present? ? name.strip.gsub(/\s+/, "") : ""
-      email = email.present? ? email.strip.gsub(/\s+/, "") : ""
-      user = Sys::User.where(:email => email).first
-      invited_groups_arr = user.invited_groups.split(",")
-      next if invited_groups_arr.include?(group.id.to_s)
+    user = Sys::User.where(:email => email).first
+    invited_groups_arr = user.invited_groups.split(",")
+    if !invited_groups_arr.include?(group.id.to_s)
       code_str = user.id.to_s + "&" + group.id.to_s + "&" + Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s
       @code = Base64.encode64(code_str)
       mail(:to => user.email, :subject => "邀请您加入#{group.name}").deliver!

@@ -92,18 +92,22 @@ class Sys::User < ActiveRecord::Base
   #
   #guanzuo.li
   #2013.07.16
-  def self.import_group_users(group_users, group_id)
+  def self.import_group_users(group_users, group)
     return false unless group_users.present?
     wrong_line = []
     group_users.split(/[\,，;；]+/).each do |email|     # 匹配中英文逗号分隔符，, ; ；
+      is_send_mail = true
       email = email.present? ? email.strip.gsub(/\s+/, "") : ""
       user = Sys::User.find_or_initialize_by_email(email)
       if user.new_record?
         user.role = "member"
         unless user.save
+          is_send_mail = false
           wrong_line << email      # 将创建出错的邮箱记录下来
         end
       end
+      p is_send_mail.to_s + "++++++++++++++++++++++++++++++++++"
+      Notifier.send_group_invite_mails(email,group) if is_send_mail  #为新用户发送邀请邮件
     end
     wrong_line
   end

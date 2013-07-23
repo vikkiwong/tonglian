@@ -62,8 +62,7 @@ class Sys::GroupsController < ApplicationController
   def invite_users
     begin
       if @sys_group.active
-        wrong_line = Sys::User.import_group_users(params[:bunch_users], params[:id])  # 导入方法需要修改
-        Notifier.send_group_invite_mails(@sys_group,params[:bunch_users])
+        wrong_line = Sys::User.import_group_users(params[:bunch_users], @sys_group)  # 导入方法需要修改
         flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
         redirect_to sys_group_path(@sys_group)
       else
