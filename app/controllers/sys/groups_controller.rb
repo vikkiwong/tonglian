@@ -2,6 +2,7 @@
 class Sys::GroupsController < ApplicationController
   before_filter :if_member
   before_filter :find_group, :only => [:show, :edit, :update, :destroy, :invitation, :invite_users]
+  skip_before_filter :login_check, :only => :create_group_user
 
   def index
     if session[:role] == "manager"
@@ -122,6 +123,7 @@ class Sys::GroupsController < ApplicationController
         group_id = params[:group_id]
         user_id = params[:user_id]
         Sys::UserGroup.where("user_id = #{user_id} and group_id = #{group_id}").first.destroy
+        Sys::User.reset_invited_records(user_id,group_id)
       end
     end
     redirect_to sys_group_url(@sys_group = Sys::Group.find_by_id(group_id))

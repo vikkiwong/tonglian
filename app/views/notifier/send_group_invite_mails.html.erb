@@ -5,12 +5,12 @@
   </head>
   <body >
     <p>您好:</p>
-    <p>圈主<%=@group_manager_name if @group_manager_name.present?%>邀请您加入圈子<%=@group_name if @group_name.present? %>,该圈子需要您分享如下个人信息:</p>
+    <p>圈主 <%=@group_manager_name if @group_manager_name.present?%> 邀请您加入圈子 <%=@group_name if @group_name.present? %> ,该圈子需要您分享如下个人信息:</p>
     <p>*姓名</p>
     <p>*手机</p>
     <p>*QQ</p>
     <p>如果您同意分享这些信息，请点击<%= link_to("同意",create_group_user_sys_groups_url({:host => SITE_DOMAIN,:code => @code}))%>。</p>
     <p>还没有关注微信通联？请使用微信扫描下图。并用此邮箱进行验证</p>
-    <p><img width="120" height="120" style="float:right;" src="http://<%=SITE_DOMAIN%>/assets/daohang.jpg"/></p>
+    <p><img width="120" height="120" src="http://<%=SITE_DOMAIN%>/assets/daohang.jpg"/></p>
   </body>
 </html>

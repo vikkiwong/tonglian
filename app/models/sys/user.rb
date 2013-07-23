@@ -119,6 +119,16 @@ class Sys::User < ActiveRecord::Base
     return wrong_line,success_count
   end
 
+  def self.reset_invited_records(user_id,group_id)
+    user = Sys::User.find(user_id)
+    if user.present?
+      invited_groups_arr = user.invited_groups.split(",")
+      invited_groups_arr.delete(group_id.to_s)
+      user.invited_groups = invited_groups_arr.join(",")
+      user.save
+    end
+  end
+
   # 按中文姓名或拼音或邮箱查找用户
   # ================
   # 参数:(查询词)string
