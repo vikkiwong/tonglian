@@ -166,7 +166,7 @@ class Sys::User < ActiveRecord::Base
     select_fields = "sys_users.email,sys_users.role,sys_users.mobile,sys_users.phone,sys_users.name,sys_users.id,u_g.group_id,g.name as group_name"
     join_tag = "join sys_user_groups u_g on sys_users.id = u_g.user_id join sys_groups g on g.id = u_g.group_id"
     if /[\d._@]/.match(str).present?   # 若包含数字或._, 按照email查找
-      users = Sys::User.select(select_fields).joins(join_tag).where(["sys_user_groups.group_id in (?) and sys_users.email LIKE ? ",group_ids,"%#{str}%"]).limit(10).all
+      users = Sys::User.select(select_fields).joins(join_tag).where(["sys_user_groups.group_id in (?) and sys_users.email LIKE ? and sys_users.is_valid = true",group_ids,"%#{str}%"]).limit(10).all
     elsif /^[A-Za-z]+$/.match(str).present?  # 分优先级，按拼音和email查找
       # 先按拼音查找
       # 按首字母

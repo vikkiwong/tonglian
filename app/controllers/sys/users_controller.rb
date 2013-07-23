@@ -157,7 +157,7 @@ class Sys::UsersController < ApplicationController
   def if_can_manage
     unless @sys_user.id == session[:id] || session[:role] == "manager"
       flash[:notice] = "没有权限进行此操作！"
-      redirect_to :back      
+      redirect_to @sys_user
     end
   end
 end

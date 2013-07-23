@@ -26,7 +26,6 @@ class Sys::GroupsController < ApplicationController
       flash[:notice] = "圈子名称和联系方式都不能为空"
       render :new and return
     end
-
     user = Sys::User.where(:id => session[:id]).first
     group = Sys::Group.new(:user_id => user.id, :name => params[:name],:contact_phone => params[:phone], :active => user.active)
     if group.save
@@ -88,13 +87,14 @@ class Sys::GroupsController < ApplicationController
         group_id = source_arr[1].to_i
         user_id = source_arr[0].to_i
         send_time = Time.parse(source_arr[2])
+        @group = Sys::Group.find(group_id)
         if send_time > Time.now - 1.days
           begin
             group_user = Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user_id,group_id)
-            group_user.save
+            group_user.save if group_user.new_record?
             #is_actived_sys_users
             #redirect_to success_sessions_path(:message => "activate_group_manager")
-            render :text => "用户添加成功"
+            render "group_user_added"
           rescue Exception => e
             p e.message
             render :text => "激活失败" + e.message
