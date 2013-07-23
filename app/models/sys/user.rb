@@ -95,14 +95,11 @@ class Sys::User < ActiveRecord::Base
   def self.import_group_users(group_users, group_id)
     return false unless group_users.present?
     wrong_line = []
-    group_users.split("\n").each do |line|
-      email, name = line.split(/[\,，]+/)   # 匹配中英文逗号分隔符，,
-      name = name.present? ? name.strip.gsub(/\s+/, "") : ""
+    group_users.split(/[\,，;；]+/).each do |email|     # 匹配中英文逗号分隔符，, ; ；
       email = email.present? ? email.strip.gsub(/\s+/, "") : ""
       user = Sys::User.find_or_initialize_by_email(email)
       if user.new_record?
         user.role = "member"
-        user.name = name
         unless user.save
           wrong_line << email      # 将创建出错的邮箱记录下来
         end

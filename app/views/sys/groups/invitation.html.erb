@@ -12,7 +12,7 @@
 <%= form_tag(invite_users_sys_group_path(@sys_group), :html => {:class => 'form-horizontal',:method => "post"}) do |f| %>
   <div>
   	<label></label>
-	<textarea name="bunch_users" class="hidden-phone" style="width:450px;height:200px;"></textarea>
+	<textarea name="bunch_users" class="hidden-phone" style="width:550px;height:200px;" placeholder="输入邮箱，多地址请用分号或逗号分隔"></textarea>
   </div>
   <div >
 		<button type="submit" class="btn">发送邀请邮件</button>
