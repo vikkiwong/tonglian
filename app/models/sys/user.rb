@@ -119,6 +119,10 @@ class Sys::User < ActiveRecord::Base
     return wrong_line,success_count
   end
 
+  #圈成员删除后去除此成员对应的圈组邀请记录
+  #
+  #guanzuo.li
+  #2013.07.23
   def self.reset_invited_records(user_id,group_id)
     user = Sys::User.find(user_id)
     if user.present?
