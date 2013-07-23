@@ -62,8 +62,12 @@ class Sys::GroupsController < ApplicationController
   def invite_users
     begin
       if @sys_group.active
-        wrong_line = Sys::User.import_group_users(params[:bunch_users], @sys_group)  # 导入方法需要修改
-        flash[:notice] = "邮箱为" + wrong_line.join(",") + "的用户创建出错了, 请检查！" if wrong_line.present?
+        wrong_line,success_count = Sys::User.import_group_users(params[:bunch_users], @sys_group)  # 导入方法需要修改
+        if wrong_line.present?
+          flash[:notice] = "成功发送#{success_count}封邀请,邮箱为" + wrong_line.join(",") + "的用户邀请失败。"
+        else
+          flash[:notice] = "成功发送#{success_count}封邀请"
+        end
         redirect_to sys_group_path(@sys_group)
       else
         flash[:notice] = "您需要激活账号才能邀请好友~"

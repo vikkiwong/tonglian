@@ -95,21 +95,28 @@ class Sys::User < ActiveRecord::Base
   def self.import_group_users(group_users, group)
     return false unless group_users.present?
     wrong_line = []
-    group_users.split(/[\,，;；]+/).each do |email|     # 匹配中英文逗号分隔符，, ; ；
-      is_send_mail = true
+    success_count = 0
+    group_users.split(/[\,，;；]+/).uniq.each do |email|     # 匹配中英文逗号分隔符，, ; ；
       email = email.present? ? email.strip.gsub(/\s+/, "") : ""
-      user = Sys::User.find_or_initialize_by_email(email)
+      user = Sys::User.find_or_initialize_by_email_and_is_valid(email,true)
       if user.new_record?
         user.role = "member"
         unless user.save
-          is_send_mail = false
           wrong_line << email      # 将创建出错的邮箱记录下来
         end
       end
-      p is_send_mail.to_s + "++++++++++++++++++++++++++++++++++"
-      Notifier.send_group_invite_mails(email,group) if is_send_mail  #为新用户发送邀请邮件
+      invited_groups_arr = user.invited_groups.split(",")
+      if !invited_groups_arr.include?(group.id.to_s)
+        Notifier.send_group_invite_mails(user,group)  #为新用户发送邀请邮件
+        invited_groups_arr << group.id.to_s
+        user.invited_groups = invited_groups_arr.join(",")
+        user.save
+        success_count += 1
+      else
+        wrong_line << email
+      end
     end
-    wrong_line
+    return wrong_line,success_count
   end
 
   # 按中文姓名或拼音或邮箱查找用户
