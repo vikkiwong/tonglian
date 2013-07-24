@@ -80,31 +80,36 @@ class Sys::GroupsController < ApplicationController
   end
 
   #接收邀请用户邮件中的同意链接
+  #
+  #guanzuo.li
+  #2013.07.24 edit
   def create_group_user
-    source = Base64.decode64(params[:code])
-      if source.present?
-        source_arr = source.split("&")
-        group_id = source_arr[1].to_i
-        user_id = source_arr[0].to_i
-        send_time = Time.parse(source_arr[2])
-        @group = Sys::Group.find(group_id)
+    if params[:code].present?
+      source = Base64.decode64(params[:code])
+      group_id,user_id,send_time = Sys::Group.analyze_source(source)
+      @group = Sys::Group.find(group_id)
+      @user = Sys::User.find(user_id)
+      if @user.present?
         if send_time > Time.now - 1.days
           begin
             group_user = Sys::UserGroup.find_or_initialize_by_user_id_and_group_id(user_id,group_id)
             group_user.save if group_user.new_record?
-            #is_actived_sys_users
-            #redirect_to success_sessions_path(:message => "activate_group_manager")
             render "group_user_added"
           rescue Exception => e
             p e.message
-            render :text => "激活失败" + e.message
+            @failed_message = e.message
           end
         else
-          render :text => "链接过期"
+          @failed_message = "邀请邮件过期,新邮件已发送。"
+          Notifier.send_group_invite_mails(@user,@group) rescue @failed_message = "邀请邮件过期。"
         end
       else
-        render :text => "Fail"
+        @failed_message = "用户已被删除。"
       end
+    else
+      @failed_message = "标识数据丢失。"
+    end
+    render "add_group_user_failed" if @failed_message.present?
   end
 
   # DELETE /sys/groups/:id(.:format)

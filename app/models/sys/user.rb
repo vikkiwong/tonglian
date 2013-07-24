@@ -40,8 +40,7 @@ class Sys::User < ActiveRecord::Base
   ]
 
   def is_valid?
-    Sys.
-    self.is_valid == true 
+    self.is_valid == true
   end
 
   # 显示用户角色中文名

@@ -33,6 +33,18 @@ class Sys::Group < ActiveRecord::Base
     "/group_picture/group_picture_#{id}.jpg"
   end
 
+  #分解用户同意邀请链接所包含数据
+  #
+  #guanzuo.li
+  #2013.07.24
+  def self.analyze_source(source)
+    source_arr = source.split("&")
+    group_id = source_arr[1].to_i
+    user_id = source_arr[0].to_i
+    send_time = Time.parse(source_arr[2])
+    return group_id,user_id,send_time
+  end
+
   #生成小组信息图片，图片命名规则为group_picture_小组id，存放在/public/group_picture
   #
   # wangyang.shen 2013.07.17

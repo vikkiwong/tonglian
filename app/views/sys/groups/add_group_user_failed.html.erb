@@ -1,0 +1,5 @@
+<% content_for :head do %>
+  激活失败-微信通联
+<% end %>
+
+<p class="muted" style="color:#c09853">加入圈组 <font size="3px" color="#333333"><%= @group.name if @group.present? %></font> 失败。<%= @failed_message %></p>
